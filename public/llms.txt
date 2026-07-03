@@ -1,0 +1,20 @@
+# MeasureKit
+
+> Python library for physical units, dimensional analysis, and uncertainty propagation. Zero runtime dependencies in the base install; optional Rust core (measurekit-core, PyO3) and optional NumPy/PyTorch/JAX backends. MIT licensed, Python 3.10+.
+
+Key facts:
+- Install: `pip install measurekit` (pure Python), `pip install "measurekit[native]"` (Rust acceleration), `pip install "measurekit[all]"` (all backends).
+- Central API: `Q_(10, "km") / Q_(2, "hr")` returns a unit-aware Quantity; `.to("m/s")` converts; incompatible dimensions raise.
+- CLI/REPL: `python -m measurekit "500 N / 2 m^2 => kPa"` evaluates expressions from the shell; no arguments opens an interactive session. Supports uncertainty literals like `9.81 +/- 0.02 m/s^2`.
+- Performance, honestly: eager mode has real Python overhead (10-100x vs raw floats/tensors). Under torch.compile / jax.jit, unit checks run at trace time via __torch_dispatch__ and the compiled graph is raw tensors: measured under 1.1x overhead vs pure PyTorch. First use (import + first evaluation) is ~0.5 s, tracked in CI.
+- Uncertainty: uncorrelated mode (independent errors) or correlated mode with a full sparse covariance store, so correlated errors cancel correctly.
+- Catalog: 125+ units, 28 dimensions, 24 SI prefixes, 400+ CODATA 2022 physical constants.
+- Compared to Pint: Pint is the mature, widely adopted choice for general unit handling. MeasureKit (beta) targets JIT-compiled tensor workloads, correlated uncertainty, and zero-dependency installs.
+- Extras: mypy plugin for unit-aware static types, pandas/pydantic/sympy integrations, MeasureNote-style grammar for writing physics as plain notation.
+
+## Links
+
+- [GitHub repository](https://github.com/Alexisrx96/measurekit): source, issues, CI
+- [PyPI: measurekit](https://pypi.org/project/measurekit/): the Python package
+- [PyPI: measurekit-core](https://pypi.org/project/measurekit-core/): optional Rust extension
+- [Unit and constant reference](https://github.com/Alexisrx96/measurekit/blob/main/docs/UNITS.md): auto-generated full catalog
