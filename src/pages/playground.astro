@@ -237,7 +237,8 @@ except Exception as e:
         
         if (codeParam) {
           try {
-            initialCode = decodeURIComponent(escape(atob(codeParam)));
+            const cleanCodeParam = codeParam.replace(/ /g, '+');
+            initialCode = decodeURIComponent(escape(atob(cleanCodeParam)));
             shouldAutoRun = true;
           } catch (e) {
             console.error("Failed to decode base64 code:", e);
@@ -570,8 +571,13 @@ sys.stderr = io.StringIO()
     flex: 1;
     font-family: 'JetBrains Mono', monospace;
     font-size: 0.875rem;
-    height: 100%;
+    height: 100% !important;
+    min-height: 100%;
     background: transparent !important;
+  }
+  .editor-pane :global(.CodeMirror-scroll) {
+    height: 100% !important;
+    min-height: 100%;
   }
   .editor-pane :global(.CodeMirror-gutters) {
     background: transparent !important;

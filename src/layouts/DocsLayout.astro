@@ -205,7 +205,7 @@ const t = {
               fromUrl += `?tutorial=${tutorialId}&step=${step}`;
             }
             
-            window.location.href = `${isSp ? '/es' : ''}/playground?code=${encoded}&from=${encodeURIComponent(fromUrl)}`;
+            window.location.href = `${isSp ? '/es' : ''}/playground?code=${encodeURIComponent(encoded)}&from=${encodeURIComponent(fromUrl)}`;
           }
         });
       });
