@@ -1,0 +1,209 @@
+---
+import DocsLayout from "../layouts/DocsLayout.astro";
+---
+
+<DocsLayout title="CLI & REPL" description="Use MeasureKit from the terminal as a unit-aware calculator" activeSection="cli">
+  <div class="page-header">
+    <div class="kicker">Tools</div>
+    <h1>CLI & REPL</h1>
+    <p>Use MeasureKit from the terminal — no Python scripts needed. Like GNU <code>units</code>, but with uncertainty propagation.</p>
+  </div>
+
+  <h2>Three modes</h2>
+  <div class="mode-grid">
+    <div class="mode-card">
+      <div class="mode-num">1</div>
+      <h3>Single expression</h3>
+      <p>Pass an expression as a command-line argument. Evaluates and exits immediately.</p>
+      <pre><code>python -m measurekit "500 N / 2 m^2 => kPa"
+# 0.25 kPa</code></pre>
+    </div>
+    <div class="mode-card">
+      <div class="mode-num">2</div>
+      <h3>File evaluation</h3>
+      <p>Pipe a file of MeasureNote statements. All results are printed in order.</p>
+      <pre><code>python -m measurekit &lt; notes.mnml</code></pre>
+    </div>
+    <div class="mode-card">
+      <div class="mode-num">3</div>
+      <h3>Interactive REPL</h3>
+      <p>Start an interactive session with history, just press Enter. Exit with Ctrl+D.</p>
+      <pre><code>python -m measurekit
+mk&gt; ...</code></pre>
+    </div>
+  </div>
+
+  <h2>Quick examples</h2>
+  <pre><code># Unit conversions
+python -m measurekit "60 mph => km/hr"
+# 96.5606 km/hr
+
+python -m measurekit "1 atm => kPa"
+# 101.325 kPa
+
+python -m measurekit "100 degC => degF"
+# 212.0 degF
+
+# Arithmetic with units
+python -m measurekit "9.81 m/s^2 * 70 kg => N"
+# 686.7 N
+
+python -m measurekit "1 kWh => MJ"
+# 3.6 MJ
+
+# With uncertainty literals
+python -m measurekit "9.81 +/- 0.02 m/s^2 => ft/s^2"
+# 32.185 ± 0.066 ft/s^2</code></pre>
+
+  <h2>REPL session</h2>
+  <pre><code>$ python -m measurekit
+measurekit — unit-aware calculator. Try `500 N / 2 m^2 => kPa`; exit with Ctrl-D.
+
+mk&gt; g = 9.81 +/- 0.02 m/s^2
+mk&gt; m = 70 kg
+mk&gt; F = g * m
+mk&gt; F => N
+686.7 ± 1.4 N
+
+mk&gt; v = 100 km/hr
+mk&gt; v => m/s
+27.7778 m/s
+
+mk&gt; stress = 500 N / 2 m^2
+mk&gt; stress => kPa
+0.25 kPa
+
+mk&gt; stress == 250 Pa
+True
+
+mk&gt; exit</code></pre>
+
+  <h2>CLI subcommand</h2>
+  <p>Also available via the <code>measurekit</code> entry point installed by pip:</p>
+  <pre><code># After pip install measurekit:
+measurekit repl                          # start interactive REPL
+measurekit repl "500 N / 2 m^2 => kPa"  # evaluate single expression
+measurekit sync-types                    # regenerate unit type stubs</code></pre>
+
+  <h2>MeasureNote syntax reference</h2>
+  <p>The REPL uses MeasureNote (MNML) syntax. Here's a complete reference:</p>
+  <table>
+    <thead>
+      <tr><th>Syntax</th><th>Example</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>name = value unit</code></td>
+        <td><code>force = 500 N</code></td>
+        <td>Assign a quantity to a variable.</td>
+      </tr>
+      <tr>
+        <td><code>name -&gt; value unit</code></td>
+        <td><code>mass -&gt; 70 kg</code></td>
+        <td>Alternative assignment syntax.</td>
+      </tr>
+      <tr>
+        <td><code>expr =&gt; unit</code></td>
+        <td><code>force =&gt; kN</code></td>
+        <td>Convert and print in target unit.</td>
+      </tr>
+      <tr>
+        <td><code>expr == value unit</code></td>
+        <td><code>stress == 250 Pa</code></td>
+        <td>Assert equality. Prints True/False.</td>
+      </tr>
+      <tr>
+        <td><code>name = ?</code></td>
+        <td><code>g = ?</code></td>
+        <td>Query and print a variable's current value.</td>
+      </tr>
+      <tr>
+        <td><code>value +/- unc unit</code></td>
+        <td><code>9.81 +/- 0.02 m/s^2</code></td>
+        <td>Quantity literal with uncertainty.</td>
+      </tr>
+      <tr>
+        <td><code>a op b</code></td>
+        <td><code>force / area</code></td>
+        <td>Arithmetic: +, -, *, /, ^</td>
+      </tr>
+      <tr>
+        <td><code># comment</code></td>
+        <td><code># this is ignored</code></td>
+        <td>Line comment.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Writing notes files</h2>
+  <p>Create <code>.mnml</code> files with physics notation and pipe them to MeasureKit:</p>
+  <pre><code># notes.mnml — circuit analysis
+V  = 24 V
+R1 = 100 Ω
+R2 = 150 Ω
+
+# Parallel resistance
+R_p = 1 / (1/R1 + 1/R2)
+
+# Total current
+I = V / R_p
+
+# Power dissipated
+P = V * I
+
+I => mA
+P => W</code></pre>
+  <pre><code>python -m measurekit &lt; notes.mnml
+# 96.0 mA
+# 2.304 W</code></pre>
+
+  <h2>Tips & tricks</h2>
+  <div class="tips-grid">
+    <div class="card tip-card">
+      <h3>🚀 Startup time</h3>
+      <p>First evaluation takes ~0.5 s (import + system build). Subsequent evaluations in the same session are fast.</p>
+    </div>
+    <div class="card tip-card">
+      <h3>📋 History</h3>
+      <p>The REPL uses readline when available — arrow keys and Ctrl+R history search work out of the box.</p>
+    </div>
+    <div class="card tip-card">
+      <h3>🔗 Piping</h3>
+      <p>MeasureKit detects whether stdin is a TTY. Piped input runs all statements without prompts.</p>
+    </div>
+    <div class="card tip-card">
+      <h3>⚠️ Units with special chars</h3>
+      <p>Shell special characters in unit strings (like <code>^</code> or <code>>></code>) may need quoting: <code>"m^2"</code>, <code>"=&gt;"</code>.</p>
+    </div>
+  </div>
+</DocsLayout>
+
+<style>
+  .mode-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1rem; margin: 1.5rem 0;
+  }
+  .mode-card {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 1.25rem;
+  }
+  .mode-num {
+    width: 28px; height: 28px;
+    background: var(--accent-glow); border: 1px solid var(--accent);
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    color: var(--accent2); font-size: 0.8rem; font-weight: 700;
+    margin-bottom: 0.75rem;
+  }
+  .mode-card h3 { margin: 0 0 0.4rem; font-size: 0.95rem; }
+  .mode-card p { margin-bottom: 0.75rem; font-size: 0.875rem; }
+  .mode-card pre { margin: 0; }
+
+  .tips-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem; margin: 1rem 0;
+  }
+  .tip-card h3 { margin-top: 0; font-size: 0.95rem; }
+  .tip-card p { margin: 0; font-size: 0.875rem; }
+</style>

@@ -1,0 +1,181 @@
+---
+import DocsLayout from "../layouts/DocsLayout.astro";
+---
+
+<DocsLayout title="Quick Start" description="Get MeasureKit running in under 5 minutes" activeSection="quickstart">
+  <div class="page-header">
+    <div class="kicker">Getting Started</div>
+    <h1>Quick Start</h1>
+    <p>Get MeasureKit running in under 5 minutes. From install to your first unit-safe calculation.</p>
+  </div>
+
+  <h2>1. Install</h2>
+  <pre><code>pip install measurekit</code></pre>
+  <p>Or with the Rust core for better performance:</p>
+  <pre><code>pip install "measurekit[native]"</code></pre>
+
+  <h2>2. Your first Quantity</h2>
+  <p>
+    The main entry point is <code>Q_</code> — a factory that creates <strong>Quantity</strong> objects 
+    from a value and a unit string.
+  </p>
+  <pre><code>from measurekit import Q_
+
+# Create quantities
+distance = Q_(10, "km")       # 10 kilometers
+time     = Q_(2, "hr")        # 2 hours
+mass     = Q_(75, "kg")       # 75 kilograms
+
+# Arithmetic preserves units
+speed = distance / time
+print(speed)           # 5.0 km/hr
+
+# Convert to any compatible unit
+print(speed.to("m/s")) # 1.3888888888888888 m/s</code></pre>
+
+  <h2>3. Unit safety</h2>
+  <p>MeasureKit refuses to let you add incompatible dimensions — and gives you a clear error:</p>
+  <pre><code>from measurekit import Q_
+
+d = Q_(10, "m")   # length
+t = Q_(5, "s")    # time
+
+# This works fine — division yields velocity
+v = d / t         # 2.0 m/s
+
+# This raises IncompatibleUnitsError
+d + t             # ❌ IncompatibleUnitsError: Cannot operate with incompatible units</code></pre>
+
+  <h2>4. Unit conversion</h2>
+  <p>Use <code>.to()</code> to convert between compatible units:</p>
+  <pre><code>from measurekit import Q_
+
+# Length conversions
+length = Q_(1, "mi")                # 1 mile
+print(length.to("km"))              # 1.609344 km
+print(length.to("m"))               # 1609.344 m
+print(length.to("ft"))              # 5280.0 ft
+
+# Temperature (with offset support)
+temp_c = Q_(100, "degC")
+print(temp_c.to("degF"))            # 212.0 °F
+print(temp_c.to("K"))               # 373.15 K
+
+# Energy
+energy = Q_(1, "kWh")
+print(energy.to("J"))               # 3600000.0 J
+print(energy.to("MJ"))              # 3.6 MJ</code></pre>
+
+  <h2>5. Uncertainty propagation</h2>
+  <p>Pass an <code>uncertainty</code> argument to track measurement errors:</p>
+  <pre><code>from measurekit import Q_
+
+# With uncertainty (standard deviation)
+g = Q_(9.81, "m/s^2", uncertainty=0.02)
+m = Q_(5.0,  "kg",    uncertainty=0.1)
+
+# Errors propagate automatically
+F = g * m
+print(F)              # Quantity with value and uncertainty
+print(F.magnitude)    # 49.05
+print(F.uncertainty)  # ~0.99 N
+
+# Correlated uncertainty: x - x should be exactly 0
+# (requires propagation_mode('correlated') context)
+x = Q_(5.0, "m", uncertainty=0.1)
+delta = x - x     # 0.0 ± 0.0 m  ✓ in correlated mode (default)</code></pre>
+
+  <div class="callout callout-info">
+    <p><strong>Default mode is correlated:</strong> MeasureKit defaults to <code>"correlated"</code> propagation, meaning x − x = 0 exactly. You can switch with the <a href="/guide#covariance"><code>propagation_mode</code></a> context manager.</p>
+  </div>
+
+  <h2>6. Grammar notation</h2>
+  <p>Write physics like you'd write it on paper using <code>GrammarInterpreter</code>:</p>
+  <pre><code>from measurekit.ext.grammar import GrammarInterpreter
+
+mn = GrammarInterpreter()
+mn.run("""
+force = 500 N
+area  = 2 m^2
+stress = force / area
+""")
+
+# Query results
+print(mn.eval("stress => kPa"))      # 0.25 kPa
+print(mn.eval("stress == 250 Pa"))   # True
+
+# With uncertainty literals
+mn.run("g = 9.81 +/- 0.02 m/s^2")
+print(mn.eval("g = ?"))              # 9.81 ± 0.02 m/s^2</code></pre>
+
+  <h2>7. Terminal calculator</h2>
+  <p>Use MeasureKit directly from the shell — no Python script needed:</p>
+  <pre><code># Single expression
+python -m measurekit "500 N / 2 m^2 => kPa"
+# Output: 0.25 kPa
+
+# Evaluate a file of statements
+python -m measurekit < notes.mnml
+
+# Interactive REPL (Ctrl+D to exit)
+python -m measurekit
+mk> g = 9.81 +/- 0.02 m/s^2
+mk> g => ft/s^2
+32.185... ft/s^2
+mk> exit</code></pre>
+
+  <h2>8. NumPy / PyTorch / JAX</h2>
+  <p>Pass tensors or arrays as the value — MeasureKit auto-detects the backend:</p>
+  <pre><code>import numpy as np
+from measurekit import Q_
+
+# NumPy backend auto-detected
+arr = Q_(np.array([1.0, 2.0, 3.0]), "m")
+print(arr.to("cm"))    # [100. 200. 300.] cm
+
+# With PyTorch
+import torch
+t = Q_(torch.tensor([9.81, 9.80, 9.82]), "m/s^2")
+print(t.to("ft/s^2"))  # tensor([32.185..., 32.152..., 32.218...])</code></pre>
+
+  <h2>Next steps</h2>
+  <div class="card-grid next-cards">
+    <a href="/guide" class="card next-card">
+      <div class="next-icon">📖</div>
+      <h3>User Guide</h3>
+      <p>Deep dive into all features: backends, covariance, JIT, and more.</p>
+    </a>
+    <a href="/api" class="card next-card">
+      <div class="next-icon">🔧</div>
+      <h3>API Reference</h3>
+      <p>Complete reference for Quantity, units, conversion, and the full public API.</p>
+    </a>
+    <a href="/examples" class="card next-card">
+      <div class="next-icon">🧪</div>
+      <h3>Examples</h3>
+      <p>Real-world physics examples: kinematics, temperature, fluid dynamics, and more.</p>
+    </a>
+    <a href="/cli" class="card next-card">
+      <div class="next-icon">💻</div>
+      <h3>CLI & REPL</h3>
+      <p>Use MeasureKit as a terminal calculator for quick unit checks.</p>
+    </a>
+  </div>
+</DocsLayout>
+
+<style>
+  .next-cards { margin-top: 1.5rem; }
+  .next-card {
+    text-decoration: none; display: block;
+    transition: border-color 0.2s, transform 0.15s;
+    cursor: pointer;
+  }
+  .next-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+    text-decoration: none;
+  }
+  .next-icon { font-size: 1.75rem; margin-bottom: 0.5rem; }
+  .next-card h3 { margin-top: 0; font-size: 1rem; color: var(--text); }
+  .next-card p { margin: 0; font-size: 0.875rem; }
+</style>
