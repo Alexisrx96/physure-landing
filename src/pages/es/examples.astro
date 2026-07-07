@@ -29,9 +29,9 @@ print(f"Distancia: &#123;distancia&#125;")            # 225.0 km
 print(f"En metros: &#123;distancia.to('m')&#125;")   # 225000.0 m
 print(f"En millas: &#123;distancia.to('mi')&#125;")   # 139.81 mi
 
-# Problema: Convertir 60 mph a m/s
-v = Q_(60, "mph")
-print(f"60 mph = &#123;v.to('m/s'):.2f&#125;")     # 26.82 m/s
+# Problema: Convertir 60 mi/hr a m/s
+v = Q_(60, "mi/hr")
+print(f"60 mi/hr = &#123;v.to('m/s'):.2f&#125;")     # 26.82 m/s
 
 # Problema: Caída libre — ¿qué distancia cae un cuerpo en 3 segundos?
 g = Q_(9.81, "m/s^2")

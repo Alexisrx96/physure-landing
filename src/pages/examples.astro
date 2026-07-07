@@ -29,9 +29,9 @@ print(f"Distance: &#123;distance&#125;")            # 225.0 km
 print(f"In meters: &#123;distance.to('m')&#125;")   # 225000.0 m
 print(f"In miles: &#123;distance.to('mi')&#125;")   # 139.81 mi
 
-# Problem: Convert 60 mph to m/s
-v = Q_(60, "mph")
-print(f"60 mph = &#123;v.to('m/s'):.2f&#125;")     # 26.82 m/s
+# Problem: Convert 60 mi/hr to m/s
+v = Q_(60, "mi/hr")
+print(f"60 mi/hr = &#123;v.to('m/s'):.2f&#125;")     # 26.82 m/s
 
 # Problem: Free fall — how far does an object fall in 3 seconds?
 g = Q_(9.81, "m/s^2")
