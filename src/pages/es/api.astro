@@ -13,7 +13,7 @@ const api = [
       { name: "uncertainty", type: "float | None", desc: "Desviación estándar opcional (1σ) de la medición." },
     ],
     returns: "Quantity",
-    example: `from measurekit import Q_\n\nv = Q_(10, "m/s")\nF = Q_(9.81, "m/s^2", uncertainty=0.02)`
+    example: `from physure import Q_\n\nv = Q_(10, "m/s")\nF = Q_(9.81, "m/s^2", uncertainty=0.02)`
   },
   {
     name: "Quantity",
@@ -21,7 +21,7 @@ const api = [
     desc: "La clase central que representa una cantidad física — un valor numérico con una unidad asociada e incertidumbre opcional.",
     params: [],
     returns: null,
-    example: `from measurekit import Quantity\n\nq = Quantity.from_input(10, "m")\nprint(q.magnitude) # 10.0\nprint(q.unit)      # Unit("m")\nprint(q.dimension) # [length]`,
+    example: `from physure import Quantity\n\nq = Quantity.from_input(10, "m")\nprint(q.magnitude) # 10.0\nprint(q.unit)      # Unit("m")\nprint(q.dimension) # [length]`,
     methods: [
       { name: ".to(unit_str)", desc: "Devuelve una nueva Quantity convertida a la unidad indicada." },
       { name: ".ito(unit_str)", desc: "No existe en la librería. Usa q = q.to(unit_str) en su lugar." },
@@ -38,10 +38,10 @@ const api = [
   {
     name: "Uncertainty",
     signature: "class Uncertainty",
-    desc: "Clase base abstracta para modelos de incertidumbre. En la práctica, pasas un float al parámetro uncertainty de Q_ y MeasureKit lo envuelve automáticamente.",
+    desc: "Clase base abstracta para modelos de incertidumbre. En la práctica, pasas un float al parámetro uncertainty de Q_ y physure lo envuelve automáticamente.",
     params: [],
     returns: null,
-    example: `from measurekit import Q_\n\nq = Q_(9.81, "m/s^2", uncertainty=0.02)\nprint(q.uncertainty) # 0.02`,
+    example: `from physure import Q_\n\nq = Q_(9.81, "m/s^2", uncertainty=0.02)\nprint(q.uncertainty) # 0.02`,
     methods: [
       { name: ".std_dev", desc: "La desviación estándar (1σ)." },
       { name: ".variance", desc: "La varianza (desv_est²)." },
@@ -50,16 +50,16 @@ const api = [
 ];
 
 const functions = [
-  { name: "get_current_system()", module: "measurekit", desc: "Devuelve el UnitSystem activo." },
-  { name: "get_unit(expr)", module: "measurekit", desc: "Analiza y devuelve un objeto Unit a partir de una cadena." },
-  { name: "propagation_mode(mode)", module: "measurekit", desc: "Gestor de contexto para alternar modos de propagación de covarianza: 'correlated' (por defecto), 'uncorrelated', etc." },
-  { name: "uncertainty_mode(mode)", module: "measurekit", desc: "Gestor de contexto para configurar el backend de cálculo de incertidumbres ('python', 'monte_carlo', 'unscented')." },
-  { name: "system_context(system)", module: "measurekit", desc: "Gestor de contexto para usar un UnitSystem personalizado (con alias use_system)." },
-  { name: "create_system(config)", module: "measurekit", desc: "Crea un UnitSystem a partir de un archivo de configuración (ej. 'imperial.conf')." },
-  { name: "create_default_system()", module: "measurekit", desc: "Crea y devuelve el UnitSystem por defecto (SI)." },
-  { name: "save_state(path, quantities)", module: "measurekit", desc: "Serializa el estado del CovarianceStore de la aplicación (requiere extra [io])." },
-  { name: "load_state(path)", module: "measurekit", desc: "Deserializa y restaura el estado del CovarianceStore (requiere extra [io])." },
-  { name: "jit(fn)", module: "measurekit", desc: "Decorador/función para compilar JIT una función física." },
+  { name: "get_current_system()", module: "physure", desc: "Devuelve el UnitSystem activo." },
+  { name: "get_unit(expr)", module: "physure", desc: "Analiza y devuelve un objeto Unit a partir de una cadena." },
+  { name: "propagation_mode(mode)", module: "physure", desc: "Gestor de contexto para alternar modos de propagación de covarianza: 'correlated' (por defecto), 'uncorrelated', etc." },
+  { name: "uncertainty_mode(mode)", module: "physure", desc: "Gestor de contexto para configurar el backend de cálculo de incertidumbres ('python', 'monte_carlo', 'unscented')." },
+  { name: "system_context(system)", module: "physure", desc: "Gestor de contexto para usar un UnitSystem personalizado (con alias use_system)." },
+  { name: "create_system(config)", module: "physure", desc: "Crea un UnitSystem a partir de un archivo de configuración (ej. 'imperial.conf')." },
+  { name: "create_default_system()", module: "physure", desc: "Crea y devuelve el UnitSystem por defecto (SI)." },
+  { name: "save_state(path, quantities)", module: "physure", desc: "Serializa el estado del CovarianceStore de la aplicación (requiere extra [io])." },
+  { name: "load_state(path)", module: "physure", desc: "Deserializa y restaura el estado del CovarianceStore (requiere extra [io])." },
+  { name: "jit(fn)", module: "physure", desc: "Decorador/función para compilar JIT una función física." },
 ];
 
 const grammarApi = [
@@ -72,11 +72,11 @@ const grammarApi = [
 ];
 ---
 
-<DocsLayout title="Referencia API" description="Referencia detallada de la API pública de MeasureKit" activeSection="api">
+<DocsLayout title="Referencia API" description="Referencia detallada de la API pública de physure" activeSection="api">
   <div class="page-header">
     <div class="kicker">Referencia</div>
     <h1>Referencia API</h1>
-    <p>Documentación completa de las clases, métodos y funciones de MeasureKit.</p>
+    <p>Documentación completa de las clases, métodos y funciones de physure.</p>
   </div>
 
   <!-- TOC -->
@@ -129,7 +129,7 @@ const grammarApi = [
     <h4>Retorna</h4>
     <p><code>Quantity</code> — Un envoltorio seguro de unidades alrededor del valor.</p>
     <h4>Ejemplo</h4>
-    <pre><code>from measurekit import Q_
+    <pre><code>from physure import Q_
 
 # Escalar
 v = Q_(10, "m/s")
@@ -191,7 +191,7 @@ t = Q_(torch.tensor([1.0, 2.0]), "kg")</code></pre>
     </table>
 
     <h4>Ejemplo</h4>
-    <pre><code>from measurekit import Q_
+    <pre><code>from physure import Q_
 
 F = Q_(100, "N")
 A = Q_(0.5, "m^2")
@@ -208,7 +208,7 @@ print(P.magnitude) # 200.0 (valor numérico neto)</code></pre>
   <h2 id="uncertainty">Clase Uncertainty</h2>
   <div class="api-card">
     <div class="api-signature"><span class="api-kw">class</span> <span class="api-name">Uncertainty</span></div>
-    <p>Clase base abstracta de modelos de incertidumbre física. En el uso cotidiano, pasarás un <code>float</code> a <code>Q_</code>, y MeasureKit gestionará la clase de covarianza de manera transparente en base al modo de propagación.</p>
+    <p>Clase base abstracta de modelos de incertidumbre física. En el uso cotidiano, pasarás un <code>float</code> a <code>Q_</code>, y physure gestionará la clase de covarianza de manera transparente en base al modo de propagación.</p>
     <table>
       <thead><tr><th>Propiedad / Método</th><th>Descripción</th></tr></thead>
       <tbody>
@@ -217,7 +217,7 @@ print(P.magnitude) # 200.0 (valor numérico neto)</code></pre>
         <tr><td><code>.vector_slice</code></td><td>Índice en la matriz de covarianza global para arrays correlacionados.</td></tr>
       </tbody>
     </table>
-    <pre><code>from measurekit import Q_
+    <pre><code>from physure import Q_
 
 # Pasa un float como incertidumbre
 q = Q_(9.81, "m/s^2", uncertainty=0.02)
@@ -227,7 +227,7 @@ print(q.uncertainty**2)    # ~0.0004 (varianza calculada manualmente)</code></pr
 
   <!-- Module Functions -->
   <h2 id="module-functions">Funciones de Módulo</h2>
-  <p>Estas funciones están disponibles para importar directamente desde <code>measurekit</code>:</p>
+  <p>Estas funciones están disponibles para importar directamente desde <code>physure</code>:</p>
   <table>
     <thead><tr><th>Función</th><th>Descripción</th></tr></thead>
     <tbody>
@@ -241,8 +241,8 @@ print(q.uncertainty**2)    # ~0.0004 (varianza calculada manualmente)</code></pr
   </table>
 
   <h3>Ejemplo de propagation_mode</h3>
-  <pre><code>import measurekit as mk
-from measurekit import Q_
+  <pre><code>import physure as mk
+from physure import Q_
 
 # Por defecto el modo es 'correlated' — x - x = 0 exactamente
 x = Q_(5.0, "m", uncertainty=0.1)
@@ -259,7 +259,7 @@ with mk.propagation_mode("monte_carlo"):
 
   <!-- Grammar API -->
   <h2 id="grammar-api">API de Gramática</h2>
-  <p>La clase <code>GrammarInterpreter</code> disponible en <code>measurekit.ext.grammar</code>:</p>
+  <p>La clase <code>GrammarInterpreter</code> disponible en <code>physure.ext.grammar</code>:</p>
   <div class="api-card">
     <div class="api-signature"><span class="api-kw">class</span> <span class="api-name">GrammarInterpreter</span></div>
     <h4>Métodos</h4>
@@ -289,7 +289,7 @@ with mk.propagation_mode("monte_carlo"):
   <table>
     <thead><tr><th>Excepción</th><th>Causa del lanzamiento</th></tr></thead>
     <tbody>
-      <tr><td><code>MeasureKitError</code></td><td>Clase base para todas las excepciones del motor MeasureKit.</td></tr>
+      <tr><td><code>physureError</code></td><td>Clase base para todas las excepciones del motor physure.</td></tr>
       <tr><td><code>IncompatibleUnitsError</code></td><td>Operación aritmética entre dimensiones incompatibles (ej. sumar metros y segundos). Es el error principal en discrepancias dimensionales.</td></tr>
       <tr><td><code>ConversionError</code></td><td>Fallo al intentar convertir entre dimensiones incompatibles (ej. metros a segundos).</td></tr>
       <tr><td><code>UnitNotFoundError</code></td><td>Una unidad física no está registrada en el sistema de unidades activo.</td></tr>
@@ -300,7 +300,7 @@ with mk.propagation_mode("monte_carlo"):
   <div class="api-card callout-warning">
     <p><strong>Nota:</strong> El error exacto al sumar unidades incompatibles es <code>IncompatibleUnitsError</code>, no <code>DimensionError</code>. Ambos están disponibles para importación.</p>
   </div>
-  <pre><code>from measurekit import Q_, ConversionError, IncompatibleUnitsError
+  <pre><code>from physure import Q_, ConversionError, IncompatibleUnitsError
 
 try:
     Q_(10, "m").to("s")   # longitud → tiempo: inválido
@@ -347,7 +347,7 @@ except IncompatibleUnitsError as e:
   <!-- Extensions & Advanced APIs -->
   <h2 id="extensions-api">Extensiones y APIs Avanzadas</h2>
   <div class="api-card">
-    <h3>Extensión de Química (<code>measurekit.ext.chemistry</code>)</h3>
+    <h3>Extensión de Química (<code>physure.ext.chemistry</code>)</h3>
     <table>
       <thead><tr><th>Clase / Función</th><th>Descripción</th></tr></thead>
       <tbody>
@@ -360,7 +360,7 @@ except IncompatibleUnitsError as e:
       </tbody>
     </table>
 
-    <h3 style="margin-top: 1.5rem;">Motor Simbólico Nativo (<code>measurekit.domain.symbolic.native</code>)</h3>
+    <h3 style="margin-top: 1.5rem;">Motor Simbólico Nativo (<code>physure.domain.symbolic.native</code>)</h3>
     <table>
       <thead><tr><th>Clase / Función</th><th>Descripción</th></tr></thead>
       <tbody>
@@ -372,7 +372,7 @@ except IncompatibleUnitsError as e:
       </tbody>
     </table>
 
-    <h3 style="margin-top: 1.5rem;">Compilador de Física y Regresión Simbólica (<code>measurekit.ext</code>)</h3>
+    <h3 style="margin-top: 1.5rem;">Compilador de Física y Regresión Simbólica (<code>physure.ext</code>)</h3>
     <table>
       <thead><tr><th>Función</th><th>Descripción</th></tr></thead>
       <tbody>
@@ -381,7 +381,7 @@ except IncompatibleUnitsError as e:
       </tbody>
     </table>
 
-    <h3 style="margin-top: 1.5rem;">Gráficos con Soporte de Unidades (<code>measurekit.plotting</code> / métodos de <code>Quantity</code>)</h3>
+    <h3 style="margin-top: 1.5rem;">Gráficos con Soporte de Unidades (<code>physure.plotting</code> / métodos de <code>Quantity</code>)</h3>
     <table>
       <thead><tr><th>Método / Función</th><th>Descripción</th></tr></thead>
       <tbody>
@@ -395,7 +395,7 @@ except IncompatibleUnitsError as e:
 
   <!-- Units module -->
   <h2 id="units-module">Módulo de Unidades</h2>
-  <pre><code>from measurekit import units, get_unit
+  <pre><code>from physure import units, get_unit
 
 # Obtener una unidad por su nombre o símbolo
 metro = get_unit("m")
@@ -407,11 +407,11 @@ print(metro.dimension)  # [length]
 print(newton.si_factor) # 1.0 (unidad del SI)
 
 # Creación de CompoundUnit
-from measurekit import CompoundUnit
+from physure import CompoundUnit
 unidad_velocidad = CompoundUnit("m/s")</code></pre>
 
   <div class="callout callout-info">
-    <p>Para ver el catálogo completo de más de 125 unidades y más de 400 constantes físicas de la CODATA 2022, consulta el archivo de referencia de GitHub <a href="https://github.com/Alexisrx96/measurekit/blob/main/docs/UNITS.md" target="_blank" rel="noopener">UNITS.md</a>.</p>
+    <p>Para ver el catálogo completo de más de 125 unidades y más de 400 constantes físicas de la CODATA 2022, consulta el archivo de referencia de GitHub <a href="https://github.com/Alexisrx96/physure/blob/main/docs/UNITS.md" target="_blank" rel="noopener">UNITS.md</a>.</p>
   </div>
 </DocsLayout>
 

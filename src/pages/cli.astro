@@ -2,11 +2,11 @@
 import DocsLayout from "../layouts/DocsLayout.astro";
 ---
 
-<DocsLayout title="CLI & REPL" description="Use MeasureKit from the terminal as a unit-aware calculator" activeSection="cli">
+<DocsLayout title="CLI & REPL" description="Use physure from the terminal as a unit-aware calculator" activeSection="cli">
   <div class="page-header">
     <div class="kicker">Tools</div>
     <h1>CLI & REPL</h1>
-    <p>Use MeasureKit from the terminal — no Python scripts needed. Like GNU <code>units</code>, but with uncertainty propagation.</p>
+    <p>Use physure from the terminal — no Python scripts needed. Like GNU <code>units</code>, but with uncertainty propagation.</p>
   </div>
 
   <h2>Three modes</h2>
@@ -15,49 +15,49 @@ import DocsLayout from "../layouts/DocsLayout.astro";
       <div class="mode-num">1</div>
       <h3>Single expression</h3>
       <p>Pass an expression as a command-line argument. Evaluates and exits immediately.</p>
-      <pre><code>python -m measurekit "500 N / 2 m^2 => kPa"
+      <pre><code>python -m physure "500 N / 2 m^2 => kPa"
 # 0.25 kPa</code></pre>
     </div>
     <div class="mode-card">
       <div class="mode-num">2</div>
       <h3>File evaluation</h3>
-      <p>Pipe a file of MeasureKit statements. All results are printed in order.</p>
-      <pre><code>python -m measurekit &lt; notes.mkml</code></pre>
+      <p>Pipe a file of physure statements. All results are printed in order.</p>
+      <pre><code>python -m physure &lt; notes.mkml</code></pre>
     </div>
     <div class="mode-card">
       <div class="mode-num">3</div>
       <h3>Interactive REPL</h3>
       <p>Start an interactive session with history, just press Enter. Exit with Ctrl+D.</p>
-      <pre><code>python -m measurekit
+      <pre><code>python -m physure
       mk&gt; ...</code></pre>
     </div>
   </div>
 
   <h2>Quick examples</h2>
   <pre><code># Unit conversions
-python -m measurekit "60 mi/hr => km/hr"
+python -m physure "60 mi/hr => km/hr"
 # 96.5606 km/hr
 
-python -m measurekit "1 atm => kPa"
+python -m physure "1 atm => kPa"
 # 101.325 kPa
 
-python -m measurekit "100 degC => degF"
+python -m physure "100 degC => degF"
 # 212.0 degF
 
 # Arithmetic with units
-python -m measurekit "9.81 m/s^2 * 70 kg => N"
+python -m physure "9.81 m/s^2 * 70 kg => N"
 # 686.7 N
 
-python -m measurekit "1 kWh => MJ"
+python -m physure "1 kWh => MJ"
 # 3.6 MJ
 
 # With uncertainty literals
-python -m measurekit "9.81 +/- 0.02 m/s^2 => ft/s^2"
+python -m physure "9.81 +/- 0.02 m/s^2 => ft/s^2"
 # 32.185 ± 0.066 ft/s^2</code></pre>
 
   <h2>REPL session</h2>
-  <pre><code>$ python -m measurekit
-measurekit — unit-aware calculator. Try `500 N / 2 m^2 => kPa`; exit with Ctrl-D.
+  <pre><code>$ python -m physure
+physure — unit-aware calculator. Try `500 N / 2 m^2 => kPa`; exit with Ctrl-D.
 
 mk&gt; g = 9.81 +/- 0.02 m/s^2
 mk&gt; m = 70 kg
@@ -79,14 +79,14 @@ True
 mk&gt; exit</code></pre>
 
   <h2>CLI subcommand</h2>
-  <p>Also available via the <code>measurekit</code> entry point installed by pip:</p>
-  <pre><code># After pip install measurekit:
-measurekit repl                          # start interactive REPL
-measurekit repl "500 N / 2 m^2 => kPa"  # evaluate single expression
-measurekit sync-types                    # regenerate unit type stubs</code></pre>
+  <p>Also available via the <code>physure</code> entry point installed by pip:</p>
+  <pre><code># After pip install physure:
+physure repl                          # start interactive REPL
+physure repl "500 N / 2 m^2 => kPa"  # evaluate single expression
+physure sync-types                    # regenerate unit type stubs</code></pre>
 
-  <h2>MeasureKit syntax reference</h2>
-  <p>The REPL uses MeasureKit (MKML) syntax. Here's a complete reference:</p>
+  <h2>physure syntax reference</h2>
+  <p>The REPL uses physure (MKML) syntax. Here's a complete reference:</p>
   <table>
     <thead>
       <tr><th>Syntax</th><th>Example</th><th>Description</th></tr>
@@ -136,7 +136,7 @@ measurekit sync-types                    # regenerate unit type stubs</code></pr
   </table>
 
   <h2>Writing script files</h2>
-  <p>Create <code>.mkml</code> files with physics notation and pipe them to MeasureKit:</p>
+  <p>Create <code>.mkml</code> files with physics notation and pipe them to physure:</p>
   <pre><code># notes.mkml — circuit analysis
 V  = 24 V
 R1 = 100 Ω
@@ -153,7 +153,7 @@ P = V * I
 
 I => mA
 P => W</code></pre>
-  <pre><code>python -m measurekit &lt; notes.mkml
+  <pre><code>python -m physure &lt; notes.mkml
 # 96.0 mA
 # 2.304 W</code></pre>
 
@@ -169,7 +169,7 @@ P => W</code></pre>
     </div>
     <div class="card tip-card">
       <h3>🔗 Piping</h3>
-      <p>MeasureKit detects whether stdin is a TTY. Piped input runs all statements without prompts.</p>
+      <p>physure detects whether stdin is a TTY. Piped input runs all statements without prompts.</p>
     </div>
     <div class="card tip-card">
       <h3>⚠️ Units with special chars</h3>
@@ -178,7 +178,7 @@ P => W</code></pre>
   </div>
 
   <div class="callout callout-info" style="margin-top: 2rem;">
-    <p><strong>VS Code Support:</strong> Want syntax highlighting, auto-complete, and one-click execution for MeasureKit files? Check out our <a href="/vscode">VS Code Extension</a>.</p>
+    <p><strong>VS Code Support:</strong> Want syntax highlighting, auto-complete, and one-click execution for physure files? Check out our <a href="/vscode">VS Code Extension</a>.</p>
   </div>
 </DocsLayout>
 

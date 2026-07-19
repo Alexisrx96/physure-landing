@@ -2,7 +2,7 @@
 import DocsLayout from "../layouts/DocsLayout.astro";
 ---
 
-<DocsLayout title="Interactive Playground" description="Run MeasureKit directly in your browser with WebAssembly" activeSection="playground">
+<DocsLayout title="Interactive Playground" description="Run physure directly in your browser with WebAssembly" activeSection="playground">
   <!-- Stylesheets for CodeMirror -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/material-darker.min.css" />
@@ -12,7 +12,7 @@ import DocsLayout from "../layouts/DocsLayout.astro";
   <div class="page-header">
     <div class="kicker">Interactive</div>
     <h1>Playground</h1>
-    <p>Run Python code with MeasureKit directly in your browser. Powered by Pyodide (Python compiled to WebAssembly).</p>
+    <p>Run Python code with physure directly in your browser. Powered by Pyodide (Python compiled to WebAssembly).</p>
   </div>
 
   <!-- Loading State overlay -->
@@ -32,7 +32,7 @@ import DocsLayout from "../layouts/DocsLayout.astro";
           <button class="snippet-btn" data-snippet="basic">Basic Math</button>
           <button class="snippet-btn" data-snippet="uncertainty">Uncertainty</button>
           <button class="snippet-btn" data-snippet="numpy">NumPy Array</button>
-          <button class="snippet-btn" data-snippet="grammar">MeasureKit (MKML)</button>
+          <button class="snippet-btn" data-snippet="grammar">physure (MKML)</button>
           <button class="snippet-btn" data-snippet="visualizer" style="border-color: var(--accent); color: var(--accent2); font-weight: 600;">📊 Plot Visualizer</button>
         </div>
       </div>
@@ -51,7 +51,7 @@ import DocsLayout from "../layouts/DocsLayout.astro";
             <button class="pane-action-btn" id="downloadBtn" title="Download Python script">Download</button>
           </div>
         </div>
-        <textarea id="editorCode">from measurekit import Q_
+        <textarea id="editorCode">from physure import Q_
 
 # 1. Physics Calculations
 distance = Q_(10, "km")
@@ -126,7 +126,7 @@ plot(x, y, title="Interactive Graph")</pre>
   <script is:inline>
     // Snippets database
     const snippets = {
-      visualizer: `from measurekit import Q_
+      visualizer: `from physure import Q_
 import numpy as np
 
 # 1. Create a time array (0 to 5 seconds)
@@ -137,7 +137,7 @@ time = Q_(t, "s")
 g = Q_(9.81, "m/s^2", uncertainty=0.15)
 
 # 3. Compute position: y = 0.5 * g * t^2
-# MeasureKit automatically propagates the uncertainty!
+# physure automatically propagates the uncertainty!
 y = 0.5 * g * (time ** 2)
 
 print("Calculating free fall trajectory...")
@@ -162,7 +162,7 @@ data_nd = {
 plot(data=data_nd, type="parallel", title="N-D Flight Dynamics Analysis")
 """
 `,
-      basic: `from measurekit import Q_
+      basic: `from physure import Q_
 
 # Speed, distance, time calculation
 distance = Q_(10, "km")
@@ -173,7 +173,7 @@ print("Speed:", speed)
 print("Converted to m/s:", speed.to("m/s"))
 print("Converted to mi/hr:", speed.to("mi/hr"))
 `,
-      uncertainty: `from measurekit import Q_
+      uncertainty: `from physure import Q_
 
 # Standard deviation propagation (Taylor Series)
 g = Q_(9.81, "m/s^2", uncertainty=0.02)
@@ -190,7 +190,7 @@ x = Q_(5.0, "m", uncertainty=0.1)
 print("x - x =", x - x)
 `,
       numpy: `import numpy as np
-from measurekit import Q_
+from physure import Q_
 
 # Vectorized quantities using NumPy
 times = Q_(np.array([0.0, 1.0, 2.0, 3.0, 4.0, 5.0]), "s")
@@ -203,9 +203,9 @@ print(velocity)
 print("\\nVelocity in km/hr:")
 print(velocity.to("km/hr"))
 `,
-      grammar: `from measurekit.ext.grammar import GrammarInterpreter
+      grammar: `from physure.ext.grammar import GrammarInterpreter
 
-# Using paper-like MeasureKit (MKML) physics notation
+# Using paper-like physure (MKML) physics notation
 interpreter = GrammarInterpreter()
 interpreter.run("""
 g = 9.81 +/- 0.02 m/s^2
@@ -539,22 +539,22 @@ print("Force converted to kN:", interpreter.eval("force => kN"))
           indexURL: "https://cdn.jsdelivr.net/pyodide/v0.26.1/full/"
         });
 
-        setProgress(40, "Downloading MeasureKit bundle...");
-        // Fetch the zipped package of measurekit
-        const response = await fetch('/measurekit.zip');
+        setProgress(40, "Downloading physure bundle...");
+        // Fetch the zipped package of physure
+        const response = await fetch('/physure.zip');
         const buffer = await response.arrayBuffer();
         
         setProgress(60, "Extracting package into virtual sandbox...");
         // Write the zip to the virtual filesystem
-        pyodide.FS.writeFile('/home/pyodide/measurekit.zip', new Uint8Array(buffer));
+        pyodide.FS.writeFile('/home/pyodide/physure.zip', new Uint8Array(buffer));
         
         // Unzip using python's built-in zipfile
         await pyodide.runPythonAsync(`
 import zipfile, sys
-with zipfile.ZipFile('/home/pyodide/measurekit.zip', 'r') as zip_ref:
+with zipfile.ZipFile('/home/pyodide/physure.zip', 'r') as zip_ref:
     zip_ref.extractall('/home/pyodide')
 sys.path.insert(0, '/home/pyodide')
-print("Successfully loaded measurekit into sys.path!")
+print("Successfully loaded physure into sys.path!")
 `);
 
         setProgress(80, "Pre-loading NumPy library...");
@@ -568,7 +568,7 @@ import json
 
 def plot(x=None, y=None, z=None, data=None, **kwargs):
     """
-    MeasureKit Aesthetic Plotting Utility
+    physure Aesthetic Plotting Utility
     Supports:
       - plot(x, y)               -> 2D Line/Scatter with optional unit and uncertainty
       - plot(x, y, z)            -> 3D Scatter with optional unit and uncertainty
@@ -583,7 +583,7 @@ def plot(x=None, y=None, z=None, data=None, **kwargs):
         unit_str = ""
         has_unc = False
         
-        # Extract magnitude and units if MeasureKit Quantity
+        # Extract magnitude and units if physure Quantity
         if hasattr(q, 'magnitude'):
             mag = q.magnitude
             if hasattr(q, 'units'):
@@ -632,7 +632,7 @@ def plot(x=None, y=None, z=None, data=None, **kwargs):
         "y": serialize_quantity(y),
         "z": serialize_quantity(z),
         "data": serialized_data if serialized_data else None,
-        "title": kwargs.get("title", "MeasureKit Interactive Visualizer"),
+        "title": kwargs.get("title", "physure Interactive Visualizer"),
         "xlabel": kwargs.get("xlabel", ""),
         "ylabel": kwargs.get("ylabel", ""),
         "zlabel": kwargs.get("zlabel", ""),
@@ -648,7 +648,7 @@ import builtins
 builtins.plot = plot
 `);
 
-        const defaultCode = `from measurekit import Q_
+        const defaultCode = `from physure import Q_
 
 # 1. Physics Calculations
 distance = Q_(10, "km")
@@ -707,7 +707,7 @@ except Exception as e:
             editor.setValue(initialCode);
           }
           
-          consoleOutput.innerText = "Python 3.11 interactive session. MeasureKit is imported and ready.\nPress 'Run Code' or Ctrl+Enter to execute.\n";
+          consoleOutput.innerText = "Python 3.11 interactive session. physure is imported and ready.\nPress 'Run Code' or Ctrl+Enter to execute.\n";
           
           if (shouldAutoRun) {
             runCode();
@@ -791,7 +791,7 @@ sys.stderr = io.StringIO()
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'measurekit_script.py';
+      a.download = 'physure_script.py';
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -799,7 +799,7 @@ sys.stderr = io.StringIO()
     });
 
     // BroadcastChannel for warm playground execution
-    const bc = new BroadcastChannel('measurekit-playground');
+    const bc = new BroadcastChannel('physure-playground');
     bc.addEventListener('message', (e) => {
       if (e.data && e.data.type === 'playground-ping') {
         bc.postMessage({ type: 'playground-pong' });

@@ -63,14 +63,14 @@ def parse_py_file(filepath):
     return classes, functions
 
 def main():
-    measurekit_dir = '/home/irvint/Projects/measurekit/measurekit'
-    output_json = '/home/irvint/Projects/measurekit-landing/src/data/api-docstrings.json'
+    physure_dir = '/home/irvint/Projects/physure/physure'
+    output_json = '/home/irvint/Projects/physure-landing/src/data/api-docstrings.json'
     
     os.makedirs(os.path.dirname(output_json), exist_ok=True)
     
     # Files to parse
-    quantity_py = os.path.join(measurekit_dir, 'domain', 'measurement', 'quantity.py')
-    init_py = os.path.join(measurekit_dir, '__init__.py')
+    quantity_py = os.path.join(physure_dir, 'domain', 'measurement', 'quantity.py')
+    init_py = os.path.join(physure_dir, '__init__.py')
     
     all_classes = {}
     all_functions = {}

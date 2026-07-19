@@ -2,24 +2,24 @@
 import DocsLayout from "../layouts/DocsLayout.astro";
 ---
 
-<DocsLayout title="Quick Start" description="Get MeasureKit running in under 5 minutes" activeSection="quickstart">
+<DocsLayout title="Quick Start" description="Get physure running in under 5 minutes" activeSection="quickstart">
   <div class="page-header">
     <div class="kicker">Getting Started</div>
     <h1>Quick Start</h1>
-    <p>Get MeasureKit running in under 5 minutes. From install to your first unit-safe calculation.</p>
+    <p>Get physure running in under 5 minutes. From install to your first unit-safe calculation.</p>
   </div>
 
   <h2>1. Install</h2>
-  <pre><code>pip install measurekit</code></pre>
+  <pre><code>pip install physure</code></pre>
   <p>Or with the Rust core for better performance:</p>
-  <pre><code>pip install "measurekit[native]"</code></pre>
+  <pre><code>pip install "physure[native]"</code></pre>
 
   <h2>2. Your first Quantity</h2>
   <p>
     The main entry point is <code>Q_</code> — a factory that creates <strong>Quantity</strong> objects 
     from a value and a unit string.
   </p>
-  <pre><code>from measurekit import Q_
+  <pre><code>from physure import Q_
 
 # Create quantities
 distance = Q_(10, "km")       # 10 kilometers
@@ -34,8 +34,8 @@ print(speed)           # 5.0 km/hr
 print(speed.to("m/s")) # 1.3888888888888888 m/s</code></pre>
 
   <h2>3. Unit safety</h2>
-  <p>MeasureKit refuses to let you add incompatible dimensions — and gives you a clear error:</p>
-  <pre><code>from measurekit import Q_
+  <p>physure refuses to let you add incompatible dimensions — and gives you a clear error:</p>
+  <pre><code>from physure import Q_
 
 d = Q_(10, "m")   # length
 t = Q_(5, "s")    # time
@@ -48,7 +48,7 @@ d + t             # ❌ IncompatibleUnitsError: Cannot operate with incompatible
 
   <h2>4. Unit conversion</h2>
   <p>Use <code>.to()</code> to convert between compatible units:</p>
-  <pre><code>from measurekit import Q_
+  <pre><code>from physure import Q_
 
 # Length conversions
 length = Q_(1, "mi")                # 1 mile
@@ -68,7 +68,7 @@ print(energy.to("MJ"))              # 3.6 MJ</code></pre>
 
   <h2>5. Uncertainty propagation</h2>
   <p>Pass an <code>uncertainty</code> argument to track measurement errors:</p>
-  <pre><code>from measurekit import Q_
+  <pre><code>from physure import Q_
 
 # With uncertainty (standard deviation)
 g = Q_(9.81, "m/s^2", uncertainty=0.02)
@@ -86,12 +86,12 @@ x = Q_(5.0, "m", uncertainty=0.1)
 delta = x - x     # 0.0 ± 0.0 m  ✓ in correlated mode (default)</code></pre>
 
   <div class="callout callout-info">
-    <p><strong>Default mode is correlated:</strong> MeasureKit defaults to <code>"correlated"</code> propagation, meaning x − x = 0 exactly. You can switch with the <a href="/guide#covariance"><code>propagation_mode</code></a> context manager.</p>
+    <p><strong>Default mode is correlated:</strong> physure defaults to <code>"correlated"</code> propagation, meaning x − x = 0 exactly. You can switch with the <a href="/guide#covariance"><code>propagation_mode</code></a> context manager.</p>
   </div>
 
   <h2>6. Grammar notation</h2>
   <p>Write physics like you'd write it on paper using <code>GrammarInterpreter</code>:</p>
-  <pre><code>from measurekit.ext.grammar import GrammarInterpreter
+  <pre><code>from physure.ext.grammar import GrammarInterpreter
 
 mn = GrammarInterpreter()
 mn.run("""
@@ -109,25 +109,25 @@ mn.run("g = 9.81 +/- 0.02 m/s^2")
 print(mn.eval("g = ?"))              # 9.81 ± 0.02 m/s^2</code></pre>
 
   <h2>7. Terminal calculator</h2>
-  <p>Use MeasureKit directly from the shell — no Python script needed:</p>
+  <p>Use physure directly from the shell — no Python script needed:</p>
   <pre><code># Single expression
-python -m measurekit "500 N / 2 m^2 => kPa"
+python -m physure "500 N / 2 m^2 => kPa"
 # Output: 0.25 kPa
 
 # Evaluate a file of statements
-python -m measurekit < notes.mkml
+python -m physure < notes.mkml
 
 # Interactive REPL (Ctrl+D to exit)
-python -m measurekit
+python -m physure
 mk> g = 9.81 +/- 0.02 m/s^2
 mk> g => ft/s^2
 32.185... ft/s^2
 mk> exit</code></pre>
 
   <h2>8. NumPy / PyTorch / JAX</h2>
-  <p>Pass tensors or arrays as the value — MeasureKit auto-detects the backend:</p>
+  <p>Pass tensors or arrays as the value — physure auto-detects the backend:</p>
   <pre><code>import numpy as np
-from measurekit import Q_
+from physure import Q_
 
 # NumPy backend auto-detected
 arr = Q_(np.array([1.0, 2.0, 3.0]), "m")
@@ -158,7 +158,7 @@ print(t.to("ft/s^2"))  # tensor([32.185..., 32.152..., 32.218...])</code></pre>
     <a href="/cli" class="card next-card">
       <div class="next-icon">💻</div>
       <h3>CLI & REPL</h3>
-      <p>Use MeasureKit as a terminal calculator for quick unit checks.</p>
+      <p>Use physure as a terminal calculator for quick unit checks.</p>
     </a>
   </div>
 </DocsLayout>

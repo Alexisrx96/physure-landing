@@ -2,11 +2,11 @@
 import DocsLayout from "../../layouts/DocsLayout.astro";
 ---
 
-<DocsLayout title="Extensión VS Code" description="Instalación y configuración del soporte para MeasureKit Meta-Lang (MKML) en VS Code" activeSection="vscode">
+<DocsLayout title="Extensión VS Code" description="Instalación y configuración del soporte para physure Meta-Lang (MKML) en VS Code" activeSection="vscode">
   <div class="page-header">
     <div class="kicker">Extensiones</div>
     <h1>Extensión VS Code</h1>
-    <p>Obtén soporte nativo para la sintaxis de <strong>MeasureKit Meta-Lang (MKML)</strong> en Visual Studio Code, Cursor y VSCodium.</p>
+    <p>Obtén soporte nativo para la sintaxis de <strong>physure Meta-Lang (MKML)</strong> en Visual Studio Code, Cursor y VSCodium.</p>
   </div>
 
   <div class="callout callout-info" style="display: flex; flex-direction: column; gap: 0.75rem; margin: 1.5rem 0; padding: 1.25rem; border-left: 4px solid var(--accent); border-radius: var(--radius-sm);">
@@ -33,7 +33,7 @@ import DocsLayout from "../../layouts/DocsLayout.astro";
     </div>
     <div class="card">
       <h3>🔍 Autocompletado de Unidades</h3>
-      <p>Sugerencias inteligentes de autocompletado consultando en tiempo real las unidades físicas de tu instalación local de <code>measurekit</code>.</p>
+      <p>Sugerencias inteligentes de autocompletado consultando en tiempo real las unidades físicas de tu instalación local de <code>physure</code>.</p>
     </div>
     <div class="card">
       <h3>ℹ️ Información de Hover y Outline</h3>
@@ -66,11 +66,11 @@ import DocsLayout from "../../layouts/DocsLayout.astro";
     </div>
     <div class="tab-panel active" id="sym-vscode">
       <pre><code># Linux / macOS
-ln -s "/ruta/a/vsc_measurekit" ~/.vscode/extensions/vsc-measurekit</code></pre>
+ln -s "/ruta/a/vsc_physure" ~/.vscode/extensions/vsc-measurekit</code></pre>
     </div>
     <div class="tab-panel" id="sym-codium">
       <pre><code># Linux / macOS
-ln -s "/ruta/a/vsc_measurekit" ~/.vscode-oss/extensions/vsc-measurekit</code></pre>
+ln -s "/ruta/a/vsc_physure" ~/.vscode-oss/extensions/vsc-measurekit</code></pre>
     </div>
   </div>
 
@@ -98,12 +98,12 @@ ln -s "/ruta/a/vsc_measurekit" ~/.vscode-oss/extensions/vsc-measurekit</code></p
   </table>
 
   <h2>Configuración ⚙️</h2>
-  <p>La extensión requiere el intérprete de Python donde se encuentra instalada la librería <code>measurekit</code> para resolver el autocompletado y ejecutar los archivos. Por defecto, busca hacia arriba partiendo del archivo abierto buscando la carpeta del entorno virtual (<code>.venv</code>).</p>
+  <p>La extensión requiere el intérprete de Python donde se encuentra instalada la librería <code>physure</code> para resolver el autocompletado y ejecutar los archivos. Por defecto, busca hacia arriba partiendo del archivo abierto buscando la carpeta del entorno virtual (<code>.venv</code>).</p>
   
   <p>Puedes personalizar la ruta del ejecutable de Python en la configuración de la interfaz gráfica:</p>
   <ol>
     <li>Abre la configuración del editor (<code>Ctrl+,</code> o <code>Cmd+,</code>).</li>
-    <li>Busca <strong>MeasureKit</strong>.</li>
+    <li>Busca <strong>physure</strong>.</li>
     <li>Edita la opción <strong>Python Path</strong>.</li>
   </ol>
   

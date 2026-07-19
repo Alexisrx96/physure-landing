@@ -2,7 +2,7 @@
 import DocsLayout from "../../layouts/DocsLayout.astro";
 ---
 
-<DocsLayout title="Ejemplos" description="Ejemplos reales de uso de MeasureKit para física, ingeniería y ciencia de datos" activeSection="examples">
+<DocsLayout title="Ejemplos" description="Ejemplos reales de uso de physure para física, ingeniería y ciencia de datos" activeSection="examples">
   <div class="page-header">
     <div class="kicker">Ejemplos</div>
     <h1>Ejemplos</h1>
@@ -18,7 +18,7 @@ import DocsLayout from "../../layouts/DocsLayout.astro";
         <p>El caso de uso original: verificar problemas físicos con seguridad de unidades.</p>
       </div>
       <a href="/es/playground" class="btn-secondary run-in-playground" style="font-size: 0.8rem; padding: 0.35rem 0.75rem; border-radius: 6px; flex-shrink: 0; align-self: center; text-decoration: none;">Probar en Playground 🚀</a></div>
-    <pre><code>from measurekit import Q_
+    <pre><code>from physure import Q_
 
 # Problema: Un auto viaja a 90 km/h. ¿Qué distancia recorre en 2.5 horas?
 velocidad = Q_(90, "km/hr")
@@ -51,7 +51,7 @@ print(f"Caída libre: &#123;d&#125;")    # 44.145 m</code></pre>
         <p>Análisis de esfuerzo y cálculos de presión hidráulica.</p>
       </div>
       <a href="/es/playground" class="btn-secondary run-in-playground" style="font-size: 0.8rem; padding: 0.35rem 0.75rem; border-radius: 6px; flex-shrink: 0; align-self: center; text-decoration: none;">Probar en Playground 🚀</a></div>
-    <pre><code>from measurekit import Q_
+    <pre><code>from physure import Q_
 
 # Cálculo de esfuerzo axial
 force = Q_(500, "N")
@@ -87,7 +87,7 @@ print(I.to("g⋅cm^2"))   # 1.8e+6 g⋅cm²</code></pre>
         <p>Manejo de unidades con desplazamiento (Celsius, Fahrenheit, Kelvin).</p>
       </div>
       <a href="/es/playground" class="btn-secondary run-in-playground" style="font-size: 0.8rem; padding: 0.35rem 0.75rem; border-radius: 6px; flex-shrink: 0; align-self: center; text-decoration: none;">Probar en Playground 🚀</a></div>
-    <pre><code>from measurekit import Q_
+    <pre><code>from physure import Q_
 
 # Conversiones absolutas
 t_c = Q_(100, "degC")
@@ -118,7 +118,7 @@ t_new = t1 + Q_(5, "K")  # 105.0 °C</code></pre>
         <p>Cálculo del margen de error para experimentos de física.</p>
       </div>
       <a href="/es/playground" class="btn-secondary run-in-playground" style="font-size: 0.8rem; padding: 0.35rem 0.75rem; border-radius: 6px; flex-shrink: 0; align-self: center; text-decoration: none;">Probar en Playground 🚀</a></div>
-    <pre><code>from measurekit import Q_
+    <pre><code>from physure import Q_
 import math
 
 # Medir la gravedad de un experimento de péndulo
@@ -151,7 +151,7 @@ print(f"R = &#123;R.magnitude:.3f&#125; ± &#123;R.uncertainty:.3f&#125; Ω")  #
         <p>Escribe cálculos en notación física natural utilizando GrammarInterpreter.</p>
       </div>
       <a href="/es/playground" class="btn-secondary run-in-playground" style="font-size: 0.8rem; padding: 0.35rem 0.75rem; border-radius: 6px; flex-shrink: 0; align-self: center; text-decoration: none;">Probar en Playground 🚀</a></div>
-    <pre><code>from measurekit.ext.grammar import GrammarInterpreter
+    <pre><code>from physure.ext.grammar import GrammarInterpreter
 
 mn = GrammarInterpreter()
 
@@ -184,7 +184,7 @@ print(mn.eval("P == 5.76 W"))  # True</code></pre>
       </div>
       <a href="/es/playground" class="btn-secondary run-in-playground" style="font-size: 0.8rem; padding: 0.35rem 0.75rem; border-radius: 6px; flex-shrink: 0; align-self: center; text-decoration: none;">Probar en Playground 🚀</a></div>
     <pre><code>import numpy as np
-from measurekit import Q_
+from physure import Q_
 
 # Array de velocidad en función del tiempo
 t = Q_(np.linspace(0, 10, 11), "s")        # 0 a 10 segundos
@@ -215,9 +215,9 @@ print(longitudes.to("ft"))  # [3.28, 8.20, 16.40, 32.81, 328.08] ft</code></pre>
         <p>Derivación analítica de la velocidad y aceleración a partir de la posición.</p>
       </div>
       <a href="/es/playground" class="btn-secondary run-in-playground" style="font-size: 0.8rem; padding: 0.35rem 0.75rem; border-radius: 6px; flex-shrink: 0; align-self: center; text-decoration: none;">Probar en Playground 🚀</a></div>
-    <pre><code># Requiere: pip install "measurekit[symbolic]"
+    <pre><code># Requiere: pip install "physure[symbolic]"
 import sympy as sp
-from measurekit import Q_
+from physure import Q_
 
 t = sp.Symbol("t")
 
@@ -247,10 +247,10 @@ print(f"x(3s) = &#123;x.magnitude.subs(t, 3)&#125; m")    # 45 m</code></pre>
         <p>Análisis de datos con tipado dimensional en DataFrames.</p>
       </div>
       <a href="/es/playground" class="btn-secondary run-in-playground" style="font-size: 0.8rem; padding: 0.35rem 0.75rem; border-radius: 6px; flex-shrink: 0; align-self: center; text-decoration: none;">Probar en Playground 🚀</a></div>
-    <pre><code># Requiere: pip install "measurekit[pandas]"
+    <pre><code># Requiere: pip install "physure[pandas]"
 import pandas as pd
 import numpy as np
-from measurekit import Q_
+from physure import Q_
 
 # Datos de muestra del sensor
 df = pd.DataFrame(&#123;
@@ -286,9 +286,9 @@ print(df.describe().round(3))</code></pre>
         <p>Funciones físicas con tipos verificados compiladas a kernels de GPU.</p>
       </div>
       <a href="/es/playground" class="btn-secondary run-in-playground" style="font-size: 0.8rem; padding: 0.35rem 0.75rem; border-radius: 6px; flex-shrink: 0; align-self: center; text-decoration: none;">Probar en Playground 🚀</a></div>
-    <pre><code># Requiere: pip install "measurekit[torch]"
+    <pre><code># Requiere: pip install "physure[torch]"
 import torch
-from measurekit import Q_
+from physure import Q_
 
 def kinetic_energy(mass, velocity):
     """KE = ½mv² — unidades validadas al trazar el grafo."""
@@ -316,8 +316,8 @@ print(KE.to("kJ"))  # 3.5 kJ</code></pre>
         <p>Definición de especies químicas, balanceo de reacciones y cálculo de rendimiento con incertidumbre.</p>
       </div>
       <a href="/es/playground" class="btn-secondary run-in-playground" style="font-size: 0.8rem; padding: 0.35rem 0.75rem; border-radius: 6px; flex-shrink: 0; align-self: center; text-decoration: none;">Probar en Playground 🚀</a></div>
-    <pre><code>from measurekit import Q_
-from measurekit.ext.chemistry import Reaction, Species
+    <pre><code>from physure import Q_
+from physure.ext.chemistry import Reaction, Species
 
 # 1. Definir especies
 agua = Species("H2O")
@@ -345,7 +345,7 @@ print(f"Rendimiento de H2O: &#123;result.yields['H2O'].to('g'):.2f&#125;")  # ~5
         <p>Compila una fórmula física a una función numérica sin dependencias ni validaciones en ejecución.</p>
       </div>
       <a href="/es/playground" class="btn-secondary run-in-playground" style="font-size: 0.8rem; padding: 0.35rem 0.75rem; border-radius: 6px; flex-shrink: 0; align-self: center; text-decoration: none;">Probar en Playground 🚀</a></div>
-    <pre><code>from measurekit.ext.compiler import compile_physics_model
+    <pre><code>from physure.ext.compiler import compile_physics_model
 
 # Definir una función estándar
 def fuerza_arrastre(densidad, velocidad, area, coeficiente):
@@ -377,8 +377,8 @@ print(f"Fuerza: &#123;res:.4f&#125; (float sin unidad)")  # 45.9375</code></pre>
         <p>Ajuste de fórmulas dimensionalmente válidas a conjuntos de datos físicos experimentales.</p>
       </div>
       <a href="/es/playground" class="btn-secondary run-in-playground" style="font-size: 0.8rem; padding: 0.35rem 0.75rem; border-radius: 6px; flex-shrink: 0; align-self: center; text-decoration: none;">Probar en Playground 🚀</a></div>
-    <pre><code>from measurekit import Q_
-from measurekit.ext.symbolic_regression import SymbolicRegressor
+    <pre><code>from physure import Q_
+from physure.ext.symbolic_regression import SymbolicRegressor
 
 # Definir datos del dataset
 t = Q_([1.0, 2.0, 3.0, 4.0, 5.0], "s", symbol="t")

@@ -2,11 +2,11 @@
 import DocsLayout from "../../layouts/DocsLayout.astro";
 ---
 
-<DocsLayout title="Instalación" description="Cómo instalar MeasureKit con pip, uv, o desde código fuente" activeSection="install">
+<DocsLayout title="Instalación" description="Cómo instalar physure con pip, uv, o desde código fuente" activeSection="install">
   <div class="page-header">
     <div class="kicker">Primeros Pasos</div>
     <h1>Instalación</h1>
-    <p>MeasureKit no tiene dependencias externas en su instalación base. Los extras opcionales añaden backends y aceleración.</p>
+    <p>physure no tiene dependencias externas en su instalación base. Los extras opcionales añaden backends y aceleración.</p>
   </div>
 
   <h2>Desde PyPI</h2>
@@ -25,10 +25,10 @@ import DocsLayout from "../../layouts/DocsLayout.astro";
           <button class="tab-btn" data-tab="uv-min">uv</button>
         </div>
         <div class="tab-panel active" id="pip-min">
-          <pre><code>pip install measurekit</code></pre>
+          <pre><code>pip install physure</code></pre>
         </div>
         <div class="tab-panel" id="uv-min">
-          <pre><code>uv add measurekit</code></pre>
+          <pre><code>uv add physure</code></pre>
         </div>
       </div>
     </div>
@@ -38,17 +38,17 @@ import DocsLayout from "../../layouts/DocsLayout.astro";
         <span class="option-title">Con Aceleración en Rust</span>
         <span class="badge badge-blue">Altamente recomendado</span>
       </div>
-      <p>Añade la extensión <code>measurekit-core</code> en Rust (vía PyO3) para optimizar cálculos de escalares en modo eager.</p>
+      <p>Añade aceleración NumPy/SciPy/Numba para cargas con arrays. El core Rust ya viene dentro de cada wheel de physure — sin extras.</p>
       <div class="tabs">
         <div class="tab-list">
           <button class="tab-btn active" data-tab="pip-native">pip</button>
           <button class="tab-btn" data-tab="uv-native">uv</button>
         </div>
         <div class="tab-panel active" id="pip-native">
-          <pre><code>pip install "measurekit[native]"</code></pre>
+          <pre><code>pip install "physure[numpy]"</code></pre>
         </div>
         <div class="tab-panel" id="uv-native">
-          <pre><code>uv add "measurekit[native]"</code></pre>
+          <pre><code>uv add "physure[numpy]"</code></pre>
         </div>
       </div>
     </div>
@@ -65,10 +65,10 @@ import DocsLayout from "../../layouts/DocsLayout.astro";
           <button class="tab-btn" data-tab="uv-all">uv</button>
         </div>
         <div class="tab-panel active" id="pip-all">
-          <pre><code>pip install "measurekit[all]"</code></pre>
+          <pre><code>pip install "physure[all]"</code></pre>
         </div>
         <div class="tab-panel" id="uv-all">
-          <pre><code>uv add "measurekit[all]"</code></pre>
+          <pre><code>uv add "physure[all]"</code></pre>
         </div>
       </div>
     </div>
@@ -87,7 +87,7 @@ import DocsLayout from "../../layouts/DocsLayout.astro";
     <tbody>
       <tr>
         <td><code>native</code></td>
-        <td>measurekit-core (Rust)</td>
+        <td>physure-core (Rust)</td>
         <td>Quieres cálculos escalares rápidos en modo eager</td>
       </tr>
       <tr>
@@ -134,11 +134,11 @@ import DocsLayout from "../../layouts/DocsLayout.astro";
   </table>
 
   <h2>Verifica tu instalación</h2>
-  <pre><code>python -c "import measurekit; print(measurekit.__version__)"
+  <pre><code>python -c "import physure; print(physure.__version__)"
 # 0.1.8</code></pre>
 
   <p>O prueba el demo en terminal:</p>
-  <pre><code>python -m measurekit "9.81 m/s^2 * 70 kg => N"
+  <pre><code>python -m physure "9.81 m/s^2 * 70 kg => N"
 # 686.7 N</code></pre>
 
   <h2>Compilar desde código fuente</h2>
@@ -161,11 +161,11 @@ pip install uv</code></pre>
     <li>
       <div>
         <h3>Clonar y compilar el núcleo en Rust</h3>
-        <pre><code>git clone https://github.com/Alexisrx96/measurekit
-cd measurekit
+        <pre><code>git clone https://github.com/Alexisrx96/physure
+cd physure
 
 # Compilar e instalar la extensión de Rust
-cd measurekit_core
+cd physure_core
 maturin develop --release
 cd ..</code></pre>
       </div>

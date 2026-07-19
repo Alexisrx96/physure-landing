@@ -6,7 +6,7 @@ import DocsLayout from "../layouts/DocsLayout.astro";
   <div class="page-header">
     <div class="kicker">Guides</div>
     <h1>Tutorials</h1>
-    <p>Step-by-step wizard walk-throughs solving complex engineering, calibration, and orbital mechanics problems using MeasureKit.</p>
+    <p>Step-by-step wizard walk-throughs solving complex engineering, calibration, and orbital mechanics problems using physure.</p>
   </div>
 
   <!-- Wizard Interface -->
@@ -37,7 +37,7 @@ import DocsLayout from "../layouts/DocsLayout.astro";
           <p>
             In sensor calibration, we start with raw measurements and standard deviations. Since temperature scales are offset scales, we must be careful with Celsius and Fahrenheit.
           </p>
-          <pre><code>from measurekit import Q_
+          <pre><code>from physure import Q_
 
 # Raw reading at ice point (Celsius offset scale)
 t_raw = Q_(0.15, "degC", uncertainty=0.05)
@@ -120,8 +120,8 @@ print("Calibrated Temp (F):", t_fahrenheit)
             Calculate the orbital period of Earth around the Sun using Kepler's Third Law: <code>T² = 4π²r³ / (G × M)</code>. We start by gathering physical constants:
           </p>
           <pre><code>import math
-from measurekit import Q_
-from measurekit.constants import G  # Gravitational constant
+from physure import Q_
+from physure.constants import G  # Gravitational constant
 
 # Mass of the Sun
 M_sun = Q_(1.989e30, "kg", uncertainty=1e26)
@@ -201,7 +201,7 @@ print(f"Calculation margin of error: &#123;relative_err:.6f&#125;%")</code></pre
           <p>
             Analyze pressure drop in a contracting horizontal water pipe using Bernoulli's principle: <code>P₁ - P₂ = ½ρ(v₂² - v₁²)</code>. Start by setting inlet/outlet velocities:
           </p>
-          <pre><code>from measurekit import Q_
+          <pre><code>from physure import Q_
 
 # Water Density
 rho = Q_(997, "kg/m^3")

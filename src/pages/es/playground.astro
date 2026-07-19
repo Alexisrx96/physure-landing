@@ -2,7 +2,7 @@
 import DocsLayout from "../../layouts/DocsLayout.astro";
 ---
 
-<DocsLayout title="Playground Interactivo" description="Ejecuta MeasureKit directamente en tu navegador con WebAssembly" activeSection="playground">
+<DocsLayout title="Playground Interactivo" description="Ejecuta physure directamente en tu navegador con WebAssembly" activeSection="playground">
   <!-- Stylesheets for CodeMirror -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/material-darker.min.css" />
@@ -12,7 +12,7 @@ import DocsLayout from "../../layouts/DocsLayout.astro";
   <div class="page-header">
     <div class="kicker">Interactivo</div>
     <h1>Playground</h1>
-    <p>Ejecuta código de Python con MeasureKit directamente en tu navegador. Desarrollado con Pyodide (Python compilado a WebAssembly).</p>
+    <p>Ejecuta código de Python con physure directamente en tu navegador. Desarrollado con Pyodide (Python compilado a WebAssembly).</p>
   </div>
 
   <!-- Loading State overlay -->
@@ -32,7 +32,7 @@ import DocsLayout from "../../layouts/DocsLayout.astro";
           <button class="snippet-btn" data-snippet="basic">Aritmética Básica</button>
           <button class="snippet-btn" data-snippet="uncertainty">Incertidumbre</button>
           <button class="snippet-btn" data-snippet="numpy">Matriz NumPy</button>
-          <button class="snippet-btn" data-snippet="grammar">MeasureKit (MKML)</button>
+          <button class="snippet-btn" data-snippet="grammar">physure (MKML)</button>
           <button class="snippet-btn" data-snippet="visualizer" style="border-color: var(--accent); color: var(--accent2); font-weight: 600;">📊 Graficador N-D</button>
         </div>
       </div>
@@ -51,7 +51,7 @@ import DocsLayout from "../../layouts/DocsLayout.astro";
             <button class="pane-action-btn" id="downloadBtn" title="Descargar script en Python">Descargar</button>
           </div>
         </div>
-        <textarea id="editorCode">from measurekit import Q_
+        <textarea id="editorCode">from physure import Q_
 
 # 1. Cálculos Físicos
 distancia = Q_(10, "km")
@@ -126,7 +126,7 @@ plot(x, y, title="Gráfico Interactivo")</pre>
   <script is:inline>
     // Snippets database
     const snippets = {
-      visualizer: `from measurekit import Q_
+      visualizer: `from physure import Q_
 import numpy as np
 
 # 1. Crear un arreglo de tiempo (de 0 a 5 segundos)
@@ -137,7 +137,7 @@ time = Q_(t, "s")
 g = Q_(9.81, "m/s^2", uncertainty=0.15)
 
 # 3. Calcular posición: y = 0.5 * g * t^2
-# ¡MeasureKit propaga la incertidumbre automáticamente!
+# ¡physure propaga la incertidumbre automáticamente!
 y = 0.5 * g * (time ** 2)
 
 print("Calculando trayectoria de caída libre...")
@@ -162,7 +162,7 @@ datos_nd = {
 plot(data=datos_nd, type="parallel", title="Análisis de Dinámica de Vuelo N-D")
 """
 `,
-      basic: `from measurekit import Q_
+      basic: `from physure import Q_
 
 # Cálculo de velocidad, distancia y tiempo
 distancia = Q_(10, "km")
@@ -173,7 +173,7 @@ print("Velocidad:", velocidad)
 print("Convertido a m/s:", velocidad.to("m/s"))
 print("Convertido a mi/hr:", velocidad.to("mi/hr"))
 `,
-      uncertainty: `from measurekit import Q_
+      uncertainty: `from physure import Q_
 
 # Propagación de incertidumbre estándar (Series de Taylor)
 g = Q_(9.81, "m/s^2", uncertainty=0.02)
@@ -190,7 +190,7 @@ x = Q_(5.0, "m", uncertainty=0.1)
 print("x - x =", x - x)
 `,
       numpy: `import numpy as np
-from measurekit import Q_
+from physure import Q_
 
 # Cantidades vectoriales usando NumPy
 tiempos = Q_(np.array([0.0, 1.0, 2.0, 3.0, 4.0, 5.0]), "s")
@@ -203,9 +203,9 @@ print(velocidad)
 print("\\nVelocidad en km/h:")
 print(velocidad.to("km/hr"))
 `,
-      grammar: `from measurekit.ext.grammar import GrammarInterpreter
+      grammar: `from physure.ext.grammar import GrammarInterpreter
 
-# Usando notación física natural con MeasureKit (MKML)
+# Usando notación física natural con physure (MKML)
 interpreter = GrammarInterpreter()
 interpreter.run("""
 g = 9.81 +/- 0.02 m/s^2
@@ -539,22 +539,22 @@ print("Fuerza convertida a kN:", interpreter.eval("fuerza => kN"))
           indexURL: "https://cdn.jsdelivr.net/pyodide/v0.26.1/full/"
         });
 
-        setProgress(40, "Descargando paquete de MeasureKit...");
-        // Fetch the zipped package of measurekit
-        const response = await fetch('/measurekit.zip');
+        setProgress(40, "Descargando paquete de physure...");
+        // Fetch the zipped package of physure
+        const response = await fetch('/physure.zip');
         const buffer = await response.arrayBuffer();
         
         setProgress(60, "Extrayendo el paquete en el entorno virtual...");
         // Write the zip to the virtual filesystem
-        pyodide.FS.writeFile('/home/pyodide/measurekit.zip', new Uint8Array(buffer));
+        pyodide.FS.writeFile('/home/pyodide/physure.zip', new Uint8Array(buffer));
         
         // Unzip using python's built-in zipfile
         await pyodide.runPythonAsync(`
 import zipfile, sys
-with zipfile.ZipFile('/home/pyodide/measurekit.zip', 'r') as zip_ref:
+with zipfile.ZipFile('/home/pyodide/physure.zip', 'r') as zip_ref:
     zip_ref.extractall('/home/pyodide')
 sys.path.insert(0, '/home/pyodide')
-print("Successfully loaded measurekit into sys.path!")
+print("Successfully loaded physure into sys.path!")
 `);
 
         setProgress(80, "Pre-loading NumPy library...");
@@ -568,7 +568,7 @@ import json
 
 def plot(x=None, y=None, z=None, data=None, **kwargs):
     """
-    MeasureKit Aesthetic Plotting Utility
+    physure Aesthetic Plotting Utility
     Supports:
       - plot(x, y)               -> 2D Line/Scatter with optional unit and uncertainty
       - plot(x, y, z)            -> 3D Scatter with optional unit and uncertainty
@@ -583,7 +583,7 @@ def plot(x=None, y=None, z=None, data=None, **kwargs):
         unit_str = ""
         has_unc = False
         
-        # Extract magnitude and units if MeasureKit Quantity
+        # Extract magnitude and units if physure Quantity
         if hasattr(q, 'magnitude'):
             mag = q.magnitude
             if hasattr(q, 'units'):
@@ -632,7 +632,7 @@ def plot(x=None, y=None, z=None, data=None, **kwargs):
         "y": serialize_quantity(y),
         "z": serialize_quantity(z),
         "data": serialized_data if serialized_data else None,
-        "title": kwargs.get("title", "MeasureKit Interactive Visualizer"),
+        "title": kwargs.get("title", "physure Interactive Visualizer"),
         "xlabel": kwargs.get("xlabel", ""),
         "ylabel": kwargs.get("ylabel", ""),
         "zlabel": kwargs.get("zlabel", ""),
@@ -648,7 +648,7 @@ import builtins
 builtins.plot = plot
 `);
 
-        const defaultCode = `from measurekit import Q_
+        const defaultCode = `from physure import Q_
 
 # 1. Cálculos Físicos
 distancia = Q_(10, "km")
@@ -707,7 +707,7 @@ except Exception as e:
             editor.setValue(initialCode);
           }
           
-          consoleOutput.innerText = "Sesión interactiva de Python 3.11. MeasureKit está cargado y listo.\nPresiona 'Ejecutar' o Ctrl+Enter para ejecutar tu código.\n";
+          consoleOutput.innerText = "Sesión interactiva de Python 3.11. physure está cargado y listo.\nPresiona 'Ejecutar' o Ctrl+Enter para ejecutar tu código.\n";
           
           if (shouldAutoRun) {
             runCode();
@@ -791,7 +791,7 @@ sys.stderr = io.StringIO()
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'measurekit_script.py';
+      a.download = 'physure_script.py';
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -799,7 +799,7 @@ sys.stderr = io.StringIO()
     });
 
     // BroadcastChannel for warm playground execution
-    const bc = new BroadcastChannel('measurekit-playground');
+    const bc = new BroadcastChannel('physure-playground');
     bc.addEventListener('message', (e) => {
       if (e.data && e.data.type === 'playground-ping') {
         bc.postMessage({ type: 'playground-pong' });

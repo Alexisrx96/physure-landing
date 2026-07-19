@@ -2,7 +2,7 @@
 import DocsLayout from "../../layouts/DocsLayout.astro";
 
 const TITLE = "Inicio";
-const DESCRIPTION = "MeasureKit — Computación física con validación de unidades para Python. Sin dependencias de ejecución, núcleo opcional en Rust y tensores multi-backend.";
+const DESCRIPTION = "physure — Computación física con validación de unidades para Python. Sin dependencias de ejecución, núcleo opcional en Rust y tensores multi-backend.";
 ---
 
 <DocsLayout title={TITLE} description={DESCRIPTION} activeSection="overview">
@@ -12,8 +12,8 @@ const DESCRIPTION = "MeasureKit — Computación física con validación de unid
       <span class="badge badge-green">Beta</span>
       <span>v0.1.8 · Licencia MIT · Python 3.10+</span>
     </div>
-    <img src="/logo.jpg" alt="Logo de MeasureKit" width="100" height="100" class="hero-logo" />
-    <h1>MeasureKit</h1>
+    <img src="/logo.jpg" alt="Logo de physure" width="100" height="100" class="hero-logo" />
+    <h1>physure</h1>
     <p class="hero-lead">
       Cálculos físicos con validación de unidades para Python. Adjunta unidades físicas a números, 
       matrices de NumPy, tensores de PyTorch y arrays de JAX — y deja que el motor te mantenga honesto.
@@ -21,8 +21,8 @@ const DESCRIPTION = "MeasureKit — Computación física con validación de unid
     <div class="hero-install">
       <div class="install-cmd">
         <span class="prompt">$</span>
-        <code>pip install measurekit</code>
-        <button class="copy-btn-hero" data-copy="pip install measurekit" title="Copiar">
+        <code>pip install physure</code>
+        <button class="copy-btn-hero" data-copy="pip install physure" title="Copiar">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
         </button>
       </div>
@@ -30,7 +30,7 @@ const DESCRIPTION = "MeasureKit — Computación física con validación de unid
     <div class="hero-links">
       <a href="/es/quickstart" class="btn-primary">Comenzar →</a>
       <a href="/es/install" class="btn-secondary">Opciones de Instalación</a>
-      <a href="https://github.com/Alexisrx96/measurekit" target="_blank" rel="noopener" class="btn-ghost">GitHub</a>
+      <a href="https://github.com/Alexisrx96/physure" target="_blank" rel="noopener" class="btn-ghost">GitHub</a>
     </div>
   </div>
 
@@ -40,7 +40,7 @@ const DESCRIPTION = "MeasureKit — Computación física con validación de unid
     <div class="demo-grid">
       <div class="demo-card">
         <div class="demo-label">Python API</div>
-        <pre><code><span class="kw">from</span> measurekit <span class="kw">import</span> Q_
+        <pre><code><span class="kw">from</span> physure <span class="kw">import</span> Q_
 
 <span class="cm"># Aritmética segura con unidades</span>
 d = Q_(10, <span class="str">"km"</span>)
@@ -62,7 +62,7 @@ stress == 250 Pa   <span class="cm"># True</span></code></pre>
       </div>
       <div class="demo-card">
         <div class="demo-label">Propagación de Incertidumbre</div>
-        <pre><code><span class="kw">from</span> measurekit <span class="kw">import</span> Q_
+        <pre><code><span class="kw">from</span> physure <span class="kw">import</span> Q_
 
 g = Q_(9.81, <span class="str">"m/s^2"</span>, uncertainty=0.02)
 m = Q_(5.0,  <span class="str">"kg"</span>,    uncertainty=0.1)
@@ -72,10 +72,10 @@ F = g * m
       </div>
       <div class="demo-card">
         <div class="demo-label">Calculadora de Terminal</div>
-        <pre><code><span class="prompt">$</span> python -m measurekit <span class="str">"500 N / 2 m^2 =&gt; kPa"</span>
+        <pre><code><span class="prompt">$</span> python -m physure <span class="str">"500 N / 2 m^2 =&gt; kPa"</span>
 0.25 kPa
 
-<span class="prompt">$</span> python -m measurekit
+<span class="prompt">$</span> python -m physure
 <span class="prompt">mk&gt;</span> g = 9.81 +/- 0.02 m/s^2
 <span class="prompt">mk&gt;</span> g =&gt; ft/s^2
 32.185... ft/s^2</code></pre>
@@ -83,17 +83,17 @@ F = g * m
     </div>
   </section>
 
-  <!-- What is MeasureKit -->
+  <!-- What is physure -->
   <section>
-    <h2>¿Qué es MeasureKit?</h2>
+    <h2>¿Qué es physure?</h2>
     <p>
-      MeasureKit nació como "El Validador de Tareas Sobrediseñado" — un desarrollador que quería 
+      physure nació como "El Validador de Tareas Sobrediseñado" — un desarrollador que quería 
       verificar ejercicios de física y, en su lugar, construyó un <strong>motor de dimensiones independiente 
       del backend y compilable con JIT</strong>. Aplica patrones de arquitectura empresarial al manejo de unidades, 
       brindando seguridad y expresividad típicamente reservadas para entornos de investigación.
     </p>
     <p>
-      A diferencia de Pint (que es excelente y está sumamente probado), MeasureKit se enfoca específicamente en:
+      A diferencia de Pint (que es excelente y está sumamente probado), physure se enfoca específicamente en:
     </p>
     <ul>
       <li>Seguridad de unidades compilable con JIT en **tensores de PyTorch y JAX**</li>
@@ -130,7 +130,7 @@ F = g * m
       <div class="card feat-card">
         <div class="feat-icon">🦀</div>
         <h3>Núcleo Opcional en Rust</h3>
-        <p>measurekit-core (mediante PyO3) acelera el álgebra de unidades. Todas las rutas de código tienen fallback puro en Python.</p>
+        <p>physure-core (mediante PyO3) acelera el álgebra de unidades. Todas las rutas de código tienen fallback puro en Python.</p>
       </div>
       <div class="card feat-card">
         <div class="feat-icon">✍️</div>
@@ -204,7 +204,7 @@ F = g * m
   <!-- Honest Performance -->
   <section>
     <h2>Rendimiento Real</h2>
-    <p>La mayoría de librerías prometen "cero overhead". Esto es lo que significa en MeasureKit:</p>
+    <p>La mayoría de librerías prometen "cero overhead". Esto es lo que significa en physure:</p>
     <table>
       <thead>
         <tr>
@@ -241,7 +241,7 @@ F = g * m
   <!-- CTA -->
   <section class="cta-section">
     <h2>¿Listo para comenzar?</h2>
-    <p>Ve a la Guía Rápida para tener MeasureKit funcionando en menos de 5 minutos.</p>
+    <p>Ve a la Guía Rápida para tener physure funcionando en menos de 5 minutos.</p>
     <div class="cta-actions">
       <a href="/es/quickstart" class="btn-primary">Guía Rápida →</a>
       <a href="/es/install" class="btn-secondary">Opciones de Instalación</a>

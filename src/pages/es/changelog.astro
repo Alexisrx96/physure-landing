@@ -2,15 +2,15 @@
 import DocsLayout from "../../layouts/DocsLayout.astro";
 ---
 
-<DocsLayout title="Historial" description="Historial de versiones y notas de lanzamiento de MeasureKit" activeSection="changelog">
+<DocsLayout title="Historial" description="Historial de versiones y notas de lanzamiento de physure" activeSection="changelog">
   <div class="page-header">
     <div class="kicker">Historial de Versiones</div>
     <h1>Historial</h1>
-    <p>Historial de versiones y notas de lanzamiento para MeasureKit.</p>
+    <p>Historial de versiones y notas de lanzamiento para physure.</p>
   </div>
 
   <div class="callout callout-info">
-    <p>MeasureKit se encuentra actualmente en fase <strong>Beta</strong>. La API puede experimentar cambios entre versiones antes del lanzamiento estable 1.0.</p>
+    <p>physure se encuentra actualmente en fase <strong>Beta</strong>. La API puede experimentar cambios entre versiones antes del lanzamiento estable 1.0.</p>
   </div>
 
   <div class="releases">
@@ -26,23 +26,23 @@ import DocsLayout from "../../layouts/DocsLayout.astro";
       <div class="release-body">
         <h3>Novedades</h3>
         <ul>
-          <li>Extensión de Química añadida bajo <code>measurekit.ext.chemistry</code>: Procesamiento de fórmulas de especies químicas, balanceo estequiométrico automático de reacciones, rendimientos teóricos, cinética y análisis termodinámico de energía libre de Gibbs</li>
-          <li>Motor Simbólico Nativo (<code>measurekit.domain.symbolic.native.Expr</code>): Simplificación algebraica (<code>.simplify()</code>) y derivación analítica (<code>.diff()</code>) sin dependencias externas, con núcleo optimizado en Rust y fallback puro en Python</li>
-          <li>Compilador AOT de Física (<code>measurekit.ext.compiler</code>): <code>compile_physics_model</code> rastrea y valida ecuaciones para compilarlas en kernels ultra rápidos sin overhead de unidades</li>
-          <li>Regresión Simbólica Dimensional (<code>measurekit.ext.symbolic_regression</code>): <code>SymbolicRegressor</code> utiliza programación genética para ajustar fórmulas físicamente válidas sobre datos empíricos</li>
-          <li>Gráficos con Soporte de Unidades (<code>measurekit.plotting</code>): <code>plot()</code>, <code>plot_slices()</code> y <code>plot_covariance()</code> con etiquetado automático de ejes, barras de error e incertidumbre, y visualización de matrices de covarianza</li>
+          <li>Extensión de Química añadida bajo <code>physure.ext.chemistry</code>: Procesamiento de fórmulas de especies químicas, balanceo estequiométrico automático de reacciones, rendimientos teóricos, cinética y análisis termodinámico de energía libre de Gibbs</li>
+          <li>Motor Simbólico Nativo (<code>physure.domain.symbolic.native.Expr</code>): Simplificación algebraica (<code>.simplify()</code>) y derivación analítica (<code>.diff()</code>) sin dependencias externas, con núcleo optimizado en Rust y fallback puro en Python</li>
+          <li>Compilador AOT de Física (<code>physure.ext.compiler</code>): <code>compile_physics_model</code> rastrea y valida ecuaciones para compilarlas en kernels ultra rápidos sin overhead de unidades</li>
+          <li>Regresión Simbólica Dimensional (<code>physure.ext.symbolic_regression</code>): <code>SymbolicRegressor</code> utiliza programación genética para ajustar fórmulas físicamente válidas sobre datos empíricos</li>
+          <li>Gráficos con Soporte de Unidades (<code>physure.plotting</code>): <code>plot()</code>, <code>plot_slices()</code> y <code>plot_covariance()</code> con etiquetado automático de ejes, barras de error e incertidumbre, y visualización de matrices de covarianza</li>
           <li>Soporte para Python 3.13 y 3.14 añadido a la matriz de CI</li>
           <li>Optimización de velocidad de arranque — presupuesto de importaciones controlado en CI</li>
           <li>GrammarInterpreter: se añadió la sintaxis de consulta <code>= ?</code> para inspección de variables</li>
-          <li><code>measurekit repl</code> ahora acepta un argumento de expresión inline</li>
+          <li><code>physure repl</code> ahora acepta un argumento de expresión inline</li>
           <li>Constantes actualizadas a CODATA 2022 — más de 400 constantes físicas disponibles</li>
-          <li>Núcleo en Rust (<code>measurekit-core</code>) actualizado para compatibilidad con PyO3 0.22</li>
+          <li>Núcleo en Rust (<code>physure-core</code>) actualizado para compatibilidad con PyO3 0.22</li>
           <li>Mejoras en Pandas: optimización del manejo de tipos de datos en columnas físicas</li>
           <li>Límite de cobertura de pruebas incrementado a 80%+ en el pipeline de CI</li>
         </ul>
 
         <h3>Instalación</h3>
-        <pre><code>pip install measurekit==0.1.8</code></pre>
+        <pre><code>pip install physure==0.1.8</code></pre>
       </div>
     </div>
 
@@ -56,7 +56,7 @@ import DocsLayout from "../../layouts/DocsLayout.astro";
       <div class="release-body">
         <ul>
           <li>Añadido backend de JAX con soporte completo para <code>jax.jit</code> y <code>jax.vmap</code></li>
-          <li>API Funcional (<code>measurekit.functional</code>) para el manejo explícito de matrices de covarianza en JAX</li>
+          <li>API Funcional (<code>physure.functional</code>) para el manejo explícito de matrices de covarianza en JAX</li>
           <li>Registro de FunctionalState como un pytree de JAX</li>
           <li>Propagación de incertidumbre correlacionada mediante el almacén de covarianza</li>
           <li>Gestor de contexto <code>propagation_mode</code> para cambiar de estrategia</li>
@@ -77,8 +77,8 @@ import DocsLayout from "../../layouts/DocsLayout.astro";
           <li>Backend de PyTorch: integración de <code>__torch_dispatch__</code> para compilación JIT</li>
           <li>Comprobaciones de unidades al trazar el grafo &rarr; el grafo compilado opera sobre tensores puros (&lt;1.1× de overhead)</li>
           <li>Backend de NumPy con soporte para compilación JIT de Numba</li>
-          <li>Intérprete sintáctico MeasureKit (<code>measurekit.ext.grammar</code>)</li>
-          <li>Sesión interactiva REPL y CLI (<code>python -m measurekit</code>)</li>
+          <li>Intérprete sintáctico physure (<code>physure.ext.grammar</code>)</li>
+          <li>Sesión interactiva REPL y CLI (<code>python -m physure</code>)</li>
           <li>Integración con SymPy para derivación simbólica</li>
         </ul>
       </div>
@@ -93,7 +93,7 @@ import DocsLayout from "../../layouts/DocsLayout.astro";
       </div>
       <div class="release-body">
         <ul>
-          <li>Núcleo en Rust (<code>measurekit-core</code>) vía PyO3: RationalUnit, UnitRegistry, CovarianceStore</li>
+          <li>Núcleo en Rust (<code>physure-core</code>) vía PyO3: RationalUnit, UnitRegistry, CovarianceStore</li>
           <li>Instalación base sin dependencias — fallback puro en Python para todas las rutas de código</li>
           <li>Soporte para prefijos del SI: los 24 prefijos estándar (desde yocto hasta yotta)</li>
           <li>Más de 125 unidades físicas distribuidas en 28 dimensiones</li>
@@ -124,7 +124,7 @@ import DocsLayout from "../../layouts/DocsLayout.astro";
   </div>
 
   <div class="callout callout-info" style="margin-top: 2rem;">
-    <p>Para ver el historial completo de commits, consulta los <a href="https://github.com/Alexisrx96/measurekit/commits/main" target="_blank" rel="noopener">commits en GitHub</a>. Para reportar errores o solicitar mejoras, <a href="https://github.com/Alexisrx96/measurekit/issues" target="_blank" rel="noopener">abre una incidencia en GitHub</a>.</p>
+    <p>Para ver el historial completo de commits, consulta los <a href="https://github.com/Alexisrx96/physure/commits/main" target="_blank" rel="noopener">commits en GitHub</a>. Para reportar errores o solicitar mejoras, <a href="https://github.com/Alexisrx96/physure/issues" target="_blank" rel="noopener">abre una incidencia en GitHub</a>.</p>
   </div>
 </DocsLayout>
 

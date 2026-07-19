@@ -6,7 +6,7 @@ import DocsLayout from "../../layouts/DocsLayout.astro";
   <div class="page-header">
     <div class="kicker">Guías</div>
     <h1>Tutoriales</h1>
-    <p>Guías paso a paso e interactivas para resolver problemas complejos de calibración de sensores, dinámica de fluidos y astrofísica usando MeasureKit.</p>
+    <p>Guías paso a paso e interactivas para resolver problemas complejos de calibración de sensores, dinámica de fluidos y astrofísica usando physure.</p>
   </div>
 
   <!-- Wizard Interface -->
@@ -37,7 +37,7 @@ import DocsLayout from "../../layouts/DocsLayout.astro";
           <p>
             En la calibración de sensores, comenzamos por representar las mediciones junto a sus márgenes de error. Como las escalas Celsius y Fahrenheit tienen un origen desplazado (offsets), operamos con cuidado.
           </p>
-          <pre><code>from measurekit import Q_
+          <pre><code>from physure import Q_
 
 # Lectura cruda del sensor en punto de hielo (Celsius)
 t_raw = Q_(0.15, "degC", uncertainty=0.05)
@@ -57,7 +57,7 @@ print("Referencia:", t_ref)</code></pre>
         <div class="step-pane" data-step="2">
           <h3>Paso 2: Calcular el Error de Desplazamiento (Conversión a Delta)</h3>
           <p>
-            Al restar la lectura cruda de la referencia, calculamos el error. En MeasureKit, restar dos temperaturas absolutas produce automáticamente una unidad **Delta** (ej. delta_degC o K delta) para preservar la coherencia termodinámica:
+            Al restar la lectura cruda de la referencia, calculamos el error. En physure, restar dos temperaturas absolutas produce automáticamente una unidad **Delta** (ej. delta_degC o K delta) para preservar la coherencia termodinámica:
           </p>
           <pre><code># Convertir cruda a Kelvin para restar temperaturas absolutas
 t_raw_k = t_raw.to("K")
@@ -120,8 +120,8 @@ print("Temp Calibrada (F):", t_fahrenheit)
             Calcularemos el período orbital de la Tierra alrededor del Sol usando la tercera ley de Kepler: <code>T² = 4π²r³ / (G × M)</code>. Empezamos importando la constante de gravitación universal CODATA:
           </p>
           <pre><code>import math
-from measurekit import Q_
-from measurekit.constants import G  # Constante de gravitación
+from physure import Q_
+from physure.constants import G  # Constante de gravitación
 
 # Masa del Sol
 M_sun = Q_(1.989e30, "kg", uncertainty=1e26)
@@ -201,7 +201,7 @@ print(f"Margen de error del cálculo: &#123;err_rel:.6f&#125;%")</code></pre>
           <p>
             Analizaremos la caída de presión en una tubería horizontal de agua usando la ecuación de Bernoulli: <code>P₁ - P₂ = ½ρ(v₂² - v₁²)</code>. Definimos los datos iniciales con margen de error:
           </p>
-          <pre><code>from measurekit import Q_
+          <pre><code>from physure import Q_
 
 # Densidad del agua
 rho = Q_(997, "kg/m^3")

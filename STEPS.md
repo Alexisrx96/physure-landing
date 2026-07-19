@@ -1,18 +1,18 @@
-# Pasos de Implementación y Verificación — Documentación de MeasureKit
+# Pasos de Implementación y Verificación — Documentación de physure
 
-Este archivo detalla todos los pasos completados durante la transformación de la landing page en una suite de documentación técnica interactiva y verificada para la librería **MeasureKit**.
+Este archivo detalla todos los pasos completados durante la transformación de la landing page en una suite de documentación técnica interactiva y verificada para la librería **physure**.
 
 ---
 
 ## 📋 Resumen de Pasos Realizados
 
 ### 1. Verificación Técnica de la Librería
-Inspeccionamos el código fuente real de `measurekit` para asegurar que la documentación refleje la realidad del sistema:
+Inspeccionamos el código fuente real de `physure` para asegurar que la documentación refleje la realidad del sistema:
 * **Compilador JIT:** Verificamos que `@jit` funciona con un analizador simbólico (`TracerQuantity`) y `RationalUnit` para validar dimensiones en tiempo de compilación. Genera un kernel optimizado mediante `exec` de Python.
 * **Correlación de Incertidumbre:** Confirmamos que el modo de correlación por defecto (`"correlated"`) realiza un seguimiento de linaje con UUIDs para escalares y utiliza un almacén global (`CovarianceStore`) para realizar propagaciones afines de matrices (`J * Sigma * J.T`) en vectores.
 * **JAX Functional API:** Comprobamos la estructura de `FunctionalState` como un *JAX Pytree* para realizar seguimiento de covarianza de forma pura (`add(a, b, state)`, `sub(a, b, state)`).
 * **Matemática Simbólica:** Verificamos el uso de `SymbolicQuantity` y `SymbolicExpression` integrados con SymPy para realizar derivadas, integrales y resolución de ecuaciones físicas.
-* **Integración con Pandas:** Confirmamos la existencia del dtype `measurekit[unit]` (como `measurekit[m/s]`) y de la extensión de Series `MeasureKitArray` para validación estricta de columnas.
+* **Integración con Pandas:** Confirmamos la existencia del dtype `physure[unit]` (como `physure[m/s]`) y de la extensión de Series `physureArray` para validación estricta de columnas.
 * **IO & Serialización:** Analizamos las funciones `to_hdf5` y `from_hdf5` (CF conventions) y el accessor para xarray.
 
 ### 2. Corrección de Errores Críticos de la Documentación Previa
@@ -20,7 +20,7 @@ Corregimos varios errores e inconsistencias con respecto a la implementación re
 * **Eliminación de `.ito()`:** El método de conversión *in-place* no existe en la librería. Se instruyó a usar `q = q.to(...)`.
 * **Eliminación de `.value`:** La propiedad de acceso al valor numérico no existe. Se reemplazó por `.magnitude` (o el alias `.m`).
 * **Cambio de DimensionError a IncompatibleUnitsError:** Se aclaró que la suma de dimensiones incompatibles lanza `IncompatibleUnitsError` (que es el comportamiento real en `_arithmetic_mixin.py`).
-* **Corrección de las Constantes Exportadas:** Confirmamos que `measurekit.constants` exporta únicamente `c`, `h`, `G` y `k`. Se eliminaron las referencias a `k_B` y `N_A` inexistentes.
+* **Corrección de las Constantes Exportadas:** Confirmamos que `physure.constants` exporta únicamente `c`, `h`, `G` y `k`. Se eliminaron las referencias a `k_B` y `N_A` inexistentes.
 * **Cambio en el Modo por Defecto:** Se actualizó la descripción para reflejar que la propagación por defecto es `"correlated"`.
 
 ### 3. Creación y Actualización de Páginas de Documentación

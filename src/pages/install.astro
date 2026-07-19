@@ -2,11 +2,11 @@
 import DocsLayout from "../layouts/DocsLayout.astro";
 ---
 
-<DocsLayout title="Installation" description="How to install MeasureKit with pip, uv, or from source" activeSection="install">
+<DocsLayout title="Installation" description="How to install physure with pip, uv, or from source" activeSection="install">
   <div class="page-header">
     <div class="kicker">Getting Started</div>
     <h1>Installation</h1>
-    <p>MeasureKit has zero runtime dependencies in the base install. Optional extras add backends and acceleration.</p>
+    <p>physure has zero runtime dependencies in the base install. Optional extras add backends and acceleration.</p>
   </div>
 
   <h2>From PyPI</h2>
@@ -25,10 +25,10 @@ import DocsLayout from "../layouts/DocsLayout.astro";
           <button class="tab-btn" data-tab="uv-min">uv</button>
         </div>
         <div class="tab-panel active" id="pip-min">
-          <pre><code>pip install measurekit</code></pre>
+          <pre><code>pip install physure</code></pre>
         </div>
         <div class="tab-panel" id="uv-min">
-          <pre><code>uv add measurekit</code></pre>
+          <pre><code>uv add physure</code></pre>
         </div>
       </div>
     </div>
@@ -38,17 +38,17 @@ import DocsLayout from "../layouts/DocsLayout.astro";
         <span class="option-title">With Rust Acceleration</span>
         <span class="badge badge-blue">Highly recommended</span>
       </div>
-      <p>Adds the <code>measurekit-core</code> Rust extension (via PyO3) for faster eager-mode scalar operations.</p>
+      <p>Adds NumPy/SciPy/Numba acceleration for array workloads. The Rust core ships inside every physure wheel — no extra needed.</p>
       <div class="tabs">
         <div class="tab-list">
           <button class="tab-btn active" data-tab="pip-native">pip</button>
           <button class="tab-btn" data-tab="uv-native">uv</button>
         </div>
         <div class="tab-panel active" id="pip-native">
-          <pre><code>pip install "measurekit[native]"</code></pre>
+          <pre><code>pip install "physure[numpy]"</code></pre>
         </div>
         <div class="tab-panel" id="uv-native">
-          <pre><code>uv add "measurekit[native]"</code></pre>
+          <pre><code>uv add "physure[numpy]"</code></pre>
         </div>
       </div>
     </div>
@@ -65,10 +65,10 @@ import DocsLayout from "../layouts/DocsLayout.astro";
           <button class="tab-btn" data-tab="uv-all">uv</button>
         </div>
         <div class="tab-panel active" id="pip-all">
-          <pre><code>pip install "measurekit[all]"</code></pre>
+          <pre><code>pip install "physure[all]"</code></pre>
         </div>
         <div class="tab-panel" id="uv-all">
-          <pre><code>uv add "measurekit[all]"</code></pre>
+          <pre><code>uv add "physure[all]"</code></pre>
         </div>
       </div>
     </div>
@@ -87,7 +87,7 @@ import DocsLayout from "../layouts/DocsLayout.astro";
     <tbody>
       <tr>
         <td><code>native</code></td>
-        <td>measurekit-core (Rust)</td>
+        <td>physure-core (Rust)</td>
         <td>You want faster eager-mode scalars</td>
       </tr>
       <tr>
@@ -134,11 +134,11 @@ import DocsLayout from "../layouts/DocsLayout.astro";
   </table>
 
   <h2>Verify your installation</h2>
-  <pre><code>python -c "import measurekit; print(measurekit.__version__)"
+  <pre><code>python -c "import physure; print(physure.__version__)"
 # 0.1.8</code></pre>
 
   <p>Or try the quick demo:</p>
-  <pre><code>python -m measurekit "9.81 m/s^2 * 70 kg => N"
+  <pre><code>python -m physure "9.81 m/s^2 * 70 kg => N"
 # 686.7 N</code></pre>
 
   <h2>Building from source</h2>
@@ -161,11 +161,11 @@ pip install uv</code></pre>
     <li>
       <div>
         <h3>Clone and build the Rust core</h3>
-        <pre><code>git clone https://github.com/Alexisrx96/measurekit
-cd measurekit
+        <pre><code>git clone https://github.com/Alexisrx96/physure
+cd physure
 
 # Build and install the Rust extension
-cd measurekit_core
+cd physure_core
 maturin develop --release
 cd ..</code></pre>
       </div>

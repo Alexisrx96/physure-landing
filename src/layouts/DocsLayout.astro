@@ -5,7 +5,7 @@ export interface Props {
   activeSection?: string;
 }
 
-const { title, description = "MeasureKit — Unit-aware physics computation for Python", activeSection = "" } = Astro.props;
+const { title, description = "physure — Unit-aware physics computation for Python", activeSection = "" } = Astro.props;
 
 const SITE = Astro.site?.href.replace(/\/$/, "") ?? "";
 const OG_IMAGE = SITE + "/logo.jpg";
@@ -57,7 +57,7 @@ const t = {
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{title} — MeasureKit Docs</title>
+    <title>{title} — physure Docs</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={SITE + Astro.url.pathname} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
@@ -66,7 +66,7 @@ const t = {
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 
     <meta property="og:type" content="website" />
-    <meta property="og:title" content={title + " — MeasureKit Docs"} />
+    <meta property="og:title" content={title + " — physure Docs"} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={SITE + Astro.url.pathname} />
     <meta property="og:image" content={OG_IMAGE} />
@@ -78,8 +78,8 @@ const t = {
     <header class="topbar">
       <div class="topbar-inner">
         <a href={langPrefix + "/"} class="brand">
-          <img src="/logo.jpg" alt="MeasureKit" width="32" height="32" class="brand-logo" />
-          <span class="brand-name">MeasureKit</span>
+          <img src="/logo.jpg" alt="physure" width="32" height="32" class="brand-logo" />
+          <span class="brand-name">physure</span>
           <span class="brand-badge">v0.1.8</span>
         </a>
         <button class="search-trigger" id="searchTrigger" title={isSpanish ? "Buscar en la documentación" : "Search documentation"}>
@@ -92,11 +92,11 @@ const t = {
             <a href={enPath} class={`lang-btn ${!isSpanish ? 'active' : ''}`} aria-current={!isSpanish ? "page" : undefined}>EN</a>
             <a href={esPath} class={`lang-btn ${isSpanish ? 'active' : ''}`} aria-current={isSpanish ? "page" : undefined}>ES</a>
           </div>
-          <a href="https://github.com/Alexisrx96/measurekit" target="_blank" rel="noopener" class="topbar-link">
+          <a href="https://github.com/Alexisrx96/physure" target="_blank" rel="noopener" class="topbar-link">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
             GitHub
           </a>
-          <a href="https://pypi.org/project/measurekit/" target="_blank" rel="noopener" class="topbar-link">PyPI</a>
+          <a href="https://pypi.org/project/physure/" target="_blank" rel="noopener" class="topbar-link">PyPI</a>
         </nav>
         <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">☰</button>
       </div>
@@ -126,8 +126,8 @@ const t = {
           <div class="sidebar-section">
             <p class="sidebar-label">{t.install}</p>
             <div class="install-box">
-              <code>pip install measurekit</code>
-              <button class="copy-btn" data-copy="pip install measurekit" title={t.copy}>
+              <code>pip install physure</code>
+              <button class="copy-btn" data-copy="pip install physure" title={t.copy}>
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
               </button>
             </div>
@@ -175,7 +175,7 @@ const t = {
       function sendToPlayground(rawCode, fromUrl = "") {
         if (!rawCode) return;
         
-        const bc = new BroadcastChannel('measurekit-playground');
+        const bc = new BroadcastChannel('physure-playground');
         let playgroundResponded = false;
         
         const bcListener = (e) => {
@@ -193,12 +193,12 @@ const t = {
           bc.close();
           
           if (playgroundResponded) {
-            window.open('', 'measurekit_playground');
+            window.open('', 'physure_playground');
           } else {
             const encoded = btoa(unescape(encodeURIComponent(rawCode)));
             const isSp = window.location.pathname.startsWith('/es');
             const targetUrl = `${isSp ? '/es' : ''}/playground?code=${encodeURIComponent(encoded)}` + (fromUrl ? `&from=${encodeURIComponent(fromUrl)}` : '');
-            window.open(targetUrl, 'measurekit_playground');
+            window.open(targetUrl, 'physure_playground');
           }
         }, 100);
       }
@@ -312,13 +312,13 @@ const t = {
       // Search database
       const searchIndex = [
         // English
-        { title: "Overview / Home", url: "/", excerpt: "Intro to MeasureKit unit-aware physics calculations.", lang: "en" },
-        { title: "What is MeasureKit?", url: "/#what-is-measurekit", excerpt: "Under-the-hood differences with Pint.", lang: "en" },
+        { title: "Overview / Home", url: "/", excerpt: "Intro to physure unit-aware physics calculations.", lang: "en" },
+        { title: "What is physure?", url: "/#what-is-physure", excerpt: "Under-the-hood differences with Pint.", lang: "en" },
         { title: "Honest Performance", url: "/#honest-performance", excerpt: "Eager mode speed vs compiled graph optimization.", lang: "en" },
         { title: "Installation", url: "/install", excerpt: "Install with pip or uv for base, native Rust or all backends.", lang: "en" },
         { title: "Building from source", url: "/install#building-from-source", excerpt: "Compiling maturin Rust core from source.", lang: "en" },
         { title: "Quick Start", url: "/quickstart", excerpt: "Create first quantity, convert, uncertainty propagation.", lang: "en" },
-        { title: "Grammar notation", url: "/quickstart#grammar-notation", excerpt: "MeasureKit grammar syntax in Python interpreter.", lang: "en" },
+        { title: "Grammar notation", url: "/quickstart#grammar-notation", excerpt: "physure grammar syntax in Python interpreter.", lang: "en" },
         { title: "Terminal calculator", url: "/quickstart#terminal-calculator", excerpt: "CLI options and interactive REPL.", lang: "en" },
         { title: "User Guide", url: "/guide", excerpt: "Full guide covering physical quantities and unit singletons.", lang: "en" },
         { title: "Absolute vs Delta Temperature", url: "/guide#arithmetic", excerpt: "Celsius and Fahrenheit offsets versus delta units.", lang: "en" },
@@ -333,14 +333,14 @@ const t = {
         { title: "AOT Physics Compiler", url: "/guide#aot-compiler", excerpt: "Bakes unit-checked functions into raw-float kernels with zero overhead.", lang: "en" },
         { title: "Symbolic Regression", url: "/guide#symbolic-regression", excerpt: "Fits dimensionally consistent formulas to datasets using genetic programming.", lang: "en" },
         { title: "Unit-Aware Plotting", url: "/guide#plotting", excerpt: "Built-in plotting utilities with automatic units, error bars, and covariance maps.", lang: "en" },
-        { title: "Pandas Accessor", url: "/guide#pandas", excerpt: "Series extension array and custom measurekit[unit] type.", lang: "en" },
+        { title: "Pandas Accessor", url: "/guide#pandas", excerpt: "Series extension array and custom physure[unit] type.", lang: "en" },
         { title: "Serialization (IO)", url: "/guide#io", excerpt: "HDF5 dataset attributes and xarray accessories.", lang: "en" },
         { title: "API Reference", url: "/api", excerpt: "Quantity properties and methods lookup table.", lang: "en" },
         { title: "Module functions", url: "/api#module-functions", excerpt: "system_context, propagation_mode, jit, save_state.", lang: "en" },
         { title: "Exceptions", url: "/api#exceptions", excerpt: "IncompatibleUnitsError, UnknownUnitError, ConversionError.", lang: "en" },
         { title: "Examples", url: "/examples", excerpt: "Kinematics, Force, Pressure, Temperature, Uncertainty, NumPy, SymPy, JIT.", lang: "en" },
-        { title: "CLI & REPL Details", url: "/cli", excerpt: "MeasureKit grammar statements and script piping.", lang: "en" },
-        { title: "VS Code Extension", url: "/vscode", excerpt: "Install and configure the MeasureKit Meta-Lang (MKML) editor extension.", lang: "en" },
+        { title: "CLI & REPL Details", url: "/cli", excerpt: "physure grammar statements and script piping.", lang: "en" },
+        { title: "VS Code Extension", url: "/vscode", excerpt: "Install and configure the physure Meta-Lang (MKML) editor extension.", lang: "en" },
         { title: "Changelog", url: "/changelog", excerpt: "Timeline release notes from v0.1.0 to v0.1.8.", lang: "en" },
 
         // Spanish
@@ -349,8 +349,8 @@ const t = {
         { title: "Instalación", url: "/es/install", excerpt: "Instalación por pip, uv, extras native, numpy, torch, jax.", lang: "es" },
         { title: "Compilar desde código fuente", url: "/es/install#building-from-source", excerpt: "Compilación de maturin Rust core desde repositorio.", lang: "es" },
         { title: "Guía Rápida", url: "/es/quickstart", excerpt: "Uso básico de la factoría Q_, conversiones y REPL.", lang: "es" },
-        { title: "Calculadora de consola", url: "/es/quickstart#terminal-calculator", excerpt: "CLI de MeasureKit para evaluación directa.", lang: "es" },
-        { title: "Guía de Usuario", url: "/es/guide", excerpt: "Completa guía de arquitectura de MeasureKit.", lang: "es" },
+        { title: "Calculadora de consola", url: "/es/quickstart#terminal-calculator", excerpt: "CLI de physure para evaluación directa.", lang: "es" },
+        { title: "Guía de Usuario", url: "/es/guide", excerpt: "Completa guía de arquitectura de physure.", lang: "es" },
         { title: "Temperaturas Absolutas vs Delta", url: "/es/guide#arithmetic", excerpt: "Diferencia de temperatura en offsets Celsius/Fahrenheit.", lang: "es" },
         { title: "Funciones Trascendentales", url: "/es/guide#transcendentals", excerpt: "Seno, coseno, exp, log en cantidades físicas.", lang: "es" },
         { title: "Propagación de Incertidumbre", url: "/es/guide#uncertainty", excerpt: "Modos Monte Carlo y Transformada Unscented.", lang: "es" },
@@ -363,14 +363,14 @@ const t = {
         { title: "Compilador AOT de Física", url: "/es/guide#aot-compiler", excerpt: "Compila funciones validadas a código sin overhead en ejecución.", lang: "es" },
         { title: "Regresión Simbólica", url: "/es/guide#symbolic-regression", excerpt: "Ajuste de fórmulas dimensionalmente consistentes mediante programación genética.", lang: "es" },
         { title: "Gráficos con Unidades", url: "/es/guide#plotting", excerpt: "Visualizaciones integradas con formateo de unidades y covarianza.", lang: "es" },
-        { title: "Pandas e Integraciones", url: "/es/guide#pandas", excerpt: "Series extendidas y tipo measurekit[m/s].", lang: "es" },
+        { title: "Pandas e Integraciones", url: "/es/guide#pandas", excerpt: "Series extendidas y tipo physure[m/s].", lang: "es" },
         { title: "Serialización (IO)", url: "/es/guide#io", excerpt: "Formatos HDF5 y accessor para DataArray de xarray.", lang: "es" },
         { title: "Referencia API", url: "/es/api", excerpt: "Tabla de referencia de Quantity, propiedades y métodos.", lang: "es" },
         { title: "Funciones de Módulo", url: "/es/api#module-functions", excerpt: "system_context, propagation_mode, jit, save_state.", lang: "es" },
         { title: "Excepciones", url: "/es/api#exceptions", excerpt: "IncompatibleUnitsError, UnknownUnitError, ConversionError.", lang: "es" },
         { title: "Ejemplos Prácticos", url: "/es/examples", excerpt: "Cinemática, Fuerza, Presión, Temperatura, Péndulo, NumPy, JIT.", lang: "es" },
-        { title: "CLI y REPL detalles", url: "/es/cli", excerpt: "Gramática MeasureKit y ejecución por tuberías.", lang: "es" },
-        { title: "Extensión VS Code", url: "/es/vscode", excerpt: "Instalación y configuración de la extensión de editor para MeasureKit Meta-Lang (MKML).", lang: "es" },
+        { title: "CLI y REPL detalles", url: "/es/cli", excerpt: "Gramática physure y ejecución por tuberías.", lang: "es" },
+        { title: "Extensión VS Code", url: "/es/vscode", excerpt: "Instalación y configuración de la extensión de editor para physure Meta-Lang (MKML).", lang: "es" },
         { title: "Historial", url: "/es/changelog", excerpt: "Notas de lanzamiento de la versión v0.1.0 a la v0.1.8.", lang: "es" },
       ];
 

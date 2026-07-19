@@ -2,11 +2,11 @@
 import DocsLayout from "../../layouts/DocsLayout.astro";
 ---
 
-<DocsLayout title="Guía de Usuario" description="Guía técnica exhaustiva de las características de MeasureKit: backends, propagación de incertidumbre, matemáticas simbólicas y compilación JIT" activeSection="guide">
+<DocsLayout title="Guía de Usuario" description="Guía técnica exhaustiva de las características de physure: backends, propagación de incertidumbre, matemáticas simbólicas y compilación JIT" activeSection="guide">
   <div class="page-header">
     <div class="kicker">Documentación</div>
     <h1>Guía de Usuario</h1>
-    <p>Una inmersión técnica exhaustiva en MeasureKit — desde las dimensiones físicas hasta los grafos de compilación de tensores de alto rendimiento.</p>
+    <p>Una inmersión técnica exhaustiva en physure — desde las dimensiones físicas hasta los grafos de compilación de tensores de alto rendimiento.</p>
   </div>
 
   <!-- TOC -->
@@ -40,7 +40,7 @@ import DocsLayout from "../../layouts/DocsLayout.astro";
     </p>
 
     <h3>A. La Factoría de Cantidades (<code>Q_</code>)</h3>
-    <pre><code>from measurekit import Q_
+    <pre><code>from physure import Q_
 
 # Construcción estándar valor-unidad
 q1 = Q_(10, "m/s")
@@ -56,16 +56,16 @@ q4 = Q_(2.5, "kg", symbol="mass")</code></pre>
 
     <h3>B. Azúcar Sintáctico (Singletons de Unidad)</h3>
     <p>
-      MeasureKit genera objetos de unidad estáticos en <code>measurekit.units.core</code>. La multiplicación por el lado derecho en estos objetos devuelve una <code>Quantity</code>:
+      physure genera objetos de unidad estáticos en <code>physure.units.core</code>. La multiplicación por el lado derecho en estos objetos devuelve una <code>Quantity</code>:
     </p>
-    <pre><code>from measurekit.units.core import m, s, kg
+    <pre><code>from physure.units.core import m, s, kg
 
 # Azúcar sintáctico para la creación de cantidades
 speed = 10 * m / s
 force = 5.0 * kg * m / s**2
 
 print(speed)              # (10.0) m/s
-print(type(speed))        # &lt;class 'measurekit.domain.measurement.quantity.Quantity'&gt;</code></pre>
+print(type(speed))        # &lt;class 'physure.domain.measurement.quantity.Quantity'&gt;</code></pre>
 
     <h3>C. Factorías Especializadas</h3>
     <p>
@@ -93,13 +93,13 @@ a2 = accel_factory(1.5, uncertainty=0.01)</code></pre>
   <section class="guide-section">
     <h2 id="systems">2. Sistemas de Unidades y Contextos</h2>
     <p>
-      MeasureKit resuelve las unidades contra un <code>UnitSystem</code> construido a partir de archivos de configuración (como <code>measurekit.conf</code>, <code>international.conf</code> o <code>imperial.conf</code>). Este contiene las definiciones para dimensiones, prefijos, unidades y constantes.
+      physure resuelve las unidades contra un <code>UnitSystem</code> construido a partir de archivos de configuración (como <code>physure.conf</code>, <code>international.conf</code> o <code>imperial.conf</code>). Este contiene las definiciones para dimensiones, prefijos, unidades y constantes.
     </p>
     <p>
       Puedes crear e intercambiar sistemas de unidades de forma segura para hilos y tareas asíncronas utilizando un gestor de contexto:
     </p>
-    <pre><code>import measurekit as mk
-from measurekit import Q_, system_context
+    <pre><code>import physure as mk
+from physure import Q_, system_context
 
 # El sistema por defecto es el SI (internacional)
 q_si = Q_(1, "ft")
@@ -116,9 +116,9 @@ with system_context("imperial.conf"):
   <section class="guide-section">
     <h2 id="arithmetic">3. Aritmética y Desplazamientos de Temperatura</h2>
     <p>
-      MeasureKit impone una estricta compatibilidad de unidades. Realizar operaciones aritméticas entre dimensiones incompatibles lanza un <code>IncompatibleUnitsError</code>.
+      physure impone una estricta compatibilidad de unidades. Realizar operaciones aritméticas entre dimensiones incompatibles lanza un <code>IncompatibleUnitsError</code>.
     </p>
-    <pre><code>from measurekit import Q_, IncompatibleUnitsError
+    <pre><code>from physure import Q_, IncompatibleUnitsError
 
 d = Q_(10, "m")
 t = Q_(2, "s")
@@ -137,7 +137,7 @@ except IncompatibleUnitsError as e:
       <li><strong>Unidades delta</strong> (<code>delta_degC</code>, <code>delta_degF</code>) representan diferencias de temperatura.</li>
     </ul>
     <p>
-      MeasureKit maneja automáticamente las conversiones aritméticas absolutas/delta:
+      physure maneja automáticamente las conversiones aritméticas absolutas/delta:
     </p>
     <pre><code># Restar dos temperaturas absolutas produce una unidad DELTA:
 t1 = Q_(100, "degC")
@@ -160,7 +160,7 @@ except IncompatibleUnitsError:
   <section class="guide-section">
     <h2 id="transcendentals">4. Funciones Trigonométricas y Trascendentales</h2>
     <p>
-      MeasureKit define métodos trigonométricos y trascendentales en la clase <code>Quantity</code>. Estos garantizan la consistencia física:
+      physure define métodos trigonométricos y trascendentales en la clase <code>Quantity</code>. Estos garantizan la consistencia física:
     </p>
     <ul>
       <li>El argumento de la función debe ser adimensional o un ángulo.</li>
@@ -169,7 +169,7 @@ except IncompatibleUnitsError:
       <li>Cualquier otra dimensión lanza un <code>DimensionError</code>.</li>
       <li>El valor de retorno es siempre una cantidad adimensional (sin unidades).</li>
     </ul>
-    <pre><code>from measurekit import Q_, DimensionError
+    <pre><code>from physure import Q_, DimensionError
 import math
 
 # Ángulo automáticamente convertido a radianes
@@ -218,8 +218,8 @@ except DimensionError as e:
         </tr>
       </tbody>
     </table>
-    <pre><code>import measurekit as mk
-from measurekit import Q_
+    <pre><code>import physure as mk
+from physure import Q_
 
 # Ejecución en modo Monte Carlo
 with mk.uncertainty_mode("monte_carlo", samples=10000):
@@ -233,7 +233,7 @@ with mk.uncertainty_mode("monte_carlo", samples=10000):
   <section class="guide-section">
     <h2 id="covariance">6. Incertidumbre Correlacionada y Almacén de Covarianza</h2>
     <p>
-      Por defecto, MeasureKit realiza un seguimiento de las correlaciones entre variables (lo que significa que la resta de una variable consigo misma es exactamente cero). Utiliza dos mecanismos internos diferentes:
+      Por defecto, physure realiza un seguimiento de las correlaciones entre variables (lo que significa que la resta de una variable consigo misma es exactamente cero). Utiliza dos mecanismos internos diferentes:
     </p>
 
     <h3>A. Seguimiento de Linaje (Escalares)</h3>
@@ -253,11 +253,11 @@ with mk.uncertainty_mode("monte_carlo", samples=10000):
     <p>
       Puedes aislar el seguimiento de covarianza a un bloque específico mediante gestores de contexto:
     </p>
-    <pre><code>import measurekit as mk
-from measurekit import Q_, MeasureKitContext, PruningConfig
+    <pre><code>import physure as mk
+from physure import Q_, physureContext, PruningConfig
 
 # Establecer un contexto de covarianza acotado
-with MeasureKitContext(backend_type="numpy") as store:
+with physureContext(backend_type="numpy") as store:
     # A las variables se les asignan rebanadas en el almacén local
     x = Q_([1.0, 2.0], "m", uncertainty=[0.1, 0.2])
     y = x * 2.0
@@ -272,12 +272,12 @@ with MeasureKitContext(backend_type="numpy") as store:
       Los estados globales y los contextos locales (como <code>contextvars</code>) se rompen cuando se ejecutan dentro de grafos de compilación de JAX (<code>jax.jit</code>, <code>jax.vmap</code>).
     </p>
     <p>
-      MeasureKit resuelve esto proporcionando una API funcional sin estado en <code>measurekit.functional</code>. En este modo, la matriz de covarianza y los metadatos de asignación de variables se almacenan explícitamente dentro de un objeto <code>FunctionalState</code> que se pasa como argumento a través de las llamadas a funciones:
+      physure resuelve esto proporcionando una API funcional sin estado en <code>physure.functional</code>. En este modo, la matriz de covarianza y los metadatos de asignación de variables se almacenan explícitamente dentro de un objeto <code>FunctionalState</code> que se pasa como argumento a través de las llamadas a funciones:
     </p>
     <pre><code>import jax
 import jax.numpy as jnp
-from measurekit import Q_
-from measurekit.functional import FunctionalState, add, sub
+from physure import Q_
+from physure.functional import FunctionalState, add, sub
 
 # FunctionalState es un pytree registrado de JAX
 state = FunctionalState()
@@ -296,7 +296,7 @@ print(diff.uncertainty) # ¡La desviación estándar se calcula correctamente!</
   <section class="guide-section">
     <h2 id="backends">8. Multi-Backend y Carga Perezosa</h2>
     <p>
-      MeasureKit soporta polimórficamente diferentes librerías de arrays y tensores. El <code>BackendManager</code> carga los backends de forma perezosa solo en la primera llamada:
+      physure soporta polimórficamente diferentes librerías de arrays y tensores. El <code>BackendManager</code> carga los backends de forma perezosa solo en la primera llamada:
     </p>
     <ul>
       <li><code>numpy</code>: Operaciones estándar de arrays de NumPy.</li>
@@ -305,7 +305,7 @@ print(diff.uncertainty) # ¡La desviación estándar se calcula correctamente!</
       <li><code>python</code>: Fallback para flotantes y enteros estándar de Python.</li>
     </ul>
     <p>
-      Importar <code>measurekit</code> es extremadamente rápido porque no importa torch, JAX ni scipy hasta que se pasa un tensor de ese backend a la factoría.
+      Importar <code>physure</code> es extremadamente rápido porque no importa torch, JAX ni scipy hasta que se pasa un tensor de ese backend a la factoría.
     </p>
   </section>
 
@@ -313,19 +313,19 @@ print(diff.uncertainty) # ¡La desviación estándar se calcula correctamente!</
   <section class="guide-section">
     <h2 id="jit">9. Compilación JIT y Trazado Sin Overhead</h2>
     <p>
-      La ejecución estándar en Python de objetos <code>Quantity</code> conlleva overhead debido a la asignación de clases y validación de unidades. Para operaciones de alto rendimiento, MeasureKit soporta dos mecanismos de trazado:
+      La ejecución estándar en Python de objetos <code>Quantity</code> conlleva overhead debido a la asignación de clases y validación de unidades. Para operaciones de alto rendimiento, physure soporta dos mecanismos de trazado:
     </p>
 
     <h3>A. Compilación nativa en PyTorch/JAX</h3>
     <p>
-      Al compilar a través de <code>torch.compile</code> o <code>jax.jit</code>, MeasureKit registra las comprobaciones de unidades durante la fase inicial de trazado. Una vez compilado, las validaciones de unidades se omiten, y el kernel final corre en la GPU sobre tensores puros con **Cero Overhead** (&lt;1.1&times; comparado con PyTorch puro).
+      Al compilar a través de <code>torch.compile</code> o <code>jax.jit</code>, physure registra las comprobaciones de unidades durante la fase inicial de trazado. Una vez compilado, las validaciones de unidades se omiten, y el kernel final corre en la GPU sobre tensores puros con **Cero Overhead** (&lt;1.1&times; comparado con PyTorch puro).
     </p>
 
-    <h3>B. El compilador JIT propio de MeasureKit</h3>
+    <h3>B. El compilador JIT propio de physure</h3>
     <p>
       Para código estándar de Python, puedes usar el decorador <code>@jit</code>. Este traza las funciones de forma simbólica usando <code>TracerQuantity</code> y una representación en Rust de <code>RationalUnit</code>, compila una función nativa de Python usando <code>exec</code> y la almacena en caché:
     </p>
-    <pre><code>from measurekit import Q_, jit
+    <pre><code>from physure import Q_, jit
 
 @jit
 def kinetic_energy(mass, velocity):
@@ -340,14 +340,14 @@ print(KE)  # 3500.0 J (las ejecuciones posteriores operan sobre el kernel compil
   <section class="guide-section">
     <h2 id="symbolic">10. Matemática Simbólica (SymPy y Nativa)</h2>
     <p>
-      MeasureKit ofrece dos entornos distintos de matemática simbólica: un envoltorio basado en SymPy para resolver ecuaciones algebraicas y un **Motor Simbólico Nativo** en Rust (con fallback en Python) diseñado para simplificación algebraica de alto rendimiento y derivadas analíticas exactas sin dependencias externas.
+      physure ofrece dos entornos distintos de matemática simbólica: un envoltorio basado en SymPy para resolver ecuaciones algebraicas y un **Motor Simbólico Nativo** en Rust (con fallback en Python) diseñado para simplificación algebraica de alto rendimiento y derivadas analíticas exactas sin dependencias externas.
     </p>
 
     <h3>A. Resolución de Ecuaciones basada en SymPy</h3>
     <p>
-      Requiere <code>pip install "measurekit[symbolic]"</code>. Este framework se integra con SymPy para resolver ecuaciones físicas y conservar automáticamente las unidades:
+      Requiere <code>pip install "physure[symbolic]"</code>. Este framework se integra con SymPy para resolver ecuaciones físicas y conservar automáticamente las unidades:
     </p>
-    <pre><code>from measurekit.domain.symbolic.quantity import SymbolicQuantity, Equation
+    <pre><code>from physure.domain.symbolic.quantity import SymbolicQuantity, Equation
 
 # Crear variables simbólicas atómicas con unidades
 x = SymbolicQuantity("x", "m")
@@ -371,10 +371,10 @@ print(res)                # 20.0 s</code></pre>
 
     <h3>B. Motor Simbólico Nativo (Sin Dependencias)</h3>
     <p>
-      Disponible bajo <code>measurekit.domain.symbolic.native</code>. Este motor está implementado directamente en Rust (vía PyO3, con un fallback puro en Python). Simplifica términos aplicando reglas algebraicas (identidad, inversos, plegado de constantes, recolección de términos) y calcula derivadas exactas:
+      Disponible bajo <code>physure.domain.symbolic.native</code>. Este motor está implementado directamente en Rust (vía PyO3, con un fallback puro en Python). Simplifica términos aplicando reglas algebraicas (identidad, inversos, plegado de constantes, recolección de términos) y calcula derivadas exactas:
     </p>
-    <pre><code>from measurekit.domain.symbolic.native import Expr
-from measurekit.domain.measurement.units import CompoundUnit
+    <pre><code>from physure.domain.symbolic.native import Expr
+from physure.domain.measurement.units import CompoundUnit
 
 # Definir nodos simbólicos y de cantidad
 x = Expr.symbol("x")
@@ -395,16 +395,16 @@ print(deriv.simplify())  # 3.0 * x^2.0</code></pre>
   <section class="guide-section">
     <h2 id="pandas">11. Extensiones y Accesores de Pandas</h2>
     <p>
-      MeasureKit registra un accesor personalizado <code>.mk</code> para Series de Pandas que contienen objetos Quantity, junto con tipos de datos personalizados:
+      physure registra un accesor personalizado <code>.mk</code> para Series de Pandas que contienen objetos Quantity, junto con tipos de datos personalizados:
     </p>
     <pre><code>import pandas as pd
 import numpy as np
-from measurekit import Q_
+from physure import Q_
 
 # Crear una Serie con un tipo de unidad estrictamente controlado
 series = pd.Series(
     [Q_(1.0, "m"), Q_(2.0, "m")],
-    dtype="measurekit[m]"
+    dtype="physure[m]"
 )
 
 # Acceder a magnitudes, incertidumbres y unidades en lote
@@ -425,7 +425,7 @@ print(converted)                # Serie de [100.0 cm, 200.0 cm]</code></pre>
   <section class="guide-section">
     <h2 id="io">12. HDF5, xarray y Serialización de Estado</h2>
     <p>
-      Para guardar datos en disco, MeasureKit ofrece tres alternativas de serialización:
+      Para guardar datos en disco, physure ofrece tres alternativas de serialización:
     </p>
 
     <h3>A. Serialización HDF5 (CF Conventions)</h3>
@@ -433,7 +433,7 @@ print(converted)                # Serie de [100.0 cm, 200.0 cm]</code></pre>
       Guarda la magnitud en un dataset y escribe la unidad en los atributos de este. Las desviaciones estándar se guardan bajo un dataset auxiliar:
     </p>
     <pre><code>import h5py
-from measurekit.ext.io import to_hdf5, from_hdf5
+from physure.ext.io import to_hdf5, from_hdf5
 
 q = Q_([1.0, 2.0], "m/s", uncertainty=[0.1, 0.2])
 
@@ -449,14 +449,14 @@ with h5py.File("data.h5", "r") as f:
 
 # Asocia metadatos de unidades a datasets de xarray
 da = xr.DataArray([10, 20], attrs=&#123;"units": "m/s"&#125;)
-q = da.measurekit.quantify()
+q = da.physure.quantify()
 print(q)  # [10 20] m/s</code></pre>
 
     <h3>C. Serialización del Estado de la Aplicación</h3>
     <p>
       Serializar cantidades directamente con pickle puede hacer que se pierdan las correlaciones rastreadas en la matriz de covarianza. Usa <code>save_state</code> and <code>load_state</code> para guardar y restaurar el <code>CovarianceStore</code> activo:
     </p>
-    <pre><code>from measurekit import save_state, load_state
+    <pre><code>from physure import save_state, load_state
 
 # Guarda la matriz de covarianza completa y su registro
 save_state("app_state.pkl")
@@ -469,15 +469,15 @@ load_state("app_state.pkl")</code></pre>
   <section class="guide-section">
     <h2 id="chemistry">13. Química y Seguimiento de Reacciones</h2>
     <p>
-      MeasureKit incluye una extensión de química bajo el módulo <code>measurekit.ext.chemistry</code>. Permite mapear masa a moles y balancear ecuaciones químicas usando equivalencias dinámicas de masa molar, sin afectar los flujos de alta velocidad de los tensores base.
+      physure incluye una extensión de química bajo el módulo <code>physure.ext.chemistry</code>. Permite mapear masa a moles y balancear ecuaciones químicas usando equivalencias dinámicas de masa molar, sin afectar los flujos de alta velocidad de los tensores base.
     </p>
 
     <h3>A. Conversión de Unidades por Especie</h3>
     <p>
-      Dado que la masa (gramos) y la cantidad de sustancia (moles) poseen dimensiones físicas base distintas, la conversión directa entre ellas no es válida de forma general en física. Mediante la masa molar de una sustancia química (<code>Species</code>), MeasureKit habilita esta conversión:
+      Dado que la masa (gramos) y la cantidad de sustancia (moles) poseen dimensiones físicas base distintas, la conversión directa entre ellas no es válida de forma general en física. Mediante la masa molar de una sustancia química (<code>Species</code>), physure habilita esta conversión:
     </p>
-    <pre><code>from measurekit import Q_, equivalencies
-from measurekit.ext.chemistry import Species, molar_equivalency
+    <pre><code>from physure import Q_, equivalencies
+from physure.ext.chemistry import Species, molar_equivalency
 
 # Definir una especie (se calcula su masa molar e incertidumbre estándar)
 agua = Species("H2O")
@@ -492,10 +492,10 @@ with equivalencies(molar_equivalency(agua)):
 
     <h3>B. Estequiometría y Balanceo de Reacciones</h3>
     <p>
-      Es posible definir reacciones a partir de una ecuación química sencilla en texto. MeasureKit determina los coeficientes estequiométricos de equilibrio, identifica el reactivo limitante y propaga la incertidumbre del peso a los productos:
+      Es posible definir reacciones a partir de una ecuación química sencilla en texto. physure determina los coeficientes estequiométricos de equilibrio, identifica el reactivo limitante y propaga la incertidumbre del peso a los productos:
     </p>
-    <pre><code>from measurekit import Q_
-from measurekit.ext.chemistry import Reaction
+    <pre><code>from physure import Q_
+from physure.ext.chemistry import Reaction
 
 # Analizar y balancear automáticamente la reacción
 rxn = Reaction.from_string("H2 + O2 -> H2O")
@@ -514,8 +514,8 @@ print("Rendimiento de H2O:", result.yields["H2O"].to("g"))      # 56.31 +/- 0.22
     <p>
       Se incorporan utilidades para consulta de entropías/entalpías de formación, cinética de Arrhenius y energía libre de Gibbs, garantizando la consistencia dimensional en cada paso:
     </p>
-    <pre><code>from measurekit import Q_
-from measurekit.ext.chemistry import arrhenius, gibbs_free_energy, standard_enthalpy, standard_entropy
+    <pre><code>from physure import Q_
+from physure.ext.chemistry import arrhenius, gibbs_free_energy, standard_enthalpy, standard_entropy
 
 # Constante de velocidad por Arrhenius
 A = Q_(1e13, "s^-1")
@@ -535,12 +535,12 @@ print(dG.to("kJ/mol"))              # -237.1 kJ/mol</code></pre>
   <section class="guide-section">
     <h2 id="compiler">14. Compilador AOT de Física</h2>
     <p>
-      Si tu aplicación realiza cálculos en bucles de alto rendimiento donde la asignación de objetos <code>Quantity</code> resulta lenta, puedes compilar tus ecuaciones mediante <code>compile_physics_model</code> en <code>measurekit.ext.compiler</code>.
+      Si tu aplicación realiza cálculos en bucles de alto rendimiento donde la asignación de objetos <code>Quantity</code> resulta lenta, puedes compilar tus ecuaciones mediante <code>compile_physics_model</code> en <code>physure.ext.compiler</code>.
     </p>
     <p>
       Este módulo traza la función Python una única vez sobre marcadores de unidades para validar estáticamente la consistencia dimensional y genera un kernel puro en punto flotante sin unidades usando <code>exec()</code> que corre a máxima velocidad.
     </p>
-    <pre><code>from measurekit.ext.compiler import compile_physics_model
+    <pre><code>from physure.ext.compiler import compile_physics_model
 
 def fuerza_arrastre(densidad, velocidad, area, coeficiente):
     return 0.5 * densidad * (velocidad**2) * area * coeficiente
@@ -566,13 +566,13 @@ print(fuerza)  # 45.9375 (float neto validado estáticamente)</code></pre>
   <section class="guide-section">
     <h2 id="regression">15. Regresión Simbólica Dimensional</h2>
     <p>
-      Al ajustar fórmulas a datos empíricos, los regresores simbólicos estándar suelen proponer combinaciones físicamente incorrectas. El regresor <code>SymbolicRegressor</code> de <code>measurekit.ext.symbolic_regression</code> utiliza programación genética sobre árboles de expresión coherentes por definición.
+      Al ajustar fórmulas a datos empíricos, los regresores simbólicos estándar suelen proponer combinaciones físicamente incorrectas. El regresor <code>SymbolicRegressor</code> de <code>physure.ext.symbolic_regression</code> utiliza programación genética sobre árboles de expresión coherentes por definición.
     </p>
     <p>
       Cada mutación o cruce se valida dimensionalmente al instante. El regresor resuelve estructuralmente la constante de escala principal <code>k</code> y deriva su unidad de forma automática como <code>target.unit / candidate.unit</code>.
     </p>
-    <pre><code>from measurekit import Q_
-from measurekit.ext.symbolic_regression import SymbolicRegressor
+    <pre><code>from physure import Q_
+from physure.ext.symbolic_regression import SymbolicRegressor
 
 # Datos experimentales con unidades
 t = Q_([1.0, 2.0, 3.0, 4.0, 5.0], "s", symbol="t")
@@ -595,10 +595,10 @@ print(best_fit.constants["k"])  # 4.887 m/s²</code></pre>
   <section class="guide-section">
     <h2 id="plotting">16. Gráficos con Soporte de Unidades</h2>
     <p>
-      MeasureKit se integra directamente con flujos de visualización mediante el módulo <code>measurekit.plotting</code> y métodos en la clase <code>Quantity</code>. Formatea etiquetas de ejes con sus respectivas unidades y dibuja barras de error a partir de la incertidumbre.
+      physure se integra directamente con flujos de visualización mediante el módulo <code>physure.plotting</code> y métodos en la clase <code>Quantity</code>. Formatea etiquetas de ejes con sus respectivas unidades y dibuja barras de error a partir de la incertidumbre.
     </p>
     <pre><code>import numpy as np
-from measurekit import Q_
+from physure import Q_
 
 # Crear cantidades
 x = Q_(np.linspace(0, 10, 100), "m")

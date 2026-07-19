@@ -2,7 +2,7 @@
 import DocsLayout from "../layouts/DocsLayout.astro";
 
 const TITLE = "Overview";
-const DESCRIPTION = "MeasureKit — Unit-aware physics computation for Python. Zero runtime dependencies, optional Rust core, multi-backend tensors.";
+const DESCRIPTION = "physure — Unit-aware physics computation for Python. Zero runtime dependencies, optional Rust core, multi-backend tensors.";
 ---
 
 <DocsLayout title={TITLE} description={DESCRIPTION} activeSection="overview">
@@ -12,8 +12,8 @@ const DESCRIPTION = "MeasureKit — Unit-aware physics computation for Python. Z
       <span class="badge badge-green">Beta</span>
       <span>v0.1.8 · MIT License · Python 3.10+</span>
     </div>
-    <img src="/logo.jpg" alt="MeasureKit logo" width="100" height="100" class="hero-logo" />
-    <h1>MeasureKit</h1>
+    <img src="/logo.jpg" alt="physure logo" width="100" height="100" class="hero-logo" />
+    <h1>physure</h1>
     <p class="hero-lead">
       Unit-aware physics computation for Python. Attach physical units to numbers, 
       NumPy arrays, PyTorch tensors, and JAX arrays — and let the engine keep you honest.
@@ -21,8 +21,8 @@ const DESCRIPTION = "MeasureKit — Unit-aware physics computation for Python. Z
     <div class="hero-install">
       <div class="install-cmd">
         <span class="prompt">$</span>
-        <code>pip install measurekit</code>
-        <button class="copy-btn-hero" data-copy="pip install measurekit" title="Copy">
+        <code>pip install physure</code>
+        <button class="copy-btn-hero" data-copy="pip install physure" title="Copy">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
         </button>
       </div>
@@ -30,7 +30,7 @@ const DESCRIPTION = "MeasureKit — Unit-aware physics computation for Python. Z
     <div class="hero-links">
       <a href="/quickstart" class="btn-primary">Get Started →</a>
       <a href="/install" class="btn-secondary">Installation Options</a>
-      <a href="https://github.com/Alexisrx96/measurekit" target="_blank" rel="noopener" class="btn-ghost">GitHub</a>
+      <a href="https://github.com/Alexisrx96/physure" target="_blank" rel="noopener" class="btn-ghost">GitHub</a>
     </div>
   </div>
 
@@ -40,7 +40,7 @@ const DESCRIPTION = "MeasureKit — Unit-aware physics computation for Python. Z
     <div class="demo-grid">
       <div class="demo-card">
         <div class="demo-label">Python API</div>
-        <pre><code><span class="kw">from</span> measurekit <span class="kw">import</span> Q_
+        <pre><code><span class="kw">from</span> physure <span class="kw">import</span> Q_
 
 <span class="cm"># Unit-safe arithmetic</span>
 d = Q_(10, <span class="str">"km"</span>)
@@ -62,7 +62,7 @@ stress == 250 Pa   <span class="cm"># True</span></code></pre>
       </div>
       <div class="demo-card">
         <div class="demo-label">Uncertainty Propagation</div>
-        <pre><code><span class="kw">from</span> measurekit <span class="kw">import</span> Q_
+        <pre><code><span class="kw">from</span> physure <span class="kw">import</span> Q_
 
 g = Q_(9.81, <span class="str">"m/s^2"</span>, uncertainty=0.02)
 m = Q_(5.0,  <span class="str">"kg"</span>,    uncertainty=0.1)
@@ -72,10 +72,10 @@ F = g * m
       </div>
       <div class="demo-card">
         <div class="demo-label">Terminal Calculator</div>
-        <pre><code><span class="prompt">$</span> python -m measurekit <span class="str">"500 N / 2 m^2 =&gt; kPa"</span>
+        <pre><code><span class="prompt">$</span> python -m physure <span class="str">"500 N / 2 m^2 =&gt; kPa"</span>
 0.25 kPa
 
-<span class="prompt">$</span> python -m measurekit
+<span class="prompt">$</span> python -m physure
 <span class="prompt">mk&gt;</span> g = 9.81 +/- 0.02 m/s^2
 <span class="prompt">mk&gt;</span> g =&gt; ft/s^2
 32.185... ft/s^2</code></pre>
@@ -83,17 +83,17 @@ F = g * m
     </div>
   </section>
 
-  <!-- What is MeasureKit -->
+  <!-- What is physure -->
   <section>
-    <h2>What is MeasureKit?</h2>
+    <h2>What is physure?</h2>
     <p>
-      MeasureKit started as "The Over-Engineered Homework Validator" — one developer wanted to 
+      physure started as "The Over-Engineered Homework Validator" — one developer wanted to 
       check physics exercises and instead built a <strong>backend-agnostic, JIT-compilable 
       dimension engine</strong>. It applies enterprise architecture patterns to unit handling, 
       giving you safety and expressiveness usually reserved for research frameworks.
     </p>
     <p>
-      Unlike Pint (which is excellent and battle-tested), MeasureKit focuses specifically on:
+      Unlike Pint (which is excellent and battle-tested), physure focuses specifically on:
     </p>
     <ul>
       <li>JIT-compiled unit safety on <strong>PyTorch and JAX tensors</strong></li>
@@ -130,7 +130,7 @@ F = g * m
       <div class="card feat-card">
         <div class="feat-icon">🦀</div>
         <h3>Optional Rust Core</h3>
-        <p>measurekit-core (via PyO3) accelerates unit algebra. Every path has a pure-Python fallback.</p>
+        <p>physure-core (via PyO3) accelerates unit algebra. Every path has a pure-Python fallback.</p>
       </div>
       <div class="card feat-card">
         <div class="feat-icon">✍️</div>
@@ -204,7 +204,7 @@ F = g * m
   <!-- Honest Performance -->
   <section>
     <h2>Honest performance</h2>
-    <p>Most libraries claim "zero overhead". Here's what that actually means in MeasureKit:</p>
+    <p>Most libraries claim "zero overhead". Here's what that actually means in physure:</p>
     <table>
       <thead>
         <tr>
@@ -241,7 +241,7 @@ F = g * m
   <!-- CTA -->
   <section class="cta-section">
     <h2>Ready to start?</h2>
-    <p>Head to the Quick Start guide to have MeasureKit running in under 5 minutes.</p>
+    <p>Head to the Quick Start guide to have physure running in under 5 minutes.</p>
     <div class="cta-actions">
       <a href="/quickstart" class="btn-primary">Quick Start Guide →</a>
       <a href="/install" class="btn-secondary">Installation options</a>

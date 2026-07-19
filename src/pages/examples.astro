@@ -2,7 +2,7 @@
 import DocsLayout from "../layouts/DocsLayout.astro";
 ---
 
-<DocsLayout title="Examples" description="Real-world examples using MeasureKit for physics, engineering, and data science" activeSection="examples">
+<DocsLayout title="Examples" description="Real-world examples using physure for physics, engineering, and data science" activeSection="examples">
   <div class="page-header">
     <div class="kicker">Examples</div>
     <h1>Examples</h1>
@@ -18,7 +18,7 @@ import DocsLayout from "../layouts/DocsLayout.astro";
         <p>The original use case: verify physics problem solutions with unit safety.</p>
       </div>
       <a href="/playground" class="btn-secondary run-in-playground" style="font-size: 0.8rem; padding: 0.35rem 0.75rem; border-radius: 6px; flex-shrink: 0; align-self: center; text-decoration: none;">Run in Playground 🚀</a></div>
-    <pre><code>from measurekit import Q_
+    <pre><code>from physure import Q_
 
 # Problem: A car travels at 90 km/hr. How far does it go in 2.5 hours?
 speed    = Q_(90, "km/hr")
@@ -51,7 +51,7 @@ print(f"Free fall: &#123;d&#125;")    # 44.145 m</code></pre>
         <p>Stress analysis and pressure calculations.</p>
       </div>
       <a href="/playground" class="btn-secondary run-in-playground" style="font-size: 0.8rem; padding: 0.35rem 0.75rem; border-radius: 6px; flex-shrink: 0; align-self: center; text-decoration: none;">Run in Playground 🚀</a></div>
-    <pre><code>from measurekit import Q_
+    <pre><code>from physure import Q_
 
 # Stress calculation
 force = Q_(500, "N")
@@ -87,7 +87,7 @@ print(I.to("g⋅cm^2"))   # 1.8e+6 g⋅cm²</code></pre>
         <p>Offset unit handling for Celsius, Fahrenheit, and Kelvin.</p>
       </div>
       <a href="/playground" class="btn-secondary run-in-playground" style="font-size: 0.8rem; padding: 0.35rem 0.75rem; border-radius: 6px; flex-shrink: 0; align-self: center; text-decoration: none;">Run in Playground 🚀</a></div>
-    <pre><code>from measurekit import Q_
+    <pre><code>from physure import Q_
 
 # Temperature conversions (absolute)
 t_c = Q_(100, "degC")
@@ -118,7 +118,7 @@ t_new = t1 + Q_(5, "K")  # 105.0 °C</code></pre>
         <p>Error budgets for physics experiments.</p>
       </div>
       <a href="/playground" class="btn-secondary run-in-playground" style="font-size: 0.8rem; padding: 0.35rem 0.75rem; border-radius: 6px; flex-shrink: 0; align-self: center; text-decoration: none;">Run in Playground 🚀</a></div>
-    <pre><code>from measurekit import Q_
+    <pre><code>from physure import Q_
 
 # Measure gravitational acceleration from a pendulum experiment
 # T = 2π√(L/g)  →  g = 4π²L/T²
@@ -152,7 +152,7 @@ print(f"R = &#123;R.value:.3f&#125; ± &#123;R.uncertainty:.3f&#125; Ω")  # 4.8
         <p>Write physics problems in natural notation using GrammarInterpreter.</p>
       </div>
       <a href="/playground" class="btn-secondary run-in-playground" style="font-size: 0.8rem; padding: 0.35rem 0.75rem; border-radius: 6px; flex-shrink: 0; align-self: center; text-decoration: none;">Run in Playground 🚀</a></div>
-    <pre><code>from measurekit.ext.grammar import GrammarInterpreter
+    <pre><code>from physure.ext.grammar import GrammarInterpreter
 
 mn = GrammarInterpreter()
 
@@ -188,7 +188,7 @@ print(mn.eval("P == 5.76 W"))  # True
       </div>
       <a href="/playground" class="btn-secondary run-in-playground" style="font-size: 0.8rem; padding: 0.35rem 0.75rem; border-radius: 6px; flex-shrink: 0; align-self: center; text-decoration: none;">Run in Playground 🚀</a></div>
     <pre><code>import numpy as np
-from measurekit import Q_
+from physure import Q_
 
 # Velocity array over time
 t = Q_(np.linspace(0, 10, 11), "s")        # 0 to 10 seconds
@@ -219,9 +219,9 @@ print(lengths.to("ft"))  # [3.28, 8.20, 16.40, 32.81, 328.08] ft</code></pre>
         <p>Compute velocity and acceleration from a symbolic position function.</p>
       </div>
       <a href="/playground" class="btn-secondary run-in-playground" style="font-size: 0.8rem; padding: 0.35rem 0.75rem; border-radius: 6px; flex-shrink: 0; align-self: center; text-decoration: none;">Run in Playground 🚀</a></div>
-    <pre><code># Requires: pip install "measurekit[symbolic]"
+    <pre><code># Requires: pip install "physure[symbolic]"
 import sympy as sp
-from measurekit import Q_
+from physure import Q_
 
 t = sp.Symbol("t")
 
@@ -251,10 +251,10 @@ print(f"x(3s) = &#123;x.magnitude.subs(t, 3)&#125; m")    # 45 m</code></pre>
         <p>Unit-aware data analysis in DataFrames.</p>
       </div>
       <a href="/playground" class="btn-secondary run-in-playground" style="font-size: 0.8rem; padding: 0.35rem 0.75rem; border-radius: 6px; flex-shrink: 0; align-self: center; text-decoration: none;">Run in Playground 🚀</a></div>
-    <pre><code># Requires: pip install "measurekit[pandas]"
+    <pre><code># Requires: pip install "physure[pandas]"
 import pandas as pd
 import numpy as np
-from measurekit import Q_
+from physure import Q_
 
 # Sample sensor data
 df = pd.DataFrame(&#123;
@@ -290,9 +290,9 @@ print(df.describe().round(3))</code></pre>
         <p>Unit-validated functions compiled to native GPU kernels.</p>
       </div>
       <a href="/playground" class="btn-secondary run-in-playground" style="font-size: 0.8rem; padding: 0.35rem 0.75rem; border-radius: 6px; flex-shrink: 0; align-self: center; text-decoration: none;">Run in Playground 🚀</a></div>
-    <pre><code># Requires: pip install "measurekit[torch]"
+    <pre><code># Requires: pip install "physure[torch]"
 import torch
-from measurekit import Q_
+from physure import Q_
 
 def kinetic_energy(mass, velocity):
     """KE = ½mv² — units validated at trace time."""
@@ -324,8 +324,8 @@ print(KE.to("kJ"))  # 3.5 kJ
         <p>Define substances, balance equations, and compute yields with uncertainty.</p>
       </div>
       <a href="/playground" class="btn-secondary run-in-playground" style="font-size: 0.8rem; padding: 0.35rem 0.75rem; border-radius: 6px; flex-shrink: 0; align-self: center; text-decoration: none;">Run in Playground 🚀</a></div>
-    <pre><code>from measurekit import Q_
-from measurekit.ext.chemistry import Reaction, Species
+    <pre><code>from physure import Q_
+from physure.ext.chemistry import Reaction, Species
 
 # 1. Define species
 water = Species("H2O")
@@ -353,7 +353,7 @@ print(f"H2O Yield: &#123;result.yields['H2O'].to('g'):.2f&#125;")  # ~56.31 g</c
         <p>Compile a physics formula into a raw float kernel with zero per-call overhead.</p>
       </div>
       <a href="/playground" class="btn-secondary run-in-playground" style="font-size: 0.8rem; padding: 0.35rem 0.75rem; border-radius: 6px; flex-shrink: 0; align-self: center; text-decoration: none;">Run in Playground 🚀</a></div>
-    <pre><code>from measurekit.ext.compiler import compile_physics_model
+    <pre><code>from physure.ext.compiler import compile_physics_model
 
 # Define standard Python function
 def drag_force(density, velocity, area, drag_coeff):
@@ -385,8 +385,8 @@ print(f"Force: &#123;res:.4f&#125; (unitless float)")  # 45.9375</code></pre>
         <p>Fit dimensionally consistent formulas to experimental physics datasets.</p>
       </div>
       <a href="/playground" class="btn-secondary run-in-playground" style="font-size: 0.8rem; padding: 0.35rem 0.75rem; border-radius: 6px; flex-shrink: 0; align-self: center; text-decoration: none;">Run in Playground 🚀</a></div>
-    <pre><code>from measurekit import Q_
-from measurekit.ext.symbolic_regression import SymbolicRegressor
+    <pre><code>from physure import Q_
+from physure.ext.symbolic_regression import SymbolicRegressor
 
 # Define dataset variables
 t = Q_([1.0, 2.0, 3.0, 4.0, 5.0], "s", symbol="t")

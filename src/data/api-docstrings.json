@@ -2,7 +2,7 @@
   "classes": {
     "Quantity": {
       "name": "Quantity",
-      "docstring": "Represents a physical quantity with magnitude, unit, and uncertainty.\n\nExamples:\n    >>> from measurekit import Q_\n    >>> length = Q_(10, \"m\")\n    >>> time = Q_(2, \"s\")\n    >>> velocity = length / time\n    >>> print(velocity)\n    5.0 m/s\n    >>> print(velocity.to(\"km/h\"))\n    18.0 km/h",
+      "docstring": "Represents a physical quantity with magnitude, unit, and uncertainty.\n\nExamples:\n    >>> from physure import Q_\n    >>> length = Q_(10, \"m\")\n    >>> time = Q_(2, \"s\")\n    >>> velocity = length / time\n    >>> print(velocity)\n    5.0 m/s\n    >>> print(velocity.to(\"km/h\"))\n    18.0 km/h",
       "properties": [
         {
           "name": "_numeric_std_dev",

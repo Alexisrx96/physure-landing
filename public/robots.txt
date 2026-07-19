@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://measurekit.irvintorres.com/sitemap.xml
+Sitemap: https://physure.irvintorres.com/sitemap.xml

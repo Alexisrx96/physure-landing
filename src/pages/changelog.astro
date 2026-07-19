@@ -2,15 +2,15 @@
 import DocsLayout from "../layouts/DocsLayout.astro";
 ---
 
-<DocsLayout title="Changelog" description="MeasureKit release history and version changes" activeSection="changelog">
+<DocsLayout title="Changelog" description="physure release history and version changes" activeSection="changelog">
   <div class="page-header">
     <div class="kicker">Release History</div>
     <h1>Changelog</h1>
-    <p>Version history and release notes for MeasureKit.</p>
+    <p>Version history and release notes for physure.</p>
   </div>
 
   <div class="callout callout-info">
-    <p>MeasureKit is currently in <strong>Beta</strong>. The API may change between versions before the 1.0 stable release.</p>
+    <p>physure is currently in <strong>Beta</strong>. The API may change between versions before the 1.0 stable release.</p>
   </div>
 
   <div class="releases">
@@ -26,23 +26,23 @@ import DocsLayout from "../layouts/DocsLayout.astro";
       <div class="release-body">
         <h3>What's new</h3>
         <ul>
-          <li>Chemistry extension added under <code>measurekit.ext.chemistry</code>: Species formula parsing, automatic stoichiometric reaction balancing, theoretical yields, kinetics, and thermodynamic free energy checks</li>
-          <li>Native Symbolic Engine (<code>measurekit.domain.symbolic.native.Expr</code>): Zero-dependency algebraic simplification (<code>.simplify()</code>) and analytical differentiation (<code>.diff()</code>) with Rust core backend and pure-Python fallback</li>
-          <li>Ahead-of-Time Physics Compiler (<code>measurekit.ext.compiler</code>): <code>compile_physics_model</code> traces and verifies formulas, baking them into high-speed unitless raw-float kernels</li>
-          <li>Symbolic Regression (<code>measurekit.ext.symbolic_regression</code>): <code>SymbolicRegressor</code> fits physically valid formulas to empirical data using genetic programming</li>
-          <li>Unit-Aware Plotting (<code>measurekit.plotting</code>): <code>plot()</code>, <code>plot_slices()</code>, and <code>plot_covariance()</code> with automatic axis labels, error bars, and covariance visualization</li>
+          <li>Chemistry extension added under <code>physure.ext.chemistry</code>: Species formula parsing, automatic stoichiometric reaction balancing, theoretical yields, kinetics, and thermodynamic free energy checks</li>
+          <li>Native Symbolic Engine (<code>physure.domain.symbolic.native.Expr</code>): Zero-dependency algebraic simplification (<code>.simplify()</code>) and analytical differentiation (<code>.diff()</code>) with Rust core backend and pure-Python fallback</li>
+          <li>Ahead-of-Time Physics Compiler (<code>physure.ext.compiler</code>): <code>compile_physics_model</code> traces and verifies formulas, baking them into high-speed unitless raw-float kernels</li>
+          <li>Symbolic Regression (<code>physure.ext.symbolic_regression</code>): <code>SymbolicRegressor</code> fits physically valid formulas to empirical data using genetic programming</li>
+          <li>Unit-Aware Plotting (<code>physure.plotting</code>): <code>plot()</code>, <code>plot_slices()</code>, and <code>plot_covariance()</code> with automatic axis labels, error bars, and covariance visualization</li>
           <li>Python 3.13 and 3.14 support added to CI matrix</li>
           <li>Improved startup performance — import budget tracked in CI</li>
           <li>GrammarInterpreter: added <code>= ?</code> query syntax for variable inspection</li>
-          <li><code>measurekit repl</code> now accepts an inline expression argument</li>
+          <li><code>physure repl</code> now accepts an inline expression argument</li>
           <li>CODATA 2022 constants updated — 400+ physical constants available</li>
-          <li>Rust core (<code>measurekit-core</code>) updated for PyO3 0.22 compatibility</li>
+          <li>Rust core (<code>physure-core</code>) updated for PyO3 0.22 compatibility</li>
           <li>Pandas integration improved: better dtype handling for quantity columns</li>
           <li>Test coverage gate raised to 80%+</li>
         </ul>
 
         <h3>Install</h3>
-        <pre><code>pip install measurekit==0.1.8</code></pre>
+        <pre><code>pip install physure==0.1.8</code></pre>
       </div>
     </div>
 
@@ -56,7 +56,7 @@ import DocsLayout from "../layouts/DocsLayout.astro";
       <div class="release-body">
         <ul>
           <li>Added JAX backend with full <code>jax.jit</code> and <code>jax.vmap</code> support</li>
-          <li>Functional API (<code>measurekit.functional</code>) for explicit covariance state in JAX pipelines</li>
+          <li>Functional API (<code>physure.functional</code>) for explicit covariance state in JAX pipelines</li>
           <li>FunctionalState registered as a JAX pytree</li>
           <li>Correlated uncertainty propagation via covariance store</li>
           <li><code>propagation_mode</code> context manager to switch modes</li>
@@ -77,8 +77,8 @@ import DocsLayout from "../layouts/DocsLayout.astro";
           <li>PyTorch backend: <code>__torch_dispatch__</code> integration for JIT compilation</li>
           <li>Unit checks at trace time → compiled graph sees only raw tensors (&lt;1.1× overhead)</li>
           <li>NumPy backend with Numba JIT support</li>
-          <li>MeasureKit grammar interpreter (<code>measurekit.ext.grammar</code>)</li>
-          <li>REPL and CLI entry point (<code>python -m measurekit</code>)</li>
+          <li>physure grammar interpreter (<code>physure.ext.grammar</code>)</li>
+          <li>REPL and CLI entry point (<code>python -m physure</code>)</li>
           <li>SymPy integration for symbolic differentiation</li>
         </ul>
       </div>
@@ -93,7 +93,7 @@ import DocsLayout from "../layouts/DocsLayout.astro";
       </div>
       <div class="release-body">
         <ul>
-          <li>Rust core (<code>measurekit-core</code>) via PyO3: RationalUnit, UnitRegistry, CovarianceStore</li>
+          <li>Rust core (<code>physure-core</code>) via PyO3: RationalUnit, UnitRegistry, CovarianceStore</li>
           <li>Zero-dependency base install — pure Python fallback for all Rust paths</li>
           <li>SI prefix support: all 24 prefixes (yocto to yotta)</li>
           <li>125+ named units across 28 dimensions</li>
@@ -124,7 +124,7 @@ import DocsLayout from "../layouts/DocsLayout.astro";
   </div>
 
   <div class="callout callout-info" style="margin-top: 2rem;">
-    <p>For the full commit history, see the <a href="https://github.com/Alexisrx96/measurekit/commits/main" target="_blank" rel="noopener">GitHub commits</a>. To report a bug or request a feature, <a href="https://github.com/Alexisrx96/measurekit/issues" target="_blank" rel="noopener">open an issue</a>.</p>
+    <p>For the full commit history, see the <a href="https://github.com/Alexisrx96/physure/commits/main" target="_blank" rel="noopener">GitHub commits</a>. To report a bug or request a feature, <a href="https://github.com/Alexisrx96/physure/issues" target="_blank" rel="noopener">open an issue</a>.</p>
   </div>
 </DocsLayout>
 
