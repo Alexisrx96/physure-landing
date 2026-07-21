@@ -9,7 +9,30 @@ import DocsLayout from "../layouts/DocsLayout.astro";
     <p>physure has zero runtime dependencies in the base install. Optional extras add backends and acceleration.</p>
   </div>
 
-  <h2>From PyPI</h2>
+  <h2>Standalone PHS CLI & REPL (One-Liner) ⚡</h2>
+  <p>Install the native standalone Rust <code>phs</code> binary executable into your user PATH:</p>
+
+  <div class="tabs">
+    <div class="tab-list">
+      <button class="tab-btn active" data-tab="inst-sh">Linux / macOS (bash)</button>
+      <button class="tab-btn" data-tab="inst-pwsh">Windows (PowerShell)</button>
+      <button class="tab-btn" data-tab="inst-cmd">Windows (CMD)</button>
+    </div>
+    <div class="tab-panel active" id="inst-sh">
+      <pre><code>curl -fsSL https://physure.irvintorres.com/install.sh | bash</code></pre>
+    </div>
+    <div class="tab-panel" id="inst-pwsh">
+      <pre><code>irm https://physure.irvintorres.com/install.ps1 | iex</code></pre>
+    </div>
+    <div class="tab-panel" id="inst-cmd">
+      <pre><code>powershell -ExecutionPolicy Bypass -c "irm https://physure.irvintorres.com/install.ps1 | iex"</code></pre>
+    </div>
+  </div>
+
+  <p>Or install via Cargo if you have the Rust toolchain installed:</p>
+  <pre><code>cargo install physure --bin phs</code></pre>
+
+  <h2>Python Package (From PyPI)</h2>
   <p>Choose the install that matches your use case:</p>
 
   <div class="install-options">

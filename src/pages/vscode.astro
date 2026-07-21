@@ -24,24 +24,24 @@ import DocsLayout from "../layouts/DocsLayout.astro";
       <p>Robust syntax coloring for variables, physical units, exponents, uncertainties (<code>+/-</code> or <code>±</code>), conversion operators (<code>=&gt;</code>), and assertions (<code>==</code>).</p>
     </div>
     <div class="card">
-      <h3>⚡ Rapid Execution</h3>
-      <p>Instantly run the active <code>.phs</code> file using your configured Python interpreter context with a single keyboard shortcut.</p>
+      <h3>⚡ Standalone Native Execution</h3>
+      <p>Instantly run active <code>.phs</code> scripts using the standalone native Rust <code>phs</code> binary with zero Python dependencies required.</p>
     </div>
     <div class="card">
       <h3>💬 Interactive REPL</h3>
-      <p>Start an interactive terminal REPL and stream the current line or active code selections to it dynamically.</p>
+      <p>Start a native Rust REPL session directly in VS Code terminal and stream selections or active lines dynamically.</p>
     </div>
     <div class="card">
-      <h3>🔍 Unit Autocomplete</h3>
-      <p>Intelligent autocomplete lists querying active physical units live from your configured Python <code>physure</code> installation.</p>
+      <h3>🦀 High-Speed Rust LSP (`physure-lsp`)</h3>
+      <p>Powered by `physure-lsp` Language Server written in Rust for real-time syntax checking, dimensional diagnostics, and auto-completion.</p>
+    </div>
+    <div class="card">
+      <h3>📜 Shebang & New File Command</h3>
+      <p>Create new PHS files starting with <code>#!/usr/bin/env phs</code> via <strong>Physure: New PHS File</strong> or auto-detect shebang scripts.</p>
     </div>
     <div class="card">
       <h3>ℹ️ Hover Info & Outline</h3>
-      <p>Hover a unit to see its base dimensions/description, or jump to any assigned variable using the built-in Document Outline.</p>
-    </div>
-    <div class="card">
-      <h3>🛠️ Inline Diagnostics</h3>
-      <p>Get instant notifications about unbalanced parentheses and unrecognized syntax characters as you type.</p>
+      <p>Hover a unit to see base dimensions and descriptions, or jump to any assigned variable using Document Outline.</p>
     </div>
   </div>
 
@@ -57,7 +57,7 @@ import DocsLayout from "../layouts/DocsLayout.astro";
 
   <h3>2. VSIX Manual Installation (VSCodium / offline)</h3>
   <ol>
-    <li>Download the <a href="/vsc-physure-0.2.1.vsix" download>vsc-physure-0.2.1.vsix</a> extension package.</li>
+    <li>Download the <a href="/vsc-physure-0.2.2.vsix" download>vsc-physure-0.2.2.vsix</a> extension package.</li>
     <li>In VS Code or Cursor, open the Command Palette (<code>Ctrl+Shift+P</code> or <code>Cmd+Shift+P</code>).</li>
     <li>Select <strong>Extensions: Install from VSIX...</strong>.</li>
     <li>Navigate to the downloaded <code>.vsix</code> file and select it.</li>

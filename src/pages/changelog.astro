@@ -17,9 +17,33 @@ import DocsLayout from "../layouts/DocsLayout.astro";
 
     <div class="release current">
       <div class="release-header">
+        <h2 id="v022">
+          <span class="release-version">v0.2.2</span>
+          <span class="badge badge-green">Latest</span>
+          <span class="release-date">2026</span>
+        </h2>
+      </div>
+      <div class="release-body">
+        <h3>What's new</h3>
+        <ul>
+          <li><strong>Standalone Native Rust PHS Engine (<code>phs</code>)</strong>: Pure Rust interpreter executable with zero Python dependencies. Supports script execution (<code>phs file.phs</code>), CLI evaluation (<code>phs "500 N / 2 m^2 => kPa"</code>), and standalone terminal REPL.</li>
+          <li><strong>VS Code Extension <code>vsc-physure 0.2.2</code></strong>: Launches native <code>phs</code> executable directly, native REPL terminal, <code>physure-lsp</code> high-performance Rust language server, shebang detection (<code>#!/usr/bin/env phs</code>), and <code>Physure: New PHS File</code> command.</li>
+          <li><strong>PyO3 Native Bridge</strong>: Fast PyO3 FFI bridge (<code>physure._core.evaluate_phs_native</code>) exposing the Rust PHS evaluator directly to Python host applications.</li>
+          <li><strong>Display Text & Multiline Blocks</strong>: Full support for verbatim Markdown display text blocks (<code>```...```</code>) and indented multiline function bodies in PHS grammar.</li>
+          <li><strong>Vector & Uncertainty Builtins</strong>: Element-wise vector power and division (<code>Vector ^ 2</code>, <code>k * q / Vector^2</code>), <code>linspace</code>, <code>plot</code>, and uncertainty literal propagation (<code>+/-</code>).</li>
+        </ul>
+
+        <h3>Install</h3>
+        <pre><code>cargo install --path physure-core --bin phs  # Native binary
+pip install physure                           # Python package
+code --install-extension vsc-physure-0.2.2.vsix # VS Code Extension</code></pre>
+      </div>
+    </div>
+
+    <div class="release">
+      <div class="release-header">
         <h2 id="v018">
           <span class="release-version">v0.1.8</span>
-          <span class="badge badge-green">Latest</span>
           <span class="release-date">2026</span>
         </h2>
       </div>

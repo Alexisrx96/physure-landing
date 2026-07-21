@@ -6,7 +6,7 @@ import DocsLayout from "../layouts/DocsLayout.astro";
   <div class="page-header">
     <div class="kicker">Tools</div>
     <h1>CLI & REPL</h1>
-    <p>Use physure from the terminal — no Python scripts needed. Like GNU <code>units</code>, but with uncertainty propagation.</p>
+    <p>Use physure directly from the terminal via the standalone native <code>phs</code> Rust executable or Python host bridge.</p>
   </div>
 
   <h2>Three modes</h2>
@@ -14,76 +14,79 @@ import DocsLayout from "../layouts/DocsLayout.astro";
     <div class="mode-card">
       <div class="mode-num">1</div>
       <h3>Single expression</h3>
-      <p>Pass an expression as a command-line argument. Evaluates and exits immediately.</p>
-      <pre><code>python -m physure "500 N / 2 m^2 => kPa"
+      <p>Pass an expression as a command-line argument to the native <code>phs</code> binary. Evaluates instantly.</p>
+      <pre><code>phs "500 N / 2 m^2 => kPa"
 # 0.25 kPa</code></pre>
     </div>
     <div class="mode-card">
       <div class="mode-num">2</div>
-      <h3>File evaluation</h3>
-      <p>Pipe a file of physure statements. All results are printed in order.</p>
-      <pre><code>python -m physure &lt; notes.phs</code></pre>
+      <h3>Script evaluation</h3>
+      <p>Execute a <code>.phs</code> script file directly or via shebang <code>#!/usr/bin/env phs</code>.</p>
+      <pre><code>phs script.phs
+# or ./script.phs</code></pre>
     </div>
     <div class="mode-card">
       <div class="mode-num">3</div>
       <h3>Interactive REPL</h3>
-      <p>Start an interactive session with history, just press Enter. Exit with Ctrl+D.</p>
-      <pre><code>python -m physure
-      mk&gt; ...</code></pre>
+      <p>Start a standalone native Rust REPL session. Exit with Ctrl+D or <code>exit</code>.</p>
+      <pre><code>phs
+phs> ...</code></pre>
     </div>
   </div>
 
   <h2>Quick examples</h2>
   <pre><code># Unit conversions
-python -m physure "60 mi/hr => km/hr"
-# 96.5606 km/hr
+phs "60 mi/h => km/h"
+# 96.5606 km/h
 
-python -m physure "1 atm => kPa"
+phs "1 atm => kPa"
 # 101.325 kPa
 
-python -m physure "100 degC => degF"
-# 212.0 degF
-
 # Arithmetic with units
-python -m physure "9.81 m/s^2 * 70 kg => N"
+phs "9.81 m/s^2 * 70 kg => N"
 # 686.7 N
 
-python -m physure "1 kWh => MJ"
+phs "1 kWh => MJ"
 # 3.6 MJ
 
 # With uncertainty literals
-python -m physure "9.81 +/- 0.02 m/s^2 => ft/s^2"
+phs "9.81 +/- 0.02 m/s^2 => ft/s^2"
 # 32.185 ± 0.066 ft/s^2</code></pre>
 
   <h2>REPL session</h2>
-  <pre><code>$ python -m physure
-physure — unit-aware calculator. Try `500 N / 2 m^2 => kPa`; exit with Ctrl-D.
+  <pre><code>$ phs
+physure — native standalone PHS calculator.
+Try `500 N / 2 m^2 => kPa`; exit with Ctrl-D or 'exit'.
 
-mk&gt; g = 9.81 +/- 0.02 m/s^2
-mk&gt; m = 70 kg
-mk&gt; F = g * m
-mk&gt; F => N
+phs> g = 9.81 +/- 0.02 m/s^2
+phs> m = 70 kg
+phs> F = g * m
+phs> F => N
 686.7 ± 1.4 N
 
-mk&gt; v = 100 km/hr
-mk&gt; v => m/s
+phs> v = 100 km/h
+phs> v => m/s
 27.7778 m/s
 
-mk&gt; stress = 500 N / 2 m^2
-mk&gt; stress => kPa
+phs> stress = 500 N / 2 m^2
+phs> stress => kPa
 0.25 kPa
 
-mk&gt; stress == 250 Pa
+phs> stress == 250 Pa
 True
 
-mk&gt; exit</code></pre>
+phs> exit</code></pre>
 
-  <h2>CLI subcommand</h2>
-  <p>Also available via the <code>physure</code> entry point installed by pip:</p>
-  <pre><code># After pip install physure:
-physure repl                          # start interactive REPL
-physure repl "500 N / 2 m^2 => kPa"  # evaluate single expression
-physure sync-types                    # regenerate unit type stubs</code></pre>
+  <h2>CLI subcommands & Python fallback</h2>
+  <p>Available via the native <code>phs</code> binary or <code>python -m physure</code>:</p>
+  <pre><code># Native Rust binary (0ms cold start):
+phs script.phs                        # execute script file
+phs "500 N / 2 m^2 => kPa"            # evaluate expression
+phs                                   # start interactive REPL
+
+# Python module fallback:
+python -m physure script.phs
+python -m physure "500 N / 2 m^2 => kPa"</code></pre>
 
   <h2>physure syntax reference</h2>
   <p>The REPL uses physure (PHS) syntax. Here's a complete reference:</p>
