@@ -17,9 +17,33 @@ import DocsLayout from "../layouts/DocsLayout.astro";
 
     <div class="release current">
       <div class="release-header">
+        <h2 id="v023">
+          <span class="release-version">v0.2.3</span>
+          <span class="badge badge-green">Latest</span>
+          <span class="release-date">2026</span>
+        </h2>
+      </div>
+      <div class="release-body">
+        <h3>What's new</h3>
+        <ul>
+          <li><strong>physure-java on Maven Central</strong>: JNI bindings published as <code>io.github.alexisrx96:physure-java</code>, bundling native libraries for Linux, macOS, and Windows (x86_64 + aarch64) in one jar — no <code>java.library.path</code> setup needed.</li>
+          <li><strong>PHS plugin system</strong>: Native Rust plugins (ABI v2, hot-reload) and Python <code>.py</code> extension modules load through the same <code>use name[, name2] from &lt;domain&gt;</code> syntax. Scaffold one with <code>phs new-plugin myplugin --lang rust</code>.</li>
+          <li><strong>Domain-gated builtins</strong>: Core functions are always available; <code>calc</code>, <code>plot</code>, and <code>array</code> builtins now require an explicit <code>use ... from</code> import, keeping the base interpreter small.</li>
+          <li><strong>physure-lsp improvements</strong>: Context-aware autocompletion for <code>use</code>/<code>from</code> statements, and native aarch64 Linux builds now ship alongside every <code>phs</code> release.</li>
+          <li><strong>New docs</strong>: A dedicated <a href="/cli">PHS README</a> and a top-level <code>INSTALL.md</code> covering all four ways to use physure — the standalone <code>phs</code> CLI, the Python package, the Rust crate, and the Java bindings.</li>
+        </ul>
+
+        <h3>Install</h3>
+        <pre><code>curl -fsSL https://physure.irvintorres.com/install.sh | sh  # phs CLI (macOS/Linux)
+pip install physure                                          # Python package
+cargo install physure --bin phs                              # Rust / cargo</code></pre>
+      </div>
+    </div>
+
+    <div class="release">
+      <div class="release-header">
         <h2 id="v022">
           <span class="release-version">v0.2.2</span>
-          <span class="badge badge-green">Latest</span>
           <span class="release-date">2026</span>
         </h2>
       </div>

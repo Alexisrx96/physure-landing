@@ -17,9 +17,57 @@ import DocsLayout from "../../layouts/DocsLayout.astro";
 
     <div class="release current">
       <div class="release-header">
+        <h2 id="v023">
+          <span class="release-version">v0.2.3</span>
+          <span class="badge badge-green">Última</span>
+          <span class="release-date">2026</span>
+        </h2>
+      </div>
+      <div class="release-body">
+        <h3>Novedades</h3>
+        <ul>
+          <li><strong>physure-java en Maven Central</strong>: bindings JNI publicados como <code>io.github.alexisrx96:physure-java</code>, con las bibliotecas nativas de Linux, macOS y Windows (x86_64 + aarch64) empaquetadas en un solo jar — sin configurar <code>java.library.path</code>.</li>
+          <li><strong>Sistema de plugins de PHS</strong>: plugins nativos en Rust (ABI v2, con recarga en caliente) y módulos de extensión <code>.py</code> en Python se cargan con la misma sintaxis <code>use nombre[, nombre2] from &lt;dominio&gt;</code>. Genera uno con <code>phs new-plugin miplugin --lang rust</code>.</li>
+          <li><strong>Funciones nativas por dominio</strong>: las funciones del núcleo siempre están disponibles; las de <code>calc</code>, <code>plot</code> y <code>array</code> ahora requieren un <code>use ... from</code> explícito, manteniendo el intérprete base ligero.</li>
+          <li><strong>Mejoras en physure-lsp</strong>: autocompletado consciente del contexto para sentencias <code>use</code>/<code>from</code>, y ahora cada lanzamiento de <code>phs</code> incluye binarios nativos para Linux aarch64.</li>
+          <li><strong>Nueva documentación</strong>: un <a href="/es/cli">README de PHS</a> dedicado y un <code>INSTALL.md</code> en la raíz que cubre las cuatro formas de usar physure — el CLI <code>phs</code>, el paquete de Python, el crate de Rust y los bindings de Java.</li>
+        </ul>
+
+        <h3>Instalación</h3>
+        <pre><code>curl -fsSL https://physure.irvintorres.com/install.sh | sh  # CLI phs (macOS/Linux)
+pip install physure                                          # Paquete de Python
+cargo install physure --bin phs                              # Rust / cargo</code></pre>
+      </div>
+    </div>
+
+    <div class="release">
+      <div class="release-header">
+        <h2 id="v022">
+          <span class="release-version">v0.2.2</span>
+          <span class="release-date">2026</span>
+        </h2>
+      </div>
+      <div class="release-body">
+        <h3>Novedades</h3>
+        <ul>
+          <li><strong>Motor nativo de PHS en Rust (<code>phs</code>)</strong>: intérprete escrito en Rust puro, sin dependencias de Python. Soporta ejecución de scripts (<code>phs archivo.phs</code>), evaluación por CLI (<code>phs "500 N / 2 m^2 => kPa"</code>) y una REPL de terminal independiente.</li>
+          <li><strong>Extensión de VS Code <code>vsc-physure 0.2.2</code></strong>: lanza el ejecutable nativo <code>phs</code> directamente, terminal REPL nativa, el servidor de lenguaje en Rust <code>physure-lsp</code>, detección de shebang (<code>#!/usr/bin/env phs</code>) y el comando <code>Physure: New PHS File</code>.</li>
+          <li><strong>Puente nativo PyO3</strong>: puente FFI rápido vía PyO3 (<code>physure._core.evaluate_phs_native</code>) que expone el evaluador de PHS en Rust directamente a aplicaciones host en Python.</li>
+          <li><strong>Texto de visualización y bloques multilínea</strong>: soporte completo para bloques de texto Markdown literal (<code>```...```</code>) y cuerpos de función multilínea indentados en la gramática de PHS.</li>
+          <li><strong>Funciones nativas de vectores e incertidumbre</strong>: potencia y división elemento a elemento en vectores (<code>Vector ^ 2</code>, <code>k * q / Vector^2</code>), <code>linspace</code>, <code>plot</code> y propagación de literales de incertidumbre (<code>+/-</code>).</li>
+        </ul>
+
+        <h3>Instalación</h3>
+        <pre><code>cargo install physure --bin phs                 # Binario nativo
+pip install physure                              # Paquete de Python
+code --install-extension vsc-physure-0.2.2.vsix  # Extensión de VS Code</code></pre>
+      </div>
+    </div>
+
+    <div class="release">
+      <div class="release-header">
         <h2 id="v018">
           <span class="release-version">v0.1.8</span>
-          <span class="badge badge-green">Última</span>
           <span class="release-date">2026</span>
         </h2>
       </div>
