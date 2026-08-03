@@ -1,5 +1,6 @@
 ---
 import DocsLayout from "../../layouts/DocsLayout.astro";
+import { PHYSURE_CHANNEL, PHYSURE_LATEST_RELEASE } from "../../version";
 
 const TITLE = "Inicio";
 const DESCRIPTION = "physure — Computación física con unidades y dimensiones correctas desde un núcleo Rust compartido, expuesto como DSL (phs), librería de Python, crate de Rust y paquete para la JVM.";
@@ -10,7 +11,7 @@ const DESCRIPTION = "physure — Computación física con unidades y dimensiones
   <div class="hero">
     <div class="hero-badge">
       <span class="badge badge-green">Beta</span>
-      <span>v0.2.3 · Licencia MIT · <code>phs</code> no necesita Python</span>
+      <span>{PHYSURE_CHANNEL} · último release v{PHYSURE_LATEST_RELEASE} · Licencia MIT</span>
     </div>
     <div class="hero-shields">
       <a href="https://pypi.org/project/physure/" target="_blank" rel="noopener"><img src="https://img.shields.io/pypi/v/physure?color=F59E0B&labelColor=18181A" alt="PyPI" height="20" /></a>

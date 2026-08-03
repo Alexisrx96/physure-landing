@@ -1,11 +1,13 @@
 ---
+import { PHYSURE_CHANNEL } from "../version";
+
 export interface Props {
   title: string;
   description?: string;
   activeSection?: string;
 }
 
-const { title, description = "physure — Unit-aware physics computation for Python", activeSection = "" } = Astro.props;
+const { title, description = "physure — Unit-aware, dimension-correct physics computing from a shared Rust core", activeSection = "" } = Astro.props;
 
 const SITE = Astro.site?.href.replace(/\/$/, "") ?? "";
 const OG_IMAGE = SITE + "/og.png";
@@ -80,7 +82,7 @@ const t = {
         <a href={langPrefix + "/"} class="brand">
           <img src="/logo-icon.svg" alt="physure" width="32" height="32" class="brand-logo" />
           <span class="brand-name">physure</span>
-          <span class="brand-badge">v0.2.0</span>
+          <span class="brand-badge">{PHYSURE_CHANNEL}</span>
         </a>
         <button class="search-trigger" id="searchTrigger" title={isSpanish ? "Buscar en la documentación" : "Search documentation"}>
           <span>🔍 {isSpanish ? "Buscar..." : "Search..."}</span>

@@ -13,12 +13,22 @@ import DocsLayout from "../layouts/DocsLayout.astro";
     <p>physure is currently in <strong>Beta</strong>. The API may change between versions before the 1.0 stable release.</p>
   </div>
 
+  <div class="callout callout-warning">
+    <p>
+      <strong>These docs track <code>nightly</code>, not the latest release.</strong> Everything
+      listed under <a href="#unreleased">nightly</a> below is on <code>main</code> but not in
+      <code>v0.2.3</code> — so <code>pip install physure</code> or the current <code>phs</code>
+      build will not have <code>where</code> bindings, <code>QuantityVector</code>,
+      <code>export3d</code> or string interpolation yet. Build from source to use them.
+    </p>
+  </div>
+
   <div class="releases">
 
     <div class="release current">
       <div class="release-header">
         <h2 id="unreleased">
-          <span class="release-version">Unreleased</span>
+          <span class="release-version">nightly</span>
           <span class="badge badge-green">In development</span>
           <span class="release-date">since v0.2.3</span>
         </h2>
