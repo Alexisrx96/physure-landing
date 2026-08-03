@@ -187,8 +187,8 @@ F = g * m
       </div>
       <div class="card feat-card">
         <div class="feat-icon">📚</div>
-        <h3>125+ Units & 400+ Constants</h3>
-        <p>28 dimensions, 24 SI prefixes, and 400+ CODATA 2022 physical constants built in.</p>
+        <h3>215 Unit Symbols &amp; 411 Constants</h3>
+        <p>95 units plus 120 aliases across 28 dimensions, 24 SI prefixes, and the full CODATA 2022 constant set.</p>
       </div>
       <div class="card feat-card">
         <div class="feat-icon">🧮</div>
@@ -222,24 +222,28 @@ F = g * m
         <div class="stat-desc">runtime dependencies (base install)</div>
       </div>
       <div class="stat-card">
-        <div class="stat-big">125+</div>
-        <div class="stat-desc">units across 28 dimensions</div>
+        <div class="stat-big">215</div>
+        <div class="stat-desc">unit symbols — 95 units plus 120 aliases, across 28 dimensions</div>
       </div>
       <div class="stat-card">
-        <div class="stat-big">400+</div>
+        <div class="stat-big">411</div>
         <div class="stat-desc">CODATA 2022 physical constants</div>
       </div>
       <div class="stat-card">
-        <div class="stat-big">&lt;1.1×</div>
-        <div class="stat-desc">overhead vs raw PyTorch (compiled)</div>
+        <div class="stat-big">1.17×</div>
+        <div class="stat-desc">overhead vs raw PyTorch, 10⁶ elements under <code>torch.compile</code></div>
       </div>
       <div class="stat-card">
-        <div class="stat-big">80%+</div>
-        <div class="stat-desc">test coverage (CI-gated)</div>
+        <div class="stat-big">~54 ns</div>
+        <div class="stat-desc">unit multiply/divide in the Rust core</div>
       </div>
       <div class="stat-card">
-        <div class="stat-big">3.10–3.14</div>
-        <div class="stat-desc">Python versions supported</div>
+        <div class="stat-big">80%</div>
+        <div class="stat-desc">coverage floor, enforced in CI</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-big">3.11–3.14</div>
+        <div class="stat-desc">Python versions tested in CI</div>
       </div>
     </div>
   </section>
@@ -264,7 +268,7 @@ F = g * m
         </tr>
         <tr>
           <td><strong>Compiled (torch.compile / jax.jit)</strong></td>
-          <td><span class="badge badge-green">&lt;1.1× overhead</span></td>
+          <td><span class="badge badge-green">1.17× overhead</span></td>
           <td>Units validate at trace time, stripped from compiled graph. The real "zero overhead".</td>
         </tr>
         <tr>

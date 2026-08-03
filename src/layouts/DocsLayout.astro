@@ -1,5 +1,8 @@
 ---
-import { PHYSURE_CHANNEL } from "../version";
+import { PHYSURE_CHANNEL, latestRelease, stars } from "../version";
+
+const release = await latestRelease();
+const starCount = await stars();
 
 export interface Props {
   title: string;
@@ -47,8 +50,10 @@ const t = {
   stats: isSpanish ? "Estadísticas" : "Stats",
   license: isSpanish ? "Licencia" : "License",
   python: "Python",
-  version: isSpanish ? "Versión" : "Version",
+  docsFor: isSpanish ? "Documenta" : "Docs for",
+  latestRelease: isSpanish ? "Último release" : "Latest release",
   status: isSpanish ? "Estado" : "Status",
+  stars: isSpanish ? "Estrellas" : "Stars",
   deps: "Deps",
   copy: isSpanish ? "Copiar" : "Copy",
 };
@@ -138,11 +143,18 @@ const t = {
           <div class="sidebar-section">
             <p class="sidebar-label">{t.stats}</p>
             <ul class="sidebar-stats">
-              <li><span class="stat-key">{t.license}</span><span class="stat-val">MIT</span></li>
-              <li><span class="stat-key">{t.python}</span><span class="stat-val">3.10+</span></li>
-              <li><span class="stat-key">{t.version}</span><span class="stat-val">0.1.8</span></li>
+              <li><span class="stat-key">{t.docsFor}</span><span class="stat-val status-beta">{PHYSURE_CHANNEL}</span></li>
+              <li><span class="stat-key">{t.latestRelease}</span><span class="stat-val">v{release}</span></li>
               <li><span class="stat-key">{t.status}</span><span class="stat-val status-beta">Beta</span></li>
+              <li><span class="stat-key">{t.python}</span><span class="stat-val">3.11+</span></li>
               <li><span class="stat-key">{t.deps}</span><span class="stat-val">0 (base)</span></li>
+              <li><span class="stat-key">{t.license}</span><span class="stat-val">MIT</span></li>
+              {starCount !== null && (
+                <li>
+                  <span class="stat-key">{t.stars}</span>
+                  <a class="stat-val stat-link" href="https://github.com/Alexisrx96/physure/stargazers" target="_blank" rel="noopener">★ {starCount}</a>
+                </li>
+              )}
             </ul>
           </div>
         </div>
@@ -799,6 +811,8 @@ const t = {
   }
   .stat-key { color: var(--text3); }
   .stat-val { color: var(--text2); font-weight: 500; }
+  .stat-link { text-decoration: none; }
+  .stat-link:hover { color: var(--accent2); }
   .status-beta {
     background: rgba(245, 158, 11, 0.15);
     color: var(--yellow);

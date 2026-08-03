@@ -44,6 +44,23 @@ export function pickLatest(tagNames: string[]): string | null {
   return parsed[0].version;
 }
 
+const GH = "https://api.github.com/repos/Alexisrx96/physure";
+const GH_HEADERS = { Accept: "application/vnd.github+json" };
+
+/**
+ * Memoised across the whole build.
+ *
+ * The layout runs once per page, so without this a 22-page build would fire
+ * 22 requests per endpoint and walk straight into GitHub's 60/hour
+ * unauthenticated limit — the fallback would then hide it by quietly serving
+ * stale numbers. Caching the promise (not the value) also collapses the
+ * concurrent page renders into a single in-flight request.
+ */
+function once<T>(fn: () => Promise<T>): () => Promise<T> {
+  let cached: Promise<T> | undefined;
+  return () => (cached ??= fn());
+}
+
 /**
  * The newest release tag in the physure repo, read at build time.
  *
@@ -55,12 +72,9 @@ export function pickLatest(tagNames: string[]): string | null {
  * Never throws. A failed lookup falls back to the constant above, because a
  * stale version badge is a far smaller problem than a site that won't build.
  */
-export async function latestRelease(): Promise<string> {
+export const latestRelease = once(async (): Promise<string> => {
   try {
-    const res = await fetch(
-      "https://api.github.com/repos/Alexisrx96/physure/tags?per_page=100",
-      { headers: { Accept: "application/vnd.github+json" } },
-    );
+    const res = await fetch(`${GH}/tags?per_page=100`, { headers: GH_HEADERS });
     if (!res.ok) throw new Error(`GitHub returned ${res.status}`);
 
     const tags: Array<{ name: string }> = await res.json();
@@ -75,4 +89,29 @@ export async function latestRelease(): Promise<string> {
     );
     return FALLBACK_LATEST_RELEASE;
   }
-}
+});
+
+/**
+ * GitHub stargazer count, or null if it can't be read.
+ *
+ * Null rather than a fallback number on purpose: an invented star count is a
+ * claim about other people's behaviour, and a stale one is worse than none.
+ * Callers hide the figure when this is null instead of printing a guess.
+ */
+export const stars = once(async (): Promise<number | null> => {
+  try {
+    const res = await fetch(GH, { headers: GH_HEADERS });
+    if (!res.ok) throw new Error(`GitHub returned ${res.status}`);
+    const repo: { stargazers_count?: number } = await res.json();
+    return typeof repo.stargazers_count === "number"
+      ? repo.stargazers_count
+      : null;
+  } catch (e) {
+    console.warn(
+      `[version] star count unavailable: ${
+        e instanceof Error ? e.message : e
+      }`,
+    );
+    return null;
+  }
+});

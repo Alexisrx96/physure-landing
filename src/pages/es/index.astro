@@ -188,7 +188,7 @@ F = g * m
       </div>
       <div class="card feat-card">
         <div class="feat-icon">📚</div>
-        <h3>Más de 125 Unidades y 400 Constantes</h3>
+        <h3>215 Símbolos de Unidad y 411 Constantes</h3>
         <p>28 dimensiones físicas, 24 prefijos del SI y más de 400 constantes físicas de la CODATA 2022 integradas.</p>
       </div>
       <div class="card feat-card">
@@ -223,24 +223,28 @@ F = g * m
         <div class="stat-desc">dependencias en tiempo de ejecución (instalación base)</div>
       </div>
       <div class="stat-card">
-        <div class="stat-big">125+</div>
-        <div class="stat-desc">unidades en 28 dimensiones</div>
+        <div class="stat-big">215</div>
+        <div class="stat-desc">símbolos de unidad — 95 unidades más 120 alias, en 28 dimensiones</div>
       </div>
       <div class="stat-card">
-        <div class="stat-big">400+</div>
+        <div class="stat-big">411</div>
         <div class="stat-desc">constantes físicas de CODATA 2022</div>
       </div>
       <div class="stat-card">
-        <div class="stat-big">&lt;1.1×</div>
-        <div class="stat-desc">overhead frente a PyTorch puro (compilado)</div>
+        <div class="stat-big">1.17×</div>
+        <div class="stat-desc">overhead frente a PyTorch puro, 10⁶ elementos con <code>torch.compile</code></div>
       </div>
       <div class="stat-card">
-        <div class="stat-big">80%+</div>
-        <div class="stat-desc">cobertura de pruebas (CI-gated)</div>
+        <div class="stat-big">~54 ns</div>
+        <div class="stat-desc">multiplicación/división de unidades en el núcleo Rust</div>
       </div>
       <div class="stat-card">
-        <div class="stat-big">3.10–3.14</div>
-        <div class="stat-desc">versiones de Python soportadas</div>
+        <div class="stat-big">80%</div>
+        <div class="stat-desc">piso de cobertura, exigido en CI</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-big">3.11–3.14</div>
+        <div class="stat-desc">versiones de Python probadas en CI</div>
       </div>
     </div>
   </section>
@@ -265,7 +269,7 @@ F = g * m
         </tr>
         <tr>
           <td><strong>Compilado (torch.compile / jax.jit)</strong></td>
-          <td><span class="badge badge-green">&lt;1.1× de overhead</span></td>
+          <td><span class="badge badge-green">1.17× de overhead</span></td>
           <td>Las unidades se validan al trazar el grafo y se eliminan del grafo compilado. El verdadero "cero overhead".</td>
         </tr>
         <tr>
