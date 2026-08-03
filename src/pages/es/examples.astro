@@ -147,16 +147,16 @@ print(f"R = &#123;R.magnitude:.3f&#125; ± &#123;R.uncertainty:.3f&#125; Ω")  #
     <div class="example-header">
       <span class="example-icon">✍️</span>
       <div style="flex: 1;">
-        <h2 id="grammar">Notación de Gramática</h2>
-        <p>Escribe cálculos en notación física natural utilizando GrammarInterpreter.</p>
+        <h2 id="grammar">PHS desde Python</h2>
+        <p>Escribe cálculos en notación física natural y ejecútalos con el motor Rust compartido.</p>
       </div>
       <a href="/es/playground" class="btn-secondary run-in-playground" style="font-size: 0.8rem; padding: 0.35rem 0.75rem; border-radius: 6px; flex-shrink: 0; align-self: center; text-decoration: none;">Probar en Playground 🚀</a></div>
-    <pre><code>from physure.ext.grammar import GrammarInterpreter
+    <pre><code>from physure import Interpreter
 
-mn = GrammarInterpreter()
+interp = Interpreter()
 
 # Resolver varias variables interconectadas
-mn.run("""
+interp.evaluate("""
 # Análisis de circuito eléctrico
 V    = 24 V
 R1   = 100 Ω
@@ -166,12 +166,77 @@ P    = V * I
 """)
 
 # Consultar valores convertidos
-print(mn.eval("I => mA"))      # 240.0 mA
-print(mn.eval("P => W"))       # 5.76 W
+print(interp.evaluate("I => mA")[-1])      # 240.0 mA
+print(interp.evaluate("P => W")[-1])       # 5.76 W
 
 # Aseveraciones para validar resultados
-print(mn.eval("I == 0.24 A"))  # True
-print(mn.eval("P == 5.76 W"))  # True</code></pre>
+print(interp.evaluate("I == 0.24 A")[-1])  # True
+print(interp.evaluate("P == 5.76 W")[-1])  # True
+
+# Exponer una función de Python a PHS
+interp.register_function(lambda q: q * 2, "double")
+print(interp.evaluate("double(3 m)")[-1])  # 6 m</code></pre>
+  </section>
+
+  <!-- Section: Tensors -->
+  <section class="example-section">
+    <div class="example-header">
+      <span class="example-icon">📊</span>
+      <div style="flex: 1;">
+        <h2 id="tensors">Vectores y Matrices</h2>
+        <p>Tensores de orden 1 y 2 como tipos distintos, con las unidades arrastradas por cada operación.</p>
+      </div>
+    </div>
+    <pre><code>from physure import Q_, QuantityVector, QuantityMatrix
+
+# Trabajo hecho por una fuerza a lo largo de un desplazamiento
+F = QuantityVector([Q_(3, "N"), Q_(4, "N"), Q_(0, "N")])
+d = QuantityVector([Q_(2, "m"), Q_(0, "m"), Q_(0, "m")])
+
+print(F.norm())          # 5.0 N
+print(F.dot(d))          # 6.0 J     — N·m colapsa a joules
+print(F.cross(d))        # torque, en N·m
+print(F.unit_vector())   # dirección adimensional
+
+# Tensor de deformación — una matriz cuyo determinante carga m^2
+M = QuantityMatrix([[Q_(1, "m"), Q_(2, "m")],
+                    [Q_(3, "m"), Q_(4, "m")]])
+print(M.transpose())
+print(M.det())           # -2.0 m^2
+print(M.matmul(M))</code></pre>
+    <div class="callout callout-info">
+      <p>Los mismos tres tipos existen en Rust, PHS y Java 8+ — <code>com.physure.QuantityVector</code> y <code>com.physure.QuantityMatrix</code> exponen una API idiomática de colecciones de Java sobre el mismo núcleo.</p>
+    </div>
+  </section>
+
+  <!-- Section: 3D export -->
+  <section class="example-section">
+    <div class="example-header">
+      <span class="example-icon">🧊</span>
+      <div style="flex: 1;">
+        <h2 id="export3d">Superficies 3D y Exportación de Mallas</h2>
+        <p>Grafica una superficie física y mándala a un laminador, una herramienta CAD o un renderizador.</p>
+      </div>
+    </div>
+    <pre><code># presion.phs — se ejecuta con: phs presion.phs
+use plot3d, export3d from plot
+
+# @title: Distribución de presión sobre una placa
+fn P(x, y) = 100.0 kPa * sin(x / 1.0 m) * cos(y / 1.0 m)
+
+rango_x = -2.0 m .. 2.0 m
+rango_y = -2.0 m .. 2.0 m
+
+# Visor WebGL interactivo — sin conexión, sin CDN
+plot3d(P, x: rango_x, y: rango_y, title: "Superficie de presión P(x, y)")
+
+# Exporta una malla CAD; el formato sale de la extensión
+export3d(P, x: rango_x, y: rango_y, file: "placa.stl",  format: "stl")
+export3d(P, x: rango_x, y: rango_y, file: "placa.gltf", format: "gltf")</code></pre>
+    <p>
+      <code>phs presion.phs --html</code> renderiza el mismo script como reporte: fórmulas
+      tipografiadas con KaTeX, cada paso intermedio en orden, y las gráficas incrustadas como SVG.
+    </p>
   </section>
 
   <!-- Section: NumPy tensors -->

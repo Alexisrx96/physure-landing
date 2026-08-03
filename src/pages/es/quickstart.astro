@@ -11,8 +11,13 @@ import DocsLayout from "../../layouts/DocsLayout.astro";
 
   <h2>1. Instalación</h2>
   <pre><code>pip install physure</code></pre>
-  <p>O con el núcleo en Rust para un rendimiento superior:</p>
-  <pre><code>pip install "physure[native]"</code></pre>
+  <p>El núcleo en Rust viene dentro de cada wheel — no hay un extra aparte para él. Agrega los backends de arrays según los necesites:</p>
+  <pre><code>pip install "physure[numpy]"   # + NumPy/SciPy/Numba
+pip install "physure[torch]"   # + PyTorch
+pip install "physure[jax]"     # + JAX
+pip install "physure[all]"     # todo</code></pre>
+  <p>¿Te saltas Python del todo? El binario <a href="/es/cli"><code>phs</code></a> no necesita intérprete:</p>
+  <pre><code>curl -fsSL https://physure.irvintorres.com/install.sh | sh</code></pre>
 
   <h2>2. Tu primera cantidad</h2>
   <p>
@@ -89,40 +94,45 @@ delta = x - x     # 0.0 ± 0.0 m  ✓ en modo correlacionado (por defecto)</code
     <p><strong>El modo por defecto es correlacionado:</strong> physure utiliza por defecto la propagación de tipo <code>"correlated"</code>, de modo que x − x = 0 exactamente. Puedes cambiarlo con el gestor de contexto <a href="/es/guide#covariance"><code>propagation_mode</code></a>.</p>
   </div>
 
-  <h2>6. Notación de gramática</h2>
-  <p>Escribe física tal como lo harías en papel con <code>GrammarInterpreter</code>:</p>
-  <pre><code>from physure.ext.grammar import GrammarInterpreter
+  <h2>6. PHS desde Python</h2>
+  <p>Escribe física tal como lo harías en papel y ejecútala con el mismo motor Rust usando <code>Interpreter</code>:</p>
+  <pre><code>from physure import Interpreter
 
-mn = GrammarInterpreter()
-mn.run("""
+interp = Interpreter()
+results = interp.evaluate("""
 force = 500 N
 area  = 2 m^2
 stress = force / area
+stress => kPa
 """)
+print(results[-1])                              # 0.25 kPa
 
-# Consultar resultados
-print(mn.eval("stress => kPa"))      # 0.25 kPa
-print(mn.eval("stress == 250 Pa"))   # True
+# Aserciones y literales de incertidumbre
+print(interp.evaluate("stress == 250 Pa")[-1])  # True
 
-# Literales de incertidumbre
-mn.run("g = 9.81 +/- 0.02 m/s^2")
-print(mn.eval("g = ?"))              # 9.81 ± 0.02 m/s^2</code></pre>
+interp.evaluate("g = 9.81 +/- 0.02 m/s^2")
+print(interp.evaluate("g")[-1])                 # 9.81 ± 0.02 m/s^2</code></pre>
+
+  <div class="callout callout-info">
+    <p><strong>Esto es PHS, el DSL de physure.</strong> <code>evaluate()</code> devuelve un resultado por sentencia, así que el último elemento es el valor de la última expresión. El mismo script corre por su cuenta con el binario <a href="/es/cli"><code>phs</code></a>, sin Python de por medio.</p>
+  </div>
 
   <h2>7. Calculadora de consola</h2>
   <p>Usa physure directamente en la consola sin necesidad de escribir un script en Python:</p>
   <pre><code># Evaluar una expresión simple
-python -m physure "500 N / 2 m^2 => kPa"
+phs "500 N / 2 m^2 => kPa"
 # Salida: 0.25 kPa
 
-# Evaluar un archivo con instrucciones
-python -m physure < notas.phs
+# Ejecutar un script con instrucciones
+phs notas.phs
 
-# REPL interactivo (Ctrl+D para salir)
-python -m physure
-mk> g = 9.81 +/- 0.02 m/s^2
-mk> g => ft/s^2
+# REPL interactivo (Ctrl+D o 'exit' para salir)
+phs --repl
+phs> g = 9.81 +/- 0.02 m/s^2
+phs> g => ft/s^2
 32.185... ft/s^2
-mk> exit</code></pre>
+phs> exit</code></pre>
+  <p>Si ya tienes el paquete de Python en el entorno, <code>python -m physure "500 N / 2 m^2 => kPa"</code> hace lo mismo.</p>
 
   <h2>8. NumPy / PyTorch / JAX</h2>
   <p>Pasa tensores o arrays como valor y physure auto-detectará el backend:</p>

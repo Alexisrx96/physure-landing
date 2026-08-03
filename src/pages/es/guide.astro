@@ -98,8 +98,7 @@ a2 = accel_factory(1.5, uncertainty=0.01)</code></pre>
     <p>
       Puedes crear e intercambiar sistemas de unidades de forma segura para hilos y tareas asíncronas utilizando un gestor de contexto:
     </p>
-    <pre><code>import physure as mk
-from physure import Q_, system_context
+    <pre><code>from physure import Q_, system_context
 
 # El sistema por defecto es el SI (internacional)
 q_si = Q_(1, "ft")
@@ -218,15 +217,52 @@ except DimensionError as e:
         </tr>
       </tbody>
     </table>
-    <pre><code>import physure as mk
+    <pre><code>import physure
 from physure import Q_
 
 # Ejecución en modo Monte Carlo
-with mk.uncertainty_mode("monte_carlo", samples=10000):
+with physure.uncertainty_mode("monte_carlo", samples=10000):
     x = Q_(10.0, "m", uncertainty=1.0)
     y = x ** 2
     print(f"Media: &#123;y.magnitude:.3f&#125;, Desv. Est.: &#123;y.uncertainty:.3f&#125;")
     # Salida estocástica: Media ~101.0, Desv. Est. ~20.0</code></pre>
+
+    <h3>Modelo contra modo</h3>
+    <p>
+      Dos ajustes que se parecen y que están separados a propósito. <code>propagation_mode</code>
+      decide cómo se manejan las <em>correlaciones</em>; <code>uncertainty_model</code> decide la
+      <em>forma</em> de la distribución con la que se construye una cantidad.
+    </p>
+    <table>
+      <thead><tr><th>Ajuste</th><th>Valores</th><th>Decide</th></tr></thead>
+      <tbody>
+        <tr><td><code>propagation_mode</code></td><td><code>"correlated"</code> (por defecto), <code>"uncorrelated"</code></td><td>Si se rastrea la historia compartida entre operandos. Se lee de <code>[Settings] propagation_mode</code> en <code>physure.conf</code>, tanto por el núcleo como por PHS.</td></tr>
+        <tr><td><code>uncertainty_mode</code></td><td><code>"gaussian"</code>, <code>"monte_carlo"</code>, <code>"unscented"</code></td><td>El backend de cálculo, como en la tabla de arriba.</td></tr>
+        <tr><td><code>uncertainty_model</code></td><td><code>"gaussian"</code> (por defecto), <code>"moments"</code></td><td>La forma de la distribución. Se pide por ámbito, porque arrastrar tres momentos por un conjunto de datos grande cuesta más que arrastrar una desviación estándar.</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Incertidumbres asimétricas</h3>
+    <p>
+      Un resultado citado como <code>12.3 +0.5 -0.4 pb</code> no son dos desviaciones estándar — es la
+      forma de una distribución, y promediar las mitades descarta justo la parte que suele interesar.
+      physure mapea el par sobre los tres primeros momentos de una gaussiana dimidiada en forma
+      cerrada, y lo invierte por bisección sobre la asimetría.
+    </p>
+    <pre><code>import physure
+from physure import Q_
+
+with physure.uncertainty_model("moments"):
+    xsec = Q_(12.3, "pb", uncertainty=(0.5, 0.4))</code></pre>
+    <div class="callout callout-info">
+      <p>
+        La aritmética sobre un valor de momentos <strong>lanza un error</strong> en lugar de caer en
+        una regla simétrica. Un respaldo simétrico devolvería un número de aspecto plausible con la
+        asimetría promediada — de esos resultados que se publican en un artículo sin que nadie lo
+        note. Una asimetría mayor a la que un par de semianchos puede describir también se reporta,
+        no se recorta en silencio a la forma más asimétrica disponible.
+      </p>
+    </div>
   </section>
 
   <!-- 6. Correlated Uncertainty & Covariance Store -->
@@ -253,7 +289,7 @@ with mk.uncertainty_mode("monte_carlo", samples=10000):
     <p>
       Puedes aislar el seguimiento de covarianza a un bloque específico mediante gestores de contexto:
     </p>
-    <pre><code>import physure as mk
+    <pre><code>import physure
 from physure import Q_, physureContext, PruningConfig
 
 # Establecer un contexto de covarianza acotado
@@ -395,7 +431,8 @@ print(deriv.simplify())  # 3.0 * x^2.0</code></pre>
   <section class="guide-section">
     <h2 id="pandas">11. Extensiones y Accesores de Pandas</h2>
     <p>
-      physure registra un accesor personalizado <code>.mk</code> para Series de Pandas que contienen objetos Quantity, junto con tipos de datos personalizados:
+      physure registra un accesor personalizado <code>.phs</code> para Series de Pandas que contienen
+      objetos Quantity, junto con tipos de datos personalizados:
     </p>
     <pre><code>import pandas as pd
 import numpy as np
@@ -408,16 +445,16 @@ series = pd.Series(
 )
 
 # Acceder a magnitudes, incertidumbres y unidades en lote
-print(series.mk.magnitude)      # pd.Series([1.0, 2.0])
-print(series.mk.uncertainty)    # pd.Series([0.0, 0.0])
-print(series.mk.unit)           # m
+print(series.phs.magnitude)      # pd.Series([1.0, 2.0])
+print(series.phs.uncertainty)    # pd.Series([0.0, 0.0])
+print(series.phs.unit)           # m
 
 # Reconstituir la Serie como una sola cantidad vectorial Quantity
-array_q = series.mk.array
+array_q = series.phs.array
 print(array_q)                  # [1.0 2.0] m (Quantity vectorizado)
 
 # Realizar conversiones vectorizadas
-converted = series.mk.to("cm")
+converted = series.phs.to("cm")
 print(converted)                # Serie de [100.0 cm, 200.0 cm]</code></pre>
   </section>
 

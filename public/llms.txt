@@ -1,20 +1,29 @@
 # physure
 
-> Python library for physical units, dimensional analysis, and uncertainty propagation. Zero runtime dependencies in the base install; optional Rust core (physure-core, PyO3) and optional NumPy/PyTorch/JAX backends. MIT licensed, Python 3.10+.
+> Unit-aware, dimension-correct physics computing from a shared Rust core. The same dimensional analysis and uncertainty engine is exposed four ways: a standalone DSL and CLI (`phs`), a Python library, a Rust crate, and a JVM package. None requires the others. MIT licensed.
 
 Key facts:
-- Install: `pip install physure` (pure Python), `pip install "physure[native]"` (Rust acceleration), `pip install "physure[all]"` (all backends).
-- Central API: `Q_(10, "km") / Q_(2, "hr")` returns a unit-aware Quantity; `.to("m/s")` converts; incompatible dimensions raise.
-- CLI/REPL: `python -m physure "500 N / 2 m^2 => kPa"` evaluates expressions from the shell; no arguments opens an interactive session. Supports uncertainty literals like `9.81 +/- 0.02 m/s^2`.
-- Performance, honestly: eager mode has real Python overhead (10-100x vs raw floats/tensors). Under torch.compile / jax.jit, unit checks run at trace time via __torch_dispatch__ and the compiled graph is raw tensors: measured under 1.1x overhead vs pure PyTorch. First use (import + first evaluation) is ~0.5 s, tracked in CI.
-- Uncertainty: uncorrelated mode (independent errors) or correlated mode with a full sparse covariance store, so correlated errors cancel correctly.
-- Catalog: 125+ units, 28 dimensions, 24 SI prefixes, 400+ CODATA 2022 physical constants.
-- Compared to Pint: Pint is the mature, widely adopted choice for general unit handling. physure (beta) targets JIT-compiled tensor workloads, correlated uncertainty, and zero-dependency installs.
-- Extras: mypy plugin for unit-aware static types, pandas/pydantic/sympy integrations, MeasureNote-style grammar for writing physics as plain notation.
+- Four surfaces, one engine: `physure-core` (Rust) holds all dimensional-analysis and uncertainty math; PHS, Python and Java are thin translation layers on top, so they cannot disagree about a result.
+- Install: `curl -fsSL https://physure.irvintorres.com/install.sh | sh` (the `phs` binary, no Python needed), `pip install physure` (Rust-compiled wheel, zero runtime dependencies), `cargo install physure --bin phs`, or Maven Central `io.github.alexisrx96:physure-java`.
+- Python extras: `[numpy]`, `[torch]`, `[jax]`, `[pandas]`, `[pydantic]`, `[symbolic]`, `[io]`, `[rich]`, `[all]`. Python 3.11+.
+- Central Python API: `Q_(10, "km") / Q_(2, "hr")` returns a unit-aware Quantity; `.to("m/s")` converts; incompatible dimensions raise. `QuantityVector` and `QuantityMatrix` are separate first-class types with dot/cross/norm and transpose/matmul/determinant, all propagating units.
+- PHS (the DSL): write calculations as physics — `stress = force / area`, `stress => kPa`, `9.81 +/- 0.02 m/s^2`, `body where x = 10 m`, `"text {expr}"` interpolation, format specs (`: .3e`, `: base`, `: frac`), ranges `a .. b`, unit-checked function parameters. Run with `phs script.phs`; also `--repl`, `--html` (typeset report), `--web`, `--tui`, and `phs transpile --target python|rust|java`.
+- PHS from Python: `physure.Interpreter().evaluate(source)` runs the same engine. The old `physure.ext.grammar` / `GrammarInterpreter` Python reimplementation has been removed.
+- CLI: `phs "500 N / 2 m^2 => kPa"`, or `python -m physure "500 N / 2 m^2 => kPa"` when the Python package is already present.
+- Performance, honestly: eager Python mode has real overhead (10-100x vs raw floats/tensors). Under torch.compile / jax.jit, unit checks run at trace time via `__torch_dispatch__` and the compiled graph is raw tensors: measured ~1.17x vs pure PyTorch. Cold import ~21 ms; unit multiply/divide in the Rust core ~54 ns.
+- Uncertainty: correlated mode with a full sparse covariance store (default) or uncorrelated mode, read from `[Settings] propagation_mode` in `physure.conf`. Backends: Gaussian, Monte Carlo, Unscented Transform. Asymmetric uncertainties (`12.3 +/- (0.5, 0.4) pb`) are carried as the first three moments of a dimidiated Gaussian; propagation on them raises rather than averaging the skew away.
+- 3D: native n-dimensional plotting written in the crate, plus `export3d(...)` writing a plotted surface as STL, OBJ, glTF or PLY.
+- Catalog: 125+ units, 28 dimensions, 24 SI prefixes, 400+ CODATA 2022 physical constants. `%` and `ppm` are dimensionless units; Spanish aliases (julio, vatio, voltio, ohmio, metro, segundo) resolve alongside SI symbols.
+- Compared to Pint: Pint is the mature, widely adopted choice for general unit handling. physure (beta) targets JIT-compiled tensor workloads, correlated uncertainty you can defend, and a standalone DSL that hands a validated calculation to a dev team without a Python file changing hands.
+- Extras: mypy plugin for unit-aware static types, pandas/pydantic/sympy integrations, chemistry and symbolic-regression extensions, a VS Code extension (`vsc-physure`) backed by `physure-lsp`.
 
 ## Links
 
 - [GitHub repository](https://github.com/Alexisrx96/physure): source, issues, CI
+- [PHS README](https://github.com/Alexisrx96/physure/blob/main/physure-cli/README.md): the standalone DSL and CLI
+- [INSTALL.md](https://github.com/Alexisrx96/physure/blob/main/INSTALL.md): every install path
 - [PyPI: physure](https://pypi.org/project/physure/): the Python package
-- [PyPI: physure-core](https://pypi.org/project/physure-core/): optional Rust extension
-- [Unit and constant reference](https://github.com/Alexisrx96/physure/blob/main/docs/UNITS.md): auto-generated full catalog
+- [crates.io: physure](https://crates.io/crates/physure): the Rust crate and `phs` binary
+- [Maven Central: physure-java](https://central.sonatype.com/artifact/io.github.alexisrx96/physure-java): the JVM bindings
+- [Unit and constant reference](https://github.com/Alexisrx96/physure/blob/main/physure-python/docs/UNITS.md): auto-generated full catalog
+- [CHANGELOG](https://github.com/Alexisrx96/physure/blob/main/CHANGELOG.md): release history

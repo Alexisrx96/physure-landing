@@ -98,8 +98,7 @@ a2 = accel_factory(1.5, uncertainty=0.01)</code></pre>
     <p>
       You can create and swap unit systems thread-safely and async-safely using a context manager:
     </p>
-    <pre><code>import physure as mk
-from physure import Q_, system_context
+    <pre><code>from physure import Q_, system_context
 
 # Default system is SI (international)
 q_si = Q_(1, "ft")
@@ -218,15 +217,51 @@ except DimensionError as e:
         </tr>
       </tbody>
     </table>
-    <pre><code>import physure as mk
+    <pre><code>import physure
 from physure import Q_
 
 # Run in Monte Carlo mode
-with mk.uncertainty_mode("monte_carlo", samples=10000):
+with physure.uncertainty_mode("monte_carlo", samples=10000):
     x = Q_(10.0, "m", uncertainty=1.0)
     y = x ** 2
     print(f"Mean: &#123;y.magnitude:.3f&#125;, Std Dev: &#123;y.uncertainty:.3f&#125;")
     # Outputs stochastically: Mean ~101.0, Std Dev ~20.0</code></pre>
+
+    <h3>Model vs. mode</h3>
+    <p>
+      Two settings look similar and are deliberately separate. <code>propagation_mode</code> decides how
+      <em>correlations</em> are handled; <code>uncertainty_model</code> decides the <em>shape</em> of the
+      distribution a quantity is built with.
+    </p>
+    <table>
+      <thead><tr><th>Setting</th><th>Values</th><th>Decides</th></tr></thead>
+      <tbody>
+        <tr><td><code>propagation_mode</code></td><td><code>"correlated"</code> (default), <code>"uncorrelated"</code></td><td>Whether shared history between operands is tracked. Read from <code>[Settings] propagation_mode</code> in <code>physure.conf</code> by both the core and PHS.</td></tr>
+        <tr><td><code>uncertainty_mode</code></td><td><code>"gaussian"</code>, <code>"monte_carlo"</code>, <code>"unscented"</code></td><td>The computation backend, as in the table above.</td></tr>
+        <tr><td><code>uncertainty_model</code></td><td><code>"gaussian"</code> (default), <code>"moments"</code></td><td>The distribution shape. Asked for per scope, because carrying three moments across a large dataset costs more than carrying one standard deviation.</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Asymmetric uncertainties</h3>
+    <p>
+      A result quoted as <code>12.3 +0.5 -0.4 pb</code> is not two standard deviations — it is the shape
+      of a distribution, and averaging the halves discards the part that is often the interesting one.
+      physure maps the pair onto the first three moments of a dimidiated Gaussian in closed form, and
+      inverts it by bisection on the skewness.
+    </p>
+    <pre><code>import physure
+from physure import Q_
+
+with physure.uncertainty_model("moments"):
+    xsec = Q_(12.3, "pb", uncertainty=(0.5, 0.4))</code></pre>
+    <div class="callout callout-info">
+      <p>
+        Arithmetic on a moments value <strong>raises</strong> rather than falling back to a symmetric
+        rule. A symmetric fallback would return a plausible-looking number with the skew averaged away
+        — the kind of result that ships in a paper unnoticed. A skew beyond what a pair of half-widths
+        can describe is reported too, not silently clamped to the most skewed shape available.
+      </p>
+    </div>
   </section>
 
   <!-- 6. Correlated Uncertainty & Covariance Store -->
@@ -253,7 +288,7 @@ with mk.uncertainty_mode("monte_carlo", samples=10000):
     <p>
       You can isolate covariance tracking to a specific block using context managers:
     </p>
-    <pre><code>import physure as mk
+    <pre><code>import physure
 from physure import Q_, physureContext, PruningConfig
 
 # Establish a scoped covariance context
@@ -395,7 +430,8 @@ print(deriv.simplify())  # 3.0 * x^2.0</code></pre>
   <section class="guide-section">
     <h2 id="pandas">11. Pandas Extensions & Accessors</h2>
     <p>
-      physure registers a custom <code>.mk</code> accessor for Pandas Series containing Quantity objects, along with custom data types:
+      physure registers a custom <code>.phs</code> accessor for Pandas Series containing Quantity
+      objects, along with custom data types:
     </p>
     <pre><code>import pandas as pd
 import numpy as np
@@ -408,16 +444,16 @@ series = pd.Series(
 )
 
 # Access magnitudes, uncertainties, and units in bulk
-print(series.mk.magnitude)      # pd.Series([1.0, 2.0])
-print(series.mk.uncertainty)    # pd.Series([0.0, 0.0])
-print(series.mk.unit)           # m
+print(series.phs.magnitude)      # pd.Series([1.0, 2.0])
+print(series.phs.uncertainty)    # pd.Series([0.0, 0.0])
+print(series.phs.unit)           # m
 
 # Reconstitute the Series as a single vectorized Quantity array
-array_q = series.mk.array
+array_q = series.phs.array
 print(array_q)                  # [1.0 2.0] m (vectorized Quantity)
 
 # Perform vectorized conversions
-converted = series.mk.to("cm")
+converted = series.phs.to("cm")
 print(converted)                # Series of [100.0 cm, 200.0 cm]</code></pre>
   </section>
 

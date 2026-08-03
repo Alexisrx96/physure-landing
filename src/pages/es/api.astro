@@ -54,6 +54,9 @@ const functions = [
   { name: "get_unit(expr)", module: "physure", desc: "Analiza y devuelve un objeto Unit a partir de una cadena." },
   { name: "propagation_mode(mode)", module: "physure", desc: "Gestor de contexto para alternar modos de propagación de covarianza: 'correlated' (por defecto), 'uncorrelated', etc." },
   { name: "uncertainty_mode(mode)", module: "physure", desc: "Gestor de contexto para configurar el backend de cálculo de incertidumbres ('python', 'monte_carlo', 'unscented')." },
+  { name: "uncertainty_model(model)", module: "physure", desc: "Gestor de contexto que elige la forma de la distribución: 'gaussian' (por defecto) o 'moments'. Distinto de propagation_mode, que maneja las correlaciones." },
+  { name: "get_propagation_mode()", module: "physure", desc: "Devuelve el modo de propagación vigente." },
+  { name: "get_uncertainty_model()", module: "physure", desc: "Devuelve el modelo de incertidumbre vigente." },
   { name: "system_context(system)", module: "physure", desc: "Gestor de contexto para usar un UnitSystem personalizado (con alias use_system)." },
   { name: "create_system(config)", module: "physure", desc: "Crea un UnitSystem a partir de un archivo de configuración (ej. 'imperial.conf')." },
   { name: "create_default_system()", module: "physure", desc: "Crea y devuelve el UnitSystem por defecto (SI)." },
@@ -62,12 +65,23 @@ const functions = [
   { name: "jit(fn)", module: "physure", desc: "Decorador/función para compilar JIT una función física." },
 ];
 
-const grammarApi = [
-  { syntax: "nombre = valor unidad", desc: "Asignación de variable. También se acepta nombre -> valor unidad." },
-  { syntax: "expr => unidad", desc: "Conversión de unidad de la expresión en tiempo de evaluación." },
-  { syntax: "expr == valor unidad", desc: "Aseveración (retorna True o False)." },
-  { syntax: "nombre = ?", desc: "Consulta el valor actual e incertidumbre de la variable." },
-  { syntax: "valor +/- inc unidad", desc: "Literal de cantidad con incertidumbre." },
+const phsApi = [
+  { syntax: "nombre = valor unidad", desc: "Liga una cantidad." },
+  { syntax: "expr => unidad", desc: "Convierte la expresión a la unidad destino." },
+  { syntax: "expr == valor unidad", desc: "Compara (retorna True o False)." },
+  { syntax: "a == b +/- N sigma", desc: "Asevera la concordancia dentro de N desviaciones estándar." },
+  { syntax: "valor +/- inc unidad", desc: "Literal de cantidad con incertidumbre simétrica." },
+  { syntax: "valor +/- (sup, inf) unidad", desc: "Incertidumbre asimétrica, la mitad superior primero." },
+  { syntax: "expr: .3e", desc: "Especificador de formato — dígitos y notación, sin tocar el valor." },
+  { syntax: "expr: base", desc: "Expresa la medición en las unidades de las que está compuesta." },
+  { syntax: "expr: frac / expr: ifrac", desc: "Escribe la magnitud como fracción común o mixta." },
+  { syntax: "cuerpo where n = v, m = w", desc: "Ligaduras locales; las posteriores ven a las anteriores." },
+  { syntax: "a .. b", desc: "Un rango, usado como dominio de graficado o exportación." },
+  { syntax: "cond ? a : b", desc: "Ternario." },
+  { syntax: "if c then a else b", desc: "Expresión condicional." },
+  { syntax: "f(x: m, y: s) = expr", desc: "Función con parámetros verificados por unidad." },
+  { syntax: '"texto {expr}"', desc: "Interpolación — el literal es texto, {…} se evalúa." },
+  { syntax: "use f, g from calc", desc: "Importa funciones internas o de plugins." },
   { syntax: "# comentario", desc: "Comentario de línea." },
 ];
 ---
@@ -85,9 +99,10 @@ const grammarApi = [
     <ul class="toc-list">
       <li><a href="#q-factory">Factoría Q_</a></li>
       <li><a href="#quantity">Clase Quantity</a></li>
+      <li><a href="#tensors">Vectores y matrices</a></li>
       <li><a href="#uncertainty">Clase Uncertainty</a></li>
       <li><a href="#module-functions">Funciones de Módulo</a></li>
-      <li><a href="#grammar-api">API de Gramática</a></li>
+      <li><a href="#grammar-api">API de PHS</a></li>
       <li><a href="#exceptions">Excepciones</a></li>
       <li><a href="#extracted-api">API Extraída</a></li>
       <li><a href="#extensions-api">Extensiones y APIs Avanzadas</a></li>
@@ -205,6 +220,50 @@ print(P.magnitude) # 200.0 (valor numérico neto)</code></pre>
   </div>
 
   <!-- Uncertainty -->
+  <h2 id="tensors">Vectores y matrices</h2>
+  <p>
+    <code>Quantity</code> (escalar), <code>QuantityVector</code> (tensor de orden 1) y
+    <code>QuantityMatrix</code> (tensor de orden 2) son tipos separados y de primera clase en Rust,
+    PHS, Python y Java — la distinción se impone, no se infiere. Toda operación propaga unidades
+    físicas.
+  </p>
+  <div class="api-card">
+    <div class="api-signature"><span class="api-kw">class</span> <span class="api-name">QuantityVector</span>(components: list[Quantity])</div>
+    <table>
+      <thead><tr><th>Método</th><th>Descripción</th></tr></thead>
+      <tbody>
+        <tr><td><code>.dot(other) → Quantity</code></td><td>Producto punto.</td></tr>
+        <tr><td><code>.cross(other) → QuantityVector</code></td><td>Producto cruz.</td></tr>
+        <tr><td><code>.norm() → Quantity</code></td><td>Norma euclidiana, con la incertidumbre propagada correctamente para el operando repetido.</td></tr>
+        <tr><td><code>.unit_vector() → QuantityVector</code></td><td>La misma dirección, normalizada.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="api-card">
+    <div class="api-signature"><span class="api-kw">class</span> <span class="api-name">QuantityMatrix</span>(data: list[list[Quantity]])</div>
+    <table>
+      <thead><tr><th>Método</th><th>Descripción</th></tr></thead>
+      <tbody>
+        <tr><td><code>.transpose() → QuantityMatrix</code></td><td>Transpuesta.</td></tr>
+        <tr><td><code>.matmul(other) → QuantityMatrix</code></td><td>Multiplicación matricial.</td></tr>
+        <tr><td><code>.det() → Quantity</code></td><td>Determinante.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <pre><code>from physure import Q_, QuantityVector, QuantityMatrix
+
+F = QuantityVector([Q_(3, "N"), Q_(4, "N"), Q_(0, "N")])
+d = QuantityVector([Q_(1, "m"), Q_(0, "m"), Q_(0, "m")])
+
+print(F.norm())     # 5.0 N
+print(F.dot(d))     # 3.0 J
+print(F.cross(d))   # QuantityVector([0 N·m, 0 N·m, -4 N·m])
+
+M = QuantityMatrix([[Q_(1, "m"), Q_(2, "m")],
+                    [Q_(3, "m"), Q_(4, "m")]])
+print(M.det())      # -2.0 m^2</code></pre>
+
+  <!-- Uncertainty -->
   <h2 id="uncertainty">Clase Uncertainty</h2>
   <div class="api-card">
     <div class="api-signature"><span class="api-kw">class</span> <span class="api-name">Uncertainty</span></div>
@@ -225,6 +284,40 @@ print(q.uncertainty)       # 0.02 (desv. est.)
 print(q.uncertainty**2)    # ~0.0004 (varianza calculada manualmente)</code></pre>
   </div>
 
+  <h3>Incertidumbres asimétricas</h3>
+  <p>
+    Una medición citada como <code>12.3 +0.5 -0.4 pb</code> no son dos desviaciones estándar — es la
+    forma de una distribución, y promediar ambas mitades tira justamente la parte que suele
+    interesar. physure mapea el par sobre los tres primeros momentos de una gaussiana dimidiada en
+    forma cerrada.
+  </p>
+  <div class="api-card">
+    <div class="api-signature"><span class="api-name">physure._core.MomentsBackend</span> · <span class="api-name">physure._core.AsymmetricMoments</span></div>
+    <table>
+      <thead><tr><th>Punto de entrada</th><th>Descripción</th></tr></thead>
+      <tbody>
+        <tr><td><code>MomentsBackend.measured(value, sigma_minus, sigma_plus)</code></td><td>Construye un valor respaldado por momentos a partir de un par de semianchos.</td></tr>
+        <tr><td><code>.moments() → AsymmetricMoments</code></td><td>Desplazamiento de la media, varianza y tercer momento.</td></tr>
+        <tr><td><code>max_skewness()</code></td><td>La mayor asimetría que un par de semianchos puede describir (poco menos de 1, alcanzada cuando un lado es cero). Lo que la exceda se reporta, no se redondea hacia abajo.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <pre><code>import physure
+from physure import Q_
+
+# El modelo se elige por ámbito — arrastrar tres momentos por un conjunto
+# de datos grande cuesta más que arrastrar una desviación estándar
+with physure.uncertainty_model("moments"):
+    xsec = Q_(12.3, "pb", uncertainty=(0.5, 0.4))</code></pre>
+  <div class="callout callout-info">
+    <p>
+      <strong>La propagación está deliberadamente sin implementar.</strong> Toda ruta aritmética
+      sobre un valor de momentos lanza un error en lugar de caer en una regla simétrica — que
+      reportaría un número plausible con la asimetría promediada en silencio. Esto es la base sobre
+      la que se puede construir un modelo de propagación, no el modelo en sí.
+    </p>
+  </div>
+
   <!-- Module Functions -->
   <h2 id="module-functions">Funciones de Módulo</h2>
   <p>Estas funciones están disponibles para importar directamente desde <code>physure</code>:</p>
@@ -241,7 +334,7 @@ print(q.uncertainty**2)    # ~0.0004 (varianza calculada manualmente)</code></pr
   </table>
 
   <h3>Ejemplo de propagation_mode</h3>
-  <pre><code>import physure as mk
+  <pre><code>import physure
 from physure import Q_
 
 # Por defecto el modo es 'correlated' — x - x = 0 exactamente
@@ -250,31 +343,40 @@ delta = x - x
 print(delta.uncertainty)   # ~0.0  (cancelación de correlación)
 
 # Alternar a modo no correlacionado
-with mk.propagation_mode("uncorrelated"):
+with physure.propagation_mode("uncorrelated"):
     delta2 = x - x   # 0.0 ± 0.141 m  (los errores se suman en cuadratura)
 
 # Otros modos: "monte_carlo", "unscented"
-with mk.propagation_mode("monte_carlo"):
+with physure.propagation_mode("monte_carlo"):
     ...</code></pre>
 
-  <!-- Grammar API -->
-  <h2 id="grammar-api">API de Gramática</h2>
-  <p>La clase <code>GrammarInterpreter</code> disponible en <code>physure.ext.grammar</code>:</p>
+  <!-- PHS API -->
+  <h2 id="grammar-api">API de PHS</h2>
+  <p>
+    <code>Interpreter</code> ejecuta PHS — el DSL de physure — con el mismo motor Rust que el
+    binario <a href="/es/cli"><code>phs</code></a>. Se importa desde <code>physure</code>:
+  </p>
   <div class="api-card">
-    <div class="api-signature"><span class="api-kw">class</span> <span class="api-name">GrammarInterpreter</span></div>
+    <div class="api-signature"><span class="api-kw">class</span> <span class="api-name">Interpreter</span>(base_dir: str | None = None)</div>
+    <p><code>base_dir</code> resuelve las sentencias <code>import</code> relativas a ese directorio en lugar del directorio de trabajo del proceso.</p>
     <h4>Métodos</h4>
     <table>
       <thead><tr><th>Método</th><th>Descripción</th></tr></thead>
       <tbody>
-        <tr><td><code>.run(source: str) → list</code></td><td>Ejecuta un lote de instrucciones. Retorna una lista con los resultados evaluados (None para asignaciones).</td></tr>
-        <tr><td><code>.eval(expr: str) → Any</code></td><td>Evalúa una sola expresión y retorna el objeto resultante.</td></tr>
+        <tr><td><code>.evaluate(source: str) → list</code></td><td>Ejecuta una o más sentencias y retorna un resultado por sentencia.</td></tr>
+        <tr><td><code>.register_function(fn, name: str)</code></td><td>Expone un invocable de Python a PHS bajo <code>name</code>. Los argumentos llegan como Quantity, float, bool, str, None o list.</td></tr>
+        <tr><td><code>.deriv(expr: str, var: str) → str</code></td><td>Derivada simbólica de <code>expr</code> respecto a <code>var</code>.</td></tr>
+        <tr><td><code>.integral(expr: str, var: str) → str</code></td><td>Integral simbólica.</td></tr>
+        <tr><td><code>.solve(equation: str, var: str) → str</code></td><td>Despeja <code>var</code> en <code>equation</code>.</td></tr>
+        <tr><td><code>.get_fn_params(name: str) → list | None</code></td><td>Nombres de los parámetros de una función PHS, o None si no está definida.</td></tr>
+        <tr><td><code>.reload_native_ext() → list</code></td><td>Reescanea <code>ext/</code> buscando plugins modificados y retorna los nombres reinstalados. Sin efecto si no se dio <code>base_dir</code>.</td></tr>
       </tbody>
     </table>
-    <h4>Sintaxis de la gramática</h4>
+    <h4>Sintaxis de PHS</h4>
     <table>
       <thead><tr><th>Sintaxis</th><th>Descripción</th></tr></thead>
       <tbody>
-        {grammarApi.map(g => (
+        {phsApi.map(g => (
           <tr>
             <td><code>{g.syntax}</code></td>
             <td>{g.desc}</td>
@@ -283,6 +385,54 @@ with mk.propagation_mode("monte_carlo"):
       </tbody>
     </table>
   </div>
+
+  <div class="callout callout-warning">
+    <p><strong>Eliminado:</strong> <code>physure.ext.grammar</code> y su <code>GrammarInterpreter</code> — la reimplementación del lenguaje en Python — ya no existen. <code>Interpreter</code> los reemplaza y ejecuta el mismo motor que usan PHS y Rust, así que los tres no pueden desviarse entre sí. Sustituye <code>.run(...)</code> y <code>.eval(...)</code> por <code>.evaluate(...)</code>.</p>
+  </div>
+
+  <h3 id="phyfunction">PhyFunction y PhyEquation</h3>
+  <p>
+    Una función o ecuación de PHS, sostenida como objeto de Python. Las funciones se componen y
+    operan como la matemática que representan, y las ecuaciones se pueden despejar en cualquier
+    dirección.
+  </p>
+  <div class="api-card">
+    <div class="api-signature"><span class="api-kw">class</span> <span class="api-name">PhyFunction</span>(interpreter, name: str, body: str)</div>
+    <table>
+      <thead><tr><th>Método</th><th>Descripción</th></tr></thead>
+      <tbody>
+        <tr><td><code>.get_params() → list[str]</code></td><td>Nombres de los parámetros, en orden.</td></tr>
+        <tr><td><code>fn(*args) → Quantity</code></td><td>Se invoca con cantidades; las unidades se verifican.</td></tr>
+        <tr><td><code>.deriv(var)</code> / <code>.integral(var)</code></td><td>Derivada o integral simbólica, devuelta como otra <code>PhyFunction</code>.</td></tr>
+        <tr><td><code>.solve(var) → PhyFunction</code></td><td>Reordena para despejar <code>var</code>.</td></tr>
+        <tr><td><code>f + g</code>, <code>f - g</code>, <code>f * g</code>, <code>f / g</code></td><td>Álgebra de funciones — superponer campos, combinar funciones de transferencia.</td></tr>
+        <tr><td><code>.compose(other)</code></td><td>Construye <code>c(x) = f(g(x))</code>.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="api-card">
+    <div class="api-signature"><span class="api-kw">class</span> <span class="api-name">PhyEquation</span>(expression: str, interpreter=None)</div>
+    <table>
+      <thead><tr><th>Método</th><th>Descripción</th></tr></thead>
+      <tbody>
+        <tr><td><code>.solve(var) → PhyEquation</code></td><td>Despeja <code>var</code>, esté del lado que esté.</td></tr>
+        <tr><td><code>eq(**kwargs) → Quantity</code></td><td>Sustituye los símbolos libres y evalúa.</td></tr>
+        <tr><td><code>.lhs</code> / <code>.rhs</code></td><td>Cualquiera de los dos lados, como cadena.</td></tr>
+        <tr><td><code>+ - * / **</code></td><td>Aritmética de ecuaciones, aplicada a ambos lados.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <pre><code>from physure import Q_, Interpreter, PhyFunction
+
+interp = Interpreter()
+ke = PhyFunction(interp, "kinetic_energy", "kinetic_energy(m, v) = 0.5 * m * v^2")
+
+print(ke.get_params())                          # ['m', 'v']
+print(ke(Q_(10, "kg"), Q_(5, "m/s")).to("J"))   # 125.0 J
+
+# Derivada simbólica, sigue siendo invocable
+dke_dv = ke.deriv("v")
+print(dke_dv(Q_(10, "kg"), Q_(5, "m/s")))       # 50.0 kg·m/s</code></pre>
 
   <!-- Exceptions -->
   <h2 id="exceptions">Excepciones</h2>

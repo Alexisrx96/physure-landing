@@ -17,9 +17,59 @@ import DocsLayout from "../layouts/DocsLayout.astro";
 
     <div class="release current">
       <div class="release-header">
+        <h2 id="unreleased">
+          <span class="release-version">Unreleased</span>
+          <span class="badge badge-green">In development</span>
+          <span class="release-date">since v0.2.3</span>
+        </h2>
+      </div>
+      <div class="release-body">
+        <h3>Breaking</h3>
+        <ul>
+          <li><strong>PHS local bindings moved to a postfix <code>where</code></strong>: <code>let name = value in body</code> is now <code>body where name = value[, name2 = value2]</code>. This freed the <code>in</code> keyword, so <code>5 in</code> is a length again.</li>
+          <li><strong><code>physure.ext.grammar</code> removed</strong>: the Python reimplementation of the language (1655 lines) and its test module are gone. Use <a href="/api#grammar-api"><code>physure.Interpreter</code></a>, which runs the same Rust engine as <code>phs</code>.</li>
+        </ul>
+
+        <h3>Added</h3>
+        <ul>
+          <li><strong>Vectors and matrices as first-class types</strong>: <a href="/api#tensors"><code>QuantityVector</code> and <code>QuantityMatrix</code></a> with dot, cross, norm, transpose, matmul and determinant — all propagating units, in Rust, PHS, Python and Java 8+.</li>
+          <li><strong>N-dimensional native plotting</strong>, written in the crate with no new Rust dependency, plus <code>export3d(expr, "surface.stl")</code> writing a plotted surface as STL, OBJ, glTF or PLY.</li>
+          <li><strong>String interpolation</strong>: <code>"the beam carries &#123;load&#125;"</code>, in the interpreter and all three transpile targets. A quoted string is now text, so a formula passed to <code>deriv</code> is no longer rewritten by whatever is in scope.</li>
+          <li><strong>Asymmetric uncertainties as moments</strong>: <code>12.3 +/- (0.5, 0.4) pb</code> parses, and the pair maps onto the first three moments of a dimidiated Gaussian in closed form. Propagation deliberately raises rather than averaging the skew away.</li>
+          <li><strong><code>physure.uncertainty_model(...)</code></strong>, a per-scope choice of distribution shape — <code>"gaussian"</code> today, <code>"moments"</code> once asymmetric propagation lands.</li>
+          <li><strong><code>propagation_mode</code> is finally read from <code>physure.conf</code></strong>, by both PHS and the core, so the two cannot disagree. The key had been in the shipped conf from the beginning and nothing had ever read it.</li>
+          <li><strong>PhyEquation & PhyFunction</strong>: equation arithmetic, callable equations, and transpilation parity tests across PHS, Rust, Python and Java 8+.</li>
+          <li><strong>Advanced vector calculus</strong>: <code>diff(f, var, order)</code>, <code>grad</code>, <code>div</code>, <code>curl</code>, <code>laplacian</code>. Plus infinity (<code>inf</code>, <code>∞</code>, <code>oo</code>) in the grammar, limits and improper integrals.</li>
+          <li><strong>Range syntax <code>a .. b</code></strong>, checked to be a real interval when built, and binding looser than the operators inside it.</li>
+          <li><strong><code>%</code> and <code>ppm</code> are dimensionless units</strong>: <code>200 kPa * 5 %</code> is <code>10 kPa</code> — a unit-preserving operation the engine checks. Spanish aliases too: julio, vatio, pascalio, voltio, ohmio, porcentaje.</li>
+          <li><strong>New format specs</strong>: <code>base</code> quotes a measurement in the units it is built from, <code>frac</code> and <code>ifrac</code> write the magnitude as a common or mixed fraction.</li>
+        </ul>
+
+        <h3>Fixed</h3>
+        <p>Roughly thirty correctness fixes, several of which changed visible results:</p>
+        <ul>
+          <li><strong>Every prefixed unit was read one character short</strong> — <code>1 kg</code> evaluated as 1 gram, <code>100 kPa</code> as 100 pascal, <code>1 mol</code> as <code>1 * ol</code>.</li>
+          <li><strong><code>1 km == 1000 m</code> was false</strong> while <code>1 km + 1000 m</code> converted correctly — comparison read the magnitudes and ignored the scale.</li>
+          <li><strong>A quantity behaved as if independent of itself</strong>: <code>x - x</code> reported σ·√2 instead of zero, and <code>x / x</code> an uncertain 1. Python's scalar path now tracks provenance in the Rust core by default, matching PHS.</li>
+          <li><strong>Java added uncertainties linearly, not in quadrature</strong> — 0.3 and 0.3 gave 0.6 where Rust and Python give 0.42, an error about 40% too large on every quantity through the Java path.</li>
+          <li><strong><code>sin</code>, <code>cos</code>, <code>tan</code> are dimensionally checked</strong> and keep the uncertainty; <code>sin(9.81 m/s^2)</code> used to answer -0.379 as though m/s² were radians.</li>
+          <li><strong>A degree is a plane angle again</strong> — <code>deg</code>, <code>arcmin</code> and <code>arcsec</code> had been registered as scaled steradians.</li>
+          <li><strong>An unknown unit is reported instead of invented</strong>: <code>5 foobar</code> used to evaluate happily with a fabricated dimension.</li>
+          <li><strong>A unit symbol the script also binds as a variable is rejected, not guessed</strong> — <code>g = 9.81 m/s^2</code> then <code>10.0 kg * g</code> read <code>g</code> as grams.</li>
+          <li><strong><code>10.0 +/- 0.5 m</code> printed as <code>10.0 m</code></strong> — the uncertainty was propagated correctly and then dropped by <code>Display</code>.</li>
+          <li><strong><code>QuantityVector::norm()</code> reported an uncertainty exactly √2 too small</strong>, and Monte Carlo propagation no longer redraws an operand that already carries samples.</li>
+        </ul>
+        <p>
+          The full list lives in the repo's
+          <a href="https://github.com/Alexisrx96/physure/blob/main/CHANGELOG.md" target="_blank" rel="noopener">CHANGELOG.md</a>.
+        </p>
+      </div>
+    </div>
+
+    <div class="release">
+      <div class="release-header">
         <h2 id="v023">
           <span class="release-version">v0.2.3</span>
-          <span class="badge badge-green">Latest</span>
           <span class="release-date">2026</span>
         </h2>
       </div>

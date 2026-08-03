@@ -9,7 +9,7 @@ import DocsLayout from "../layouts/DocsLayout.astro";
     <p>Use physure directly from the terminal via the standalone native <code>phs</code> Rust executable or Python host bridge.</p>
   </div>
 
-  <h2>Three modes</h2>
+  <h2>Five modes</h2>
   <div class="mode-grid">
     <div class="mode-card">
       <div class="mode-num">1</div>
@@ -29,8 +29,24 @@ import DocsLayout from "../layouts/DocsLayout.astro";
       <div class="mode-num">3</div>
       <h3>Interactive REPL</h3>
       <p>Start a standalone native Rust REPL session. Exit with Ctrl+D or <code>exit</code>.</p>
-      <pre><code>phs
+      <pre><code>phs --repl
 phs> ...</code></pre>
+    </div>
+    <div class="mode-card">
+      <div class="mode-num">4</div>
+      <h3>Reports & visualizers</h3>
+      <p>Turn a script into a shareable record — typeset formulas, every intermediate step, inline plots.</p>
+      <pre><code>phs calc.phs --html   # HTML report
+phs calc.phs --web    # live visualizer
+phs calc.phs --tui    # terminal dashboard</code></pre>
+    </div>
+    <div class="mode-card">
+      <div class="mode-num">5</div>
+      <h3>Transpile</h3>
+      <p>Hand the dev team real starting code instead of a description of the calculation.</p>
+      <pre><code>phs transpile calc.phs --target python -o calc.py
+phs transpile calc.phs --target rust
+phs transpile calc.phs --target java -o Calc.java</code></pre>
     </div>
   </div>
 
@@ -54,9 +70,11 @@ phs "9.81 +/- 0.02 m/s^2 => ft/s^2"
 # 32.185 ± 0.066 ft/s^2</code></pre>
 
   <h2>REPL session</h2>
-  <pre><code>$ phs
-physure — native standalone PHS calculator.
-Try `500 N / 2 m^2 => kPa`; exit with Ctrl-D or 'exit'.
+  <pre><code>$ phs --repl
+┌──────────────────────────────────────────────────────────────┐
+│ Physure Interactive REPL (PHS v0.2.4)                        │
+│ Type 'exit', 'quit', or 'help' for instructions.             │
+└──────────────────────────────────────────────────────────────┘
 
 phs> g = 9.81 +/- 0.02 m/s^2
 phs> m = 70 kg
@@ -77,19 +95,101 @@ True
 
 phs> exit</code></pre>
 
-  <h2>CLI subcommands & Python fallback</h2>
-  <p>Available via the native <code>phs</code> binary or <code>python -m physure</code>:</p>
-  <pre><code># Native Rust binary (0ms cold start):
-phs script.phs                        # execute script file
-phs "500 N / 2 m^2 => kPa"            # evaluate expression
-phs                                   # start interactive REPL
+  <h2>CLI reference</h2>
+  <pre><code>USAGE:
+    phs &lt;script.phs&gt; [OPTIONS]
+    phs --repl
+    phs transpile &lt;script.phs&gt; [--target &lt;rust|python|java&gt;] [--output &lt;file&gt;]
+    phs register-protocol
+    phs new-plugin &lt;name&gt; [--lang &lt;rust|python|both&gt;] [--dir &lt;path&gt;]
 
-# Python module fallback:
-python -m physure script.phs
+FLAGS &amp; OPTIONS:
+    -h, --help               Print help information
+    -r, --repl               Start interactive PHS REPL environment
+    -t, --target &lt;lang&gt;      Transpile target: rust, python, java (default: rust)
+    -o, --output &lt;file&gt;      Specify output file path (e.g. out.py, Main.java)
+    --tui                    Launch terminal UI dashboard mode
+    --web                    Launch local web visualizer server
+    --html, --view           Generate and open HTML report</code></pre>
+  <p>
+    <code>phs register-protocol</code> registers a <code>phs://</code> OS-level protocol handler, so
+    <code>.phs</code> files or links to them open directly from a browser or file manager.
+  </p>
+
+  <h3>Python fallback</h3>
+  <p>The Python package ships the same calculator, for when it's already in the environment:</p>
+  <pre><code>python -m physure script.phs
 python -m physure "500 N / 2 m^2 => kPa"</code></pre>
 
-  <h2>physure syntax reference</h2>
-  <p>The REPL uses physure (PHS) syntax. Here's a complete reference:</p>
+  <h2>What PHS is for</h2>
+  <p>
+    Engineering and lab teams already have the physics right. What breaks is the handoff: a formula
+    on a whiteboard or in a spreadsheet gets re-typed into application code by a developer who
+    doesn't know the domain, units get dropped or silently mismatched, and nobody notices until a
+    number is off by a factor of a thousand. PHS closes that gap in both directions.
+  </p>
+  <ul>
+    <li><strong>The engineer validates the formula, not the developer.</strong> Whoever knows the physics writes and runs the <code>.phs</code> script themselves, with units enforced by the interpreter — <code>5 m + 2 kg</code> is a hard error, not a silent bug three sprints later.</li>
+    <li><strong>The script <em>is</em> the spec.</strong> Once it runs clean it goes to the dev team as a <code>.phs</code> file, a rendered HTML report, or transpiled starting code — not as a description of what the code should do.</li>
+    <li><strong>It documents the process, not just the result.</strong> Every run keeps the formula, the intermediate steps, the units carried through each operation, and the final conversions together in one artifact. The calculation is its own audit trail.</li>
+  </ul>
+
+  <h2 id="transpile">From script to real code</h2>
+  <p>
+    Once a <code>.phs</code> script is validated, <code>phs transpile</code> emits code the dev team
+    can build on. The generated code mirrors the script's variables and formulas directly, so the
+    developer starts from logic a domain expert already confirmed — instead of re-deriving it from a
+    PDF or a Slack message. Take this script:
+  </p>
+  <pre><code># beam.phs
+# @title: Cantilever beam deflection
+carga    = 5.0 +/- 0.1 kN
+longitud = 3.0 m
+E        = 200.0 GPa
+I        = 8.5e-6 m^4
+
+deflexion = carga * longitud^3 / (3 * E * I)
+deflexion =&gt; mm
+
+"la viga baja &#123;deflexion =&gt; mm&#125;"</code></pre>
+  <p><code>phs beam.phs</code> answers <code>26.47 ± 0.53 mm</code>, carrying the load's uncertainty all the way through. The three targets:</p>
+
+  <h3>Python — <code>--target python</code></h3>
+  <pre><code>carga = Q_(5.0, "kN", uncertainty=0.1)
+longitud = Q_(3.0, "m")
+E = Q_(200.0, "GPa")
+I = Q_(8.5e-6, "m^4")
+deflexion = ((carga * (longitud ** 3.0)) / ((Q_(3.0, "") * E) * I))
+print(deflexion.to("mm"))
+print(("la viga baja " + str(deflexion.to("mm"))))</code></pre>
+
+  <h3>Rust — <code>--target rust</code></h3>
+  <pre><code>let carga = Quantity::with_uncertainty(5.0, 0.1, "kN").unwrap();
+let longitud = Quantity::new(3.0, "m").unwrap();
+let E = Quantity::new(200.0, "GPa").unwrap();
+let I = Quantity::new(8.5e-6, "m^4").unwrap();
+let deflexion = ((carga * longitud.powi(3).unwrap()) / ((Quantity::new(3.0, "").unwrap() * E) * I));
+println!("&#123;&#125;", (deflexion).to("mm").unwrap());
+println!("&#123;&#125;", format!("la viga baja &#123;&#125;", (deflexion).to("mm").unwrap()));</code></pre>
+
+  <h3>Java — <code>--target java</code></h3>
+  <pre><code>Quantity carga = Quantity.withUncertainty(5.0, 0.1, "kN");
+Quantity longitud = Quantity.of(3.0, "m");
+Quantity E = Quantity.of(200.0, "GPa");
+Quantity I = Quantity.of(8.5e-6, "m^4");
+Quantity deflexion = carga.multiply(longitud.pow(3)).divide(Quantity.of(3.0).multiply(E).multiply(I));
+System.out.println(deflexion.convertTo("mm"));
+System.out.println(("la viga baja " + deflexion.convertTo("mm")));</code></pre>
+
+  <p>
+    Note what survives the translation: the uncertainty stays attached to the load, the conversion to
+    millimetres stays an operation rather than a hardcoded factor, and the string interpolation
+    becomes concatenation in Python and Java and <code>format!</code> in Rust. The generated code
+    depends on the corresponding physure package, so the units keep being checked at runtime — the
+    transpiler hands over a calculation, not a pile of bare floats.
+  </p>
+
+  <h2>PHS syntax reference</h2>
   <table>
     <thead>
       <tr><th>Syntax</th><th>Example</th><th>Description</th></tr>
@@ -98,32 +198,82 @@ python -m physure "500 N / 2 m^2 => kPa"</code></pre>
       <tr>
         <td><code>name = value unit</code></td>
         <td><code>force = 500 N</code></td>
-        <td>Assign a quantity to a variable.</td>
-      </tr>
-      <tr>
-        <td><code>name -&gt; value unit</code></td>
-        <td><code>mass -&gt; 70 kg</code></td>
-        <td>Alternative assignment syntax.</td>
+        <td>Bind a quantity to a name.</td>
       </tr>
       <tr>
         <td><code>expr =&gt; unit</code></td>
         <td><code>force =&gt; kN</code></td>
-        <td>Convert and print in target unit.</td>
+        <td>Convert to the target unit.</td>
       </tr>
       <tr>
         <td><code>expr == value unit</code></td>
         <td><code>stress == 250 Pa</code></td>
-        <td>Assert equality. Prints True/False.</td>
+        <td>Compare. Prints True/False. Also <code>!=</code>, <code>&gt;=</code>, <code>&lt;=</code>, <code>&gt;</code>, <code>&lt;</code>, <code>≈</code>.</td>
       </tr>
       <tr>
-        <td><code>name = ?</code></td>
-        <td><code>g = ?</code></td>
-        <td>Query and print a variable's current value.</td>
+        <td><code>a == b +/- N sigma</code></td>
+        <td><code>g == 9.80 m/s^2 +/- 2 sigma</code></td>
+        <td>Assert agreement within N standard deviations.</td>
       </tr>
       <tr>
         <td><code>value +/- unc unit</code></td>
         <td><code>9.81 +/- 0.02 m/s^2</code></td>
-        <td>Quantity literal with uncertainty.</td>
+        <td>Quantity literal with a symmetric uncertainty. <code>±</code> also works.</td>
+      </tr>
+      <tr>
+        <td><code>value +/- (up, down) unit</code></td>
+        <td><code>12.3 +/- (0.5, 0.4) pb</code></td>
+        <td>Asymmetric uncertainty, upper half first.</td>
+      </tr>
+      <tr>
+        <td><code>expr: spec</code></td>
+        <td><code>F: .3e</code></td>
+        <td>Format spec — digits and notation. Never touches the value.</td>
+      </tr>
+      <tr>
+        <td><code>expr: base</code></td>
+        <td><code>2 kΩ: base</code></td>
+        <td>Quote the measurement in the units it is built from: <code>2000 A^-2 * kg * m^2 * s^-3</code>.</td>
+      </tr>
+      <tr>
+        <td><code>expr: frac</code> / <code>expr: ifrac</code></td>
+        <td><code>1.5 m: ifrac</code></td>
+        <td>Write the magnitude as a common (<code>3/2 m</code>) or mixed (<code>1 1/2 m</code>) fraction.</td>
+      </tr>
+      <tr>
+        <td><code>body where n = v</code></td>
+        <td><code>x * 2.0 where x = 10.0 m</code></td>
+        <td>Local bindings, comma-separated. Later ones see earlier ones.</td>
+      </tr>
+      <tr>
+        <td><code>a .. b</code></td>
+        <td><code>-2.0 m .. 2.0 m</code></td>
+        <td>A range — a plot or export domain. Checked to be a real interval when built.</td>
+      </tr>
+      <tr>
+        <td><code>if c then a else b</code></td>
+        <td><code>if P &gt; 50 kPa then "high" else "normal"</code></td>
+        <td>Conditional expression. <code>cond ? a : b</code> is the ternary form.</td>
+      </tr>
+      <tr>
+        <td><code>f(x: unit) = expr</code></td>
+        <td><code>E_k(m: kg, v: m/s) = 0.5 * m * v^2</code></td>
+        <td>Function with unit-checked parameters. The <code>fn</code> keyword is optional.</td>
+      </tr>
+      <tr>
+        <td><code>"text &#123;expr&#125;"</code></td>
+        <td><code>"the beam carries &#123;load&#125;"</code></td>
+        <td>String interpolation. The literal is text; only <code>&#123;…&#125;</code> is evaluated.</td>
+      </tr>
+      <tr>
+        <td><code>use f, g from mod</code></td>
+        <td><code>use solve, deriv from calc</code></td>
+        <td>Import built-in or plugin functions.</td>
+      </tr>
+      <tr>
+        <td><code>import "./file.phs"</code></td>
+        <td><code>import "./thermo.phs"</code></td>
+        <td>Import a local module, relative to the running script.</td>
       </tr>
       <tr>
         <td><code>a op b</code></td>
@@ -133,10 +283,91 @@ python -m physure "500 N / 2 m^2 => kPa"</code></pre>
       <tr>
         <td><code># comment</code></td>
         <td><code># this is ignored</code></td>
-        <td>Line comment.</td>
+        <td>Line comment. <code># @title:</code>, <code># @author:</code> and <code># @abstract:</code> become report front matter.</td>
       </tr>
     </tbody>
   </table>
+
+  <h2>Language features</h2>
+
+  <h3>Local bindings read like paper</h3>
+  <p>
+    Bindings are a postfix <code>where</code> clause, so the result comes first and its scaffolding
+    follows — the order a formula is read in.
+  </p>
+  <pre><code>x * 2.0 where x = 10.0 m
+a * b where a = 2 m, b = a * 3        # later bindings see earlier ones</code></pre>
+  <div class="callout callout-warning">
+    <p><strong>Breaking change:</strong> local bindings used to be <code>let name = value in body</code>. The <code>in</code> keyword was taken back for inches — <code>5 in</code> is now a length, and <code>let ... in</code> no longer parses.</p>
+  </div>
+
+  <h3>Strings are text; <code>&#123;…&#125;</code> is how a value gets in</h3>
+  <p>
+    A quoted string is exactly the text written, even if a variable by that name exists. This is what
+    lets a formula be passed to <code>deriv</code> without the environment silently rewriting it.
+  </p>
+  <pre><code>v = 3.0 m/s
+"v"                             # -> "v", the name, not the quantity
+deriv("0.5 * m * v^2", "v")     # -> m * v   (v and m stay symbols)
+
+m = 2.0 kg
+"0.5 * &#123;m&#125; * v^2"               # -> "0.5 * 2.0 kg * v^2"
+deriv("0.5 * &#123;m&#125; * v^2", "v")   # -> 2 * kg * v   (m is a constant now, unit included)</code></pre>
+  <p>Interpolation transpiles to all three targets: concatenation in Python and Java, <code>format!</code> in Rust.</p>
+
+  <h3>Percentages are units</h3>
+  <p>
+    <code>%</code> and <code>ppm</code> are dimensionless units, so multiplying by one is a
+    unit-preserving operation the engine checks rather than arithmetic the reader has to do:
+  </p>
+  <pre><code>5.0 %                  # parses as a quantity
+200 kPa * 5 %          # 10 kPa</code></pre>
+
+  <h3>Spanish unit aliases</h3>
+  <p>
+    <code>julio</code>, <code>vatio</code>, <code>pascalio</code>, <code>voltio</code>,
+    <code>ohmio</code> and <code>porcentaje</code> resolve alongside the SI symbols, as do
+    <code>metro</code>, <code>segundo</code>, <code>kilogramo</code> and <code>amperio</code>.
+  </p>
+
+  <h3>Infinity</h3>
+  <p>
+    <code>inf</code>, <code>-inf</code>, <code>∞</code>, <code>-∞</code>, <code>infinity</code> and
+    <code>oo</code> are accepted in the grammar, in limits, and in improper integrals.
+  </p>
+
+  <h3>3D surfaces and mesh export</h3>
+  <p>
+    A plotted surface can go to a slicer, a CAD tool or a renderer instead of only to a screen. The
+    format is chosen from the extension.
+  </p>
+  <pre><code>use plot3d, export3d from plot
+
+fn P(x, y) = 100.0 kPa * sin(x / 1.0 m) * cos(y / 1.0 m)
+rango_x = -2.0 m .. 2.0 m
+rango_y = -2.0 m .. 2.0 m
+
+# Interactive WebGL viewer, fully offline
+plot3d(P, x: rango_x, y: rango_y, title: "Pressure surface P(x, y)")
+
+# CAD meshes — stl, obj, gltf, ply
+export3d(P, x: rango_x, y: rango_y, file: "mesh.stl", format: "stl")</code></pre>
+
+  <h3>Built-in modules</h3>
+  <table>
+    <thead><tr><th>Module</th><th>Functions</th></tr></thead>
+    <tbody>
+      <tr><td><code>core</code></td><td><code>sqrt</code>, <code>sin</code>, <code>cos</code>, <code>tan</code>, <code>exp</code>, <code>ln</code>, <code>log</code>, <code>abs</code>, <code>round</code>, <code>floor</code>, <code>ceil</code></td></tr>
+      <tr><td><code>calc</code></td><td><code>solve(eq, target)</code>, <code>deriv(expr, var)</code>, <code>integral(expr, var)</code>, <code>diff(f, var, order)</code>, <code>grad</code>, <code>div</code>, <code>curl</code>, <code>laplacian</code></td></tr>
+      <tr><td><code>array</code></td><td><code>linspace(a, b, n)</code>, <code>gradient(y, x)</code>, <code>trapz(y, x)</code></td></tr>
+      <tr><td><code>plot</code></td><td><code>plot</code>, <code>plot3d</code>, <code>export3d</code></td></tr>
+    </tbody>
+  </table>
+  <p>
+    <code>use plugin_double from plugin</code> loads a native Rust plugin (ABI v2) or a Python
+    <code>.py</code> extension module by the same syntax. Scaffold one with
+    <code>phs new-plugin myplugin --lang rust</code>.
+  </p>
 
   <h2>Writing script files</h2>
   <p>Create <code>.phs</code> files with physics notation and pipe them to physure:</p>

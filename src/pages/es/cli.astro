@@ -6,87 +6,196 @@ import DocsLayout from "../../layouts/DocsLayout.astro";
   <div class="page-header">
     <div class="kicker">Herramientas</div>
     <h1>CLI y REPL</h1>
-    <p>Usa physure directamente desde tu terminal sin necesidad de escribir scripts en Python. Como GNU <code>units</code>, pero con propagación de incertidumbres.</p>
+    <p>Usa physure directamente desde la terminal con el ejecutable nativo <code>phs</code> escrito en Rust, o con el puente del paquete de Python.</p>
   </div>
 
-  <h2>Tres modos de uso</h2>
+  <h2>Cinco modos de uso</h2>
   <div class="mode-grid">
     <div class="mode-card">
       <div class="mode-num">1</div>
       <h3>Evaluación simple</h3>
-      <p>Pasa una expresión física como argumento de la línea de comandos. Se evalúa y finaliza inmediatamente.</p>
-      <pre><code>python -m physure "500 N / 2 m^2 => kPa"
+      <p>Pasa una expresión física como argumento al binario nativo <code>phs</code>. Se evalúa al instante.</p>
+      <pre><code>phs "500 N / 2 m^2 => kPa"
 # 0.25 kPa</code></pre>
     </div>
     <div class="mode-card">
       <div class="mode-num">2</div>
       <h3>Evaluación de archivos</h3>
-      <p>Envía por tubería un archivo con declaraciones en physure. Todos los resultados se imprimen en secuencia.</p>
-      <pre><code>python -m physure &lt; notas.phs</code></pre>
+      <p>Ejecuta un archivo <code>.phs</code> directamente o con el shebang <code>#!/usr/bin/env phs</code>.</p>
+      <pre><code>phs script.phs
+# o ./script.phs</code></pre>
     </div>
     <div class="mode-card">
       <div class="mode-num">3</div>
       <h3>REPL Interactivo</h3>
-      <p>Inicia una sesión interactiva en la consola. Conserva el historial de comandos. Sal del intérprete con Ctrl+D.</p>
-      <pre><code>python -m physure
-      mk&gt; ...</code></pre>
+      <p>Inicia una sesión nativa en Rust. Sal con Ctrl+D o <code>exit</code>.</p>
+      <pre><code>phs --repl
+phs> ...</code></pre>
+    </div>
+    <div class="mode-card">
+      <div class="mode-num">4</div>
+      <h3>Reportes y visualizadores</h3>
+      <p>Convierte un script en un registro compartible — fórmulas tipografiadas, cada paso intermedio, gráficas incrustadas.</p>
+      <pre><code>phs calc.phs --html   # reporte HTML
+phs calc.phs --web    # visualizador en vivo
+phs calc.phs --tui    # panel de terminal</code></pre>
+    </div>
+    <div class="mode-card">
+      <div class="mode-num">5</div>
+      <h3>Transpilación</h3>
+      <p>Entrega al equipo de desarrollo código real de partida, no la descripción de un cálculo.</p>
+      <pre><code>phs transpile calc.phs --target python -o calc.py
+phs transpile calc.phs --target rust
+phs transpile calc.phs --target java -o Calc.java</code></pre>
     </div>
   </div>
 
   <h2>Ejemplos rápidos</h2>
   <pre><code># Conversiones de unidad
-python -m physure "60 mi/hr => km/hr"
-# 96.5606 km/hr
+phs "60 mi/h => km/h"
+# 96.5606 km/h
 
-python -m physure "1 atm => kPa"
+phs "1 atm => kPa"
 # 101.325 kPa
 
-python -m physure "100 degC => degF"
-# 212.0 degF
-
 # Aritmética dimensional
-python -m physure "9.81 m/s^2 * 70 kg => N"
+phs "9.81 m/s^2 * 70 kg => N"
 # 686.7 N
 
-python -m physure "1 kWh => MJ"
+phs "1 kWh => MJ"
 # 3.6 MJ
 
 # Con literales de incertidumbre
-python -m physure "9.81 +/- 0.02 m/s^2 => ft/s^2"
+phs "9.81 +/- 0.02 m/s^2 => ft/s^2"
 # 32.185 ± 0.066 ft/s^2</code></pre>
 
   <h2>Sesión del REPL</h2>
-  <pre><code>$ python -m physure
-physure — unit-aware calculator. Try `500 N / 2 m^2 => kPa`; exit with Ctrl-D.
+  <pre><code>$ phs --repl
+┌──────────────────────────────────────────────────────────────┐
+│ Physure Interactive REPL (PHS v0.2.4)                        │
+│ Type 'exit', 'quit', or 'help' for instructions.             │
+└──────────────────────────────────────────────────────────────┘
 
-mk&gt; g = 9.81 +/- 0.02 m/s^2
-mk&gt; m = 70 kg
-mk&gt; F = g * m
-mk&gt; F => N
+phs&gt; g = 9.81 +/- 0.02 m/s^2
+phs&gt; m = 70 kg
+phs&gt; F = g * m
+phs&gt; F => N
 686.7 ± 1.4 N
 
-mk&gt; v = 100 km/hr
-mk&gt; v => m/s
+phs&gt; v = 100 km/h
+phs&gt; v => m/s
 27.7778 m/s
 
-mk&gt; stress = 500 N / 2 m^2
-mk&gt; stress => kPa
+phs&gt; stress = 500 N / 2 m^2
+phs&gt; stress => kPa
 0.25 kPa
 
-mk&gt; stress == 250 Pa
+phs&gt; stress == 250 Pa
 True
 
-mk&gt; exit</code></pre>
+phs&gt; exit</code></pre>
 
-  <h2>Subcomandos de Consola</h2>
-  <p>También disponible a través del comando global <code>physure</code> instalado por pip:</p>
-  <pre><code># Tras ejecutar pip install physure:
+  <h2>Referencia de la CLI</h2>
+  <pre><code>USO:
+    phs &lt;script.phs&gt; [OPCIONES]
+    phs --repl
+    phs transpile &lt;script.phs&gt; [--target &lt;rust|python|java&gt;] [--output &lt;archivo&gt;]
+    phs register-protocol
+    phs new-plugin &lt;nombre&gt; [--lang &lt;rust|python|both&gt;] [--dir &lt;ruta&gt;]
+
+BANDERAS Y OPCIONES:
+    -h, --help               Imprime la ayuda
+    -r, --repl               Inicia el REPL interactivo de PHS
+    -t, --target &lt;lang&gt;      Destino de transpilación: rust, python, java (por defecto: rust)
+    -o, --output &lt;archivo&gt;   Ruta del archivo de salida (p. ej. out.py, Main.java)
+    --tui                    Panel de control en la terminal
+    --web                    Servidor local del visualizador web
+    --html, --view           Genera y abre el reporte HTML</code></pre>
+  <p>
+    <code>phs register-protocol</code> registra un manejador de protocolo <code>phs://</code> a nivel
+    del sistema, de modo que los archivos <code>.phs</code> o los enlaces a ellos se abran
+    directamente desde el navegador o el explorador de archivos.
+  </p>
+
+  <h3>Alternativa desde Python</h3>
+  <p>El paquete de Python trae la misma calculadora, para cuando ya está en el entorno:</p>
+  <pre><code>python -m physure script.phs
+python -m physure "500 N / 2 m^2 => kPa"
+
+# Tras ejecutar pip install physure:
 physure repl                          # Inicia el REPL interactivo
-physure repl "500 N / 2 m^2 => kPa"  # Evalúa una única expresión
-physure sync-types                    # Regenera los archivos stub de tipado estático</code></pre>
+physure repl "500 N / 2 m^2 => kPa"   # Evalúa una única expresión
+physure sync-types                    # Regenera los stubs de tipado estático</code></pre>
 
-  <h2>Sintaxis de physure</h2>
-  <p>El REPL y los scripts de consola utilizan la sintaxis de physure (PHS):</p>
+  <h2>Para qué sirve PHS</h2>
+  <p>
+    Los equipos de ingeniería y laboratorio ya tienen la física bien. Lo que se rompe es el traspaso:
+    una fórmula del pizarrón o de una hoja de cálculo la vuelve a teclear en código quien no conoce
+    el dominio, se pierden unidades o se mezclan en silencio, y nadie lo nota hasta que un número
+    está mil veces desviado. PHS cierra esa brecha en ambas direcciones.
+  </p>
+  <ul>
+    <li><strong>La fórmula la valida quien hace la física, no quien programa.</strong> El que sabe la física escribe y ejecuta el script <code>.phs</code> él mismo, con las unidades impuestas por el intérprete — <code>5 m + 2 kg</code> es un error duro, no un bug silencioso tres sprints después.</li>
+    <li><strong>El script <em>es</em> la especificación.</strong> Cuando corre limpio se entrega al equipo de desarrollo como archivo <code>.phs</code>, como reporte HTML, o como código transpilado de partida — no como la descripción de lo que el código debería hacer.</li>
+    <li><strong>Documenta el proceso, no solo el resultado.</strong> Cada ejecución conserva la fórmula, los pasos intermedios, las unidades arrastradas por cada operación y las conversiones finales en un mismo artefacto. El cálculo es su propia bitácora de auditoría.</li>
+  </ul>
+
+  <h2 id="transpile">Del script a código real</h2>
+  <p>
+    Una vez validado el script <code>.phs</code>, <code>phs transpile</code> emite código sobre el que
+    el equipo de desarrollo puede construir. El código generado refleja directamente las variables y
+    fórmulas del script, así que se parte de una lógica que un experto del dominio ya confirmó — en
+    vez de re-derivarla de un PDF o un mensaje de Slack. Con este script:
+  </p>
+  <pre><code># beam.phs
+# @title: Deflexión de viga en voladizo
+carga    = 5.0 +/- 0.1 kN
+longitud = 3.0 m
+E        = 200.0 GPa
+I        = 8.5e-6 m^4
+
+deflexion = carga * longitud^3 / (3 * E * I)
+deflexion =&gt; mm
+
+"la viga baja &#123;deflexion =&gt; mm&#125;"</code></pre>
+  <p><code>phs beam.phs</code> responde <code>26.47 ± 0.53 mm</code>, arrastrando la incertidumbre de la carga hasta el final. Los tres objetivos:</p>
+
+  <h3>Python — <code>--target python</code></h3>
+  <pre><code>carga = Q_(5.0, "kN", uncertainty=0.1)
+longitud = Q_(3.0, "m")
+E = Q_(200.0, "GPa")
+I = Q_(8.5e-6, "m^4")
+deflexion = ((carga * (longitud ** 3.0)) / ((Q_(3.0, "") * E) * I))
+print(deflexion.to("mm"))
+print(("la viga baja " + str(deflexion.to("mm"))))</code></pre>
+
+  <h3>Rust — <code>--target rust</code></h3>
+  <pre><code>let carga = Quantity::with_uncertainty(5.0, 0.1, "kN").unwrap();
+let longitud = Quantity::new(3.0, "m").unwrap();
+let E = Quantity::new(200.0, "GPa").unwrap();
+let I = Quantity::new(8.5e-6, "m^4").unwrap();
+let deflexion = ((carga * longitud.powi(3).unwrap()) / ((Quantity::new(3.0, "").unwrap() * E) * I));
+println!("&#123;&#125;", (deflexion).to("mm").unwrap());
+println!("&#123;&#125;", format!("la viga baja &#123;&#125;", (deflexion).to("mm").unwrap()));</code></pre>
+
+  <h3>Java — <code>--target java</code></h3>
+  <pre><code>Quantity carga = Quantity.withUncertainty(5.0, 0.1, "kN");
+Quantity longitud = Quantity.of(3.0, "m");
+Quantity E = Quantity.of(200.0, "GPa");
+Quantity I = Quantity.of(8.5e-6, "m^4");
+Quantity deflexion = carga.multiply(longitud.pow(3)).divide(Quantity.of(3.0).multiply(E).multiply(I));
+System.out.println(deflexion.convertTo("mm"));
+System.out.println(("la viga baja " + deflexion.convertTo("mm")));</code></pre>
+
+  <p>
+    Fíjate en lo que sobrevive a la traducción: la incertidumbre sigue pegada a la carga, la
+    conversión a milímetros sigue siendo una operación y no un factor incrustado, y la interpolación
+    se vuelve concatenación en Python y Java y <code>format!</code> en Rust. El código generado
+    depende del paquete physure correspondiente, así que las unidades se siguen verificando en
+    ejecución — el transpilador entrega un cálculo, no un montón de flotantes pelados.
+  </p>
+
+  <h2>Referencia de sintaxis de PHS</h2>
   <table>
     <thead>
       <tr><th>Sintaxis</th><th>Ejemplo</th><th>Descripción</th></tr>
@@ -95,32 +204,82 @@ physure sync-types                    # Regenera los archivos stub de tipado est
       <tr>
         <td><code>nombre = valor unidad</code></td>
         <td><code>force = 500 N</code></td>
-        <td>Asigna una cantidad a una variable.</td>
-      </tr>
-      <tr>
-        <td><code>nombre -&gt; valor unidad</code></td>
-        <td><code>mass -&gt; 70 kg</code></td>
-        <td>Sintaxis de asignación alternativa.</td>
+        <td>Liga una cantidad a un nombre.</td>
       </tr>
       <tr>
         <td><code>expr =&gt; unidad</code></td>
         <td><code>force =&gt; kN</code></td>
-        <td>Evalúa, convierte a la unidad destino e imprime.</td>
+        <td>Convierte a la unidad destino.</td>
       </tr>
       <tr>
         <td><code>expr == valor unidad</code></td>
         <td><code>stress == 250 Pa</code></td>
-        <td>Aseveración lógica de igualdad. Imprime True o False.</td>
+        <td>Compara. Imprime True o False. También <code>!=</code>, <code>&gt;=</code>, <code>&lt;=</code>, <code>&gt;</code>, <code>&lt;</code>, <code>≈</code>.</td>
       </tr>
       <tr>
-        <td><code>nombre = ?</code></td>
-        <td><code>g = ?</code></td>
-        <td>Consulta e imprime el valor e incertidumbre actual de la variable.</td>
+        <td><code>a == b +/- N sigma</code></td>
+        <td><code>g == 9.80 m/s^2 +/- 2 sigma</code></td>
+        <td>Asevera la concordancia dentro de N desviaciones estándar.</td>
       </tr>
       <tr>
         <td><code>valor +/- inc unidad</code></td>
         <td><code>9.81 +/- 0.02 m/s^2</code></td>
-        <td>Literal de cantidad con incertidumbre explícita.</td>
+        <td>Literal con incertidumbre simétrica. <code>±</code> también funciona.</td>
+      </tr>
+      <tr>
+        <td><code>valor +/- (sup, inf) unidad</code></td>
+        <td><code>12.3 +/- (0.5, 0.4) pb</code></td>
+        <td>Incertidumbre asimétrica, la mitad superior primero.</td>
+      </tr>
+      <tr>
+        <td><code>expr: spec</code></td>
+        <td><code>F: .3e</code></td>
+        <td>Especificador de formato — dígitos y notación. Nunca toca el valor.</td>
+      </tr>
+      <tr>
+        <td><code>expr: base</code></td>
+        <td><code>2 kΩ: base</code></td>
+        <td>Expresa la medición en las unidades de las que se compone: <code>2000 A^-2 * kg * m^2 * s^-3</code>.</td>
+      </tr>
+      <tr>
+        <td><code>expr: frac</code> / <code>expr: ifrac</code></td>
+        <td><code>1.5 m: ifrac</code></td>
+        <td>Escribe la magnitud como fracción común (<code>3/2 m</code>) o mixta (<code>1 1/2 m</code>).</td>
+      </tr>
+      <tr>
+        <td><code>cuerpo where n = v</code></td>
+        <td><code>x * 2.0 where x = 10.0 m</code></td>
+        <td>Ligaduras locales, separadas por comas. Las posteriores ven a las anteriores.</td>
+      </tr>
+      <tr>
+        <td><code>a .. b</code></td>
+        <td><code>-2.0 m .. 2.0 m</code></td>
+        <td>Un rango — dominio de graficado o exportación. Se verifica que sea un intervalo real al construirlo.</td>
+      </tr>
+      <tr>
+        <td><code>if c then a else b</code></td>
+        <td><code>if P &gt; 50 kPa then "alta" else "normal"</code></td>
+        <td>Expresión condicional. <code>cond ? a : b</code> es la forma ternaria.</td>
+      </tr>
+      <tr>
+        <td><code>f(x: unidad) = expr</code></td>
+        <td><code>E_k(m: kg, v: m/s) = 0.5 * m * v^2</code></td>
+        <td>Función con parámetros verificados por unidad. La palabra <code>fn</code> es opcional.</td>
+      </tr>
+      <tr>
+        <td><code>"texto &#123;expr&#125;"</code></td>
+        <td><code>"la viga carga &#123;load&#125;"</code></td>
+        <td>Interpolación. El literal es texto; solo <code>&#123;…&#125;</code> se evalúa.</td>
+      </tr>
+      <tr>
+        <td><code>use f, g from mod</code></td>
+        <td><code>use solve, deriv from calc</code></td>
+        <td>Importa funciones internas o de plugins.</td>
+      </tr>
+      <tr>
+        <td><code>import "./archivo.phs"</code></td>
+        <td><code>import "./termo.phs"</code></td>
+        <td>Importa un módulo local, relativo al script en ejecución.</td>
       </tr>
       <tr>
         <td><code>a op b</code></td>
@@ -130,13 +289,96 @@ physure sync-types                    # Regenera los archivos stub de tipado est
       <tr>
         <td><code># comentario</code></td>
         <td><code># esta línea se ignora</code></td>
-        <td>Comentario de línea.</td>
+        <td>Comentario de línea. <code># @title:</code>, <code># @author:</code> y <code># @abstract:</code> se vuelven la portada del reporte.</td>
       </tr>
     </tbody>
   </table>
 
+  <h2>Características del lenguaje</h2>
+
+  <h3>Las ligaduras locales se leen como en papel</h3>
+  <p>
+    Las ligaduras son una cláusula <code>where</code> pospuesta, así que el resultado va primero y
+    su andamiaje después — el orden en que se lee una fórmula.
+  </p>
+  <pre><code>x * 2.0 where x = 10.0 m
+a * b where a = 2 m, b = a * 3        # las posteriores ven a las anteriores</code></pre>
+  <div class="callout callout-warning">
+    <p><strong>Cambio incompatible:</strong> las ligaduras locales antes eran <code>let nombre = valor in cuerpo</code>. La palabra <code>in</code> se recuperó para las pulgadas — <code>5 in</code> ahora es una longitud, y <code>let ... in</code> ya no se analiza.</p>
+  </div>
+
+  <h3>Los strings son texto; <code>&#123;…&#125;</code> es como entra un valor</h3>
+  <p>
+    Un string entrecomillado es exactamente el texto escrito, aunque exista una variable con ese
+    nombre. Eso es lo que permite pasarle una fórmula a <code>deriv</code> sin que el entorno la
+    reescriba en silencio.
+  </p>
+  <pre><code>v = 3.0 m/s
+"v"                             # -> "v", el nombre, no la cantidad
+deriv("0.5 * m * v^2", "v")     # -> m * v   (v y m siguen siendo símbolos)
+
+m = 2.0 kg
+"0.5 * &#123;m&#125; * v^2"               # -> "0.5 * 2.0 kg * v^2"
+deriv("0.5 * &#123;m&#125; * v^2", "v")   # -> 2 * kg * v   (m ya es constante, con unidad)</code></pre>
+  <p>La interpolación se transpila a los tres destinos: concatenación en Python y Java, <code>format!</code> en Rust.</p>
+
+  <h3>Los porcentajes son unidades</h3>
+  <p>
+    <code>%</code> y <code>ppm</code> son unidades adimensionales, así que multiplicar por una es
+    una operación que preserva la unidad y que el motor verifica, en lugar de aritmética que el
+    lector tiene que hacer de cabeza:
+  </p>
+  <pre><code>5.0 %                  # se analiza como cantidad
+200 kPa * 5 %          # 10 kPa</code></pre>
+
+  <h3>Alias de unidades en español</h3>
+  <p>
+    <code>julio</code>, <code>vatio</code>, <code>pascalio</code>, <code>voltio</code>,
+    <code>ohmio</code> y <code>porcentaje</code> se resuelven junto a los símbolos del SI, igual que
+    <code>metro</code>, <code>segundo</code>, <code>kilogramo</code> y <code>amperio</code>.
+  </p>
+
+  <h3>Infinito</h3>
+  <p>
+    <code>inf</code>, <code>-inf</code>, <code>∞</code>, <code>-∞</code>, <code>infinity</code> y
+    <code>oo</code> se aceptan en la gramática, en límites y en integrales impropias.
+  </p>
+
+  <h3>Superficies 3D y exportación de mallas</h3>
+  <p>
+    Una superficie graficada puede ir a un laminador, a una herramienta CAD o a un renderizador, no
+    solo a la pantalla. El formato se elige por la extensión.
+  </p>
+  <pre><code>use plot3d, export3d from plot
+
+fn P(x, y) = 100.0 kPa * sin(x / 1.0 m) * cos(y / 1.0 m)
+rango_x = -2.0 m .. 2.0 m
+rango_y = -2.0 m .. 2.0 m
+
+# Visor WebGL interactivo, totalmente sin conexión
+plot3d(P, x: rango_x, y: rango_y, title: "Distribución de presión P(x, y)")
+
+# Mallas CAD — stl, obj, gltf, ply
+export3d(P, x: rango_x, y: rango_y, file: "mesh.stl", format: "stl")</code></pre>
+
+  <h3>Módulos internos</h3>
+  <table>
+    <thead><tr><th>Módulo</th><th>Funciones</th></tr></thead>
+    <tbody>
+      <tr><td><code>core</code></td><td><code>sqrt</code>, <code>sin</code>, <code>cos</code>, <code>tan</code>, <code>exp</code>, <code>ln</code>, <code>log</code>, <code>abs</code>, <code>round</code>, <code>floor</code>, <code>ceil</code></td></tr>
+      <tr><td><code>calc</code></td><td><code>solve(eq, target)</code>, <code>deriv(expr, var)</code>, <code>integral(expr, var)</code>, <code>diff(f, var, orden)</code>, <code>grad</code>, <code>div</code>, <code>curl</code>, <code>laplacian</code></td></tr>
+      <tr><td><code>array</code></td><td><code>linspace(a, b, n)</code>, <code>gradient(y, x)</code>, <code>trapz(y, x)</code></td></tr>
+      <tr><td><code>plot</code></td><td><code>plot</code>, <code>plot3d</code>, <code>export3d</code></td></tr>
+    </tbody>
+  </table>
+  <p>
+    <code>use plugin_double from plugin</code> carga un plugin nativo de Rust (ABI v2) o un módulo
+    de extensión <code>.py</code> de Python con la misma sintaxis. Genera uno con
+    <code>phs new-plugin miplugin --lang rust</code>.
+  </p>
+
   <h2>Escribir archivos de script</h2>
-  <p>Crea archivos con la extensión <code>.phs</code> y envíalos por tubería a physure:</p>
+  <p>Crea archivos con la extensión <code>.phs</code> y ejecútalos con <code>phs</code>:</p>
   <pre><code># notas.phs — análisis de circuito
 V  = 24 V
 R1 = 100 Ω
@@ -153,7 +395,7 @@ P = V * I
 
 I => mA
 P => W</code></pre>
-  <pre><code>python -m physure &lt; notas.phs
+  <pre><code>phs notas.phs
 # 96.0 mA
 # 2.304 W</code></pre>
 
@@ -161,7 +403,7 @@ P => W</code></pre>
   <div class="tips-grid">
     <div class="card tip-card">
       <h3>🚀 Tiempo de arranque</h3>
-      <p>La primera evaluación tarda alrededor de ~0.5 s debido al arranque del sistema. Las evaluaciones subsecuentes dentro de la sesión son inmediatas.</p>
+      <p>El binario nativo <code>phs</code> arranca de inmediato. La alternativa por Python tarda alrededor de ~0.5 s en la primera evaluación por el arranque del sistema.</p>
     </div>
     <div class="card tip-card">
       <h3>📋 Historial</h3>

@@ -17,9 +17,59 @@ import DocsLayout from "../../layouts/DocsLayout.astro";
 
     <div class="release current">
       <div class="release-header">
+        <h2 id="unreleased">
+          <span class="release-version">Sin publicar</span>
+          <span class="badge badge-green">En desarrollo</span>
+          <span class="release-date">desde v0.2.3</span>
+        </h2>
+      </div>
+      <div class="release-body">
+        <h3>Cambios incompatibles</h3>
+        <ul>
+          <li><strong>Las ligaduras locales de PHS pasaron a un <code>where</code> pospuesto</strong>: <code>let nombre = valor in cuerpo</code> ahora es <code>cuerpo where nombre = valor[, nombre2 = valor2]</code>. Esto liberó la palabra <code>in</code>, así que <code>5 in</code> vuelve a ser una longitud.</li>
+          <li><strong><code>physure.ext.grammar</code> eliminado</strong>: la reimplementación del lenguaje en Python (1655 líneas) y su módulo de pruebas ya no existen. Usa <a href="/es/api#grammar-api"><code>physure.Interpreter</code></a>, que ejecuta el mismo motor Rust que <code>phs</code>.</li>
+        </ul>
+
+        <h3>Novedades</h3>
+        <ul>
+          <li><strong>Vectores y matrices como tipos de primera clase</strong>: <a href="/es/api#tensors"><code>QuantityVector</code> y <code>QuantityMatrix</code></a> con producto punto, cruz, norma, transpuesta, multiplicación matricial y determinante — todos propagando unidades, en Rust, PHS, Python y Java 8+.</li>
+          <li><strong>Graficado nativo n-dimensional</strong>, escrito en el crate sin añadir dependencias de Rust, más <code>export3d(expr, "surface.stl")</code> que escribe una superficie graficada como STL, OBJ, glTF o PLY.</li>
+          <li><strong>Interpolación de strings</strong>: <code>"la viga carga &#123;load&#125;"</code>, en el intérprete y en los tres destinos de transpilación. Un string entrecomillado ahora es texto, así que una fórmula pasada a <code>deriv</code> ya no la reescribe lo que haya en el entorno.</li>
+          <li><strong>Incertidumbres asimétricas como momentos</strong>: <code>12.3 +/- (0.5, 0.4) pb</code> se analiza, y el par se mapea sobre los tres primeros momentos de una gaussiana dimidiada en forma cerrada. La propagación lanza error deliberadamente en vez de promediar la asimetría.</li>
+          <li><strong><code>physure.uncertainty_model(...)</code></strong>, una elección por ámbito de la forma de la distribución — <code>"gaussian"</code> hoy, <code>"moments"</code> cuando llegue la propagación asimétrica.</li>
+          <li><strong><code>propagation_mode</code> por fin se lee de <code>physure.conf</code></strong>, tanto por PHS como por el núcleo, así que los dos no pueden discrepar. La clave estaba en el conf distribuido desde el principio y nada la había leído nunca.</li>
+          <li><strong>PhyEquation y PhyFunction</strong>: aritmética de ecuaciones, ecuaciones invocables y pruebas de paridad de transpilación entre PHS, Rust, Python y Java 8+.</li>
+          <li><strong>Cálculo vectorial avanzado</strong>: <code>diff(f, var, orden)</code>, <code>grad</code>, <code>div</code>, <code>curl</code>, <code>laplacian</code>. Además infinito (<code>inf</code>, <code>∞</code>, <code>oo</code>) en la gramática, en límites y en integrales impropias.</li>
+          <li><strong>Sintaxis de rangos <code>a .. b</code></strong>, verificada como intervalo real al construirse, y que liga más flojo que los operadores dentro de ella.</li>
+          <li><strong><code>%</code> y <code>ppm</code> son unidades adimensionales</strong>: <code>200 kPa * 5 %</code> es <code>10 kPa</code> — una operación que preserva la unidad y que el motor verifica. También alias en español: julio, vatio, pascalio, voltio, ohmio, porcentaje.</li>
+          <li><strong>Nuevos especificadores de formato</strong>: <code>base</code> expresa una medición en las unidades de las que se compone, <code>frac</code> e <code>ifrac</code> escriben la magnitud como fracción común o mixta.</li>
+        </ul>
+
+        <h3>Correcciones</h3>
+        <p>Alrededor de treinta correcciones, varias de las cuales cambian resultados visibles:</p>
+        <ul>
+          <li><strong>Toda unidad con prefijo se leía un carácter corta</strong> — <code>1 kg</code> evaluaba como 1 gramo, <code>100 kPa</code> como 100 pascal, <code>1 mol</code> como <code>1 * ol</code>.</li>
+          <li><strong><code>1 km == 1000 m</code> era falso</strong> mientras que <code>1 km + 1000 m</code> convertía bien — la comparación leía las magnitudes e ignoraba la escala.</li>
+          <li><strong>Una cantidad se comportaba como si fuera independiente de sí misma</strong>: <code>x - x</code> reportaba σ·√2 en vez de cero, y <code>x / x</code> un 1 con incertidumbre. La ruta escalar de Python ahora rastrea la procedencia en el núcleo Rust por defecto, igual que PHS.</li>
+          <li><strong>Java sumaba incertidumbres linealmente, no en cuadratura</strong> — 0.3 y 0.3 daban 0.6 donde Rust y Python dan 0.42, un error ~40% mayor en cada cantidad que pasaba por Java.</li>
+          <li><strong><code>sin</code>, <code>cos</code> y <code>tan</code> se verifican dimensionalmente</strong> y conservan la incertidumbre; <code>sin(9.81 m/s^2)</code> antes respondía -0.379 como si m/s² fueran radianes.</li>
+          <li><strong>Un grado vuelve a ser un ángulo plano</strong> — <code>deg</code>, <code>arcmin</code> y <code>arcsec</code> se habían registrado como estereorradianes escalados.</li>
+          <li><strong>Una unidad desconocida se reporta en lugar de inventarse</strong>: <code>5 foobar</code> antes evaluaba tan campante con una dimensión fabricada.</li>
+          <li><strong>Un símbolo de unidad que el script también liga como variable se rechaza, no se adivina</strong> — <code>g = 9.81 m/s^2</code> seguido de <code>10.0 kg * g</code> leía <code>g</code> como gramos.</li>
+          <li><strong><code>10.0 +/- 0.5 m</code> se imprimía como <code>10.0 m</code></strong> — la incertidumbre se propagaba bien y luego <code>Display</code> la tiraba.</li>
+          <li><strong><code>QuantityVector::norm()</code> reportaba una incertidumbre exactamente √2 más pequeña</strong>, y la propagación por Monte Carlo ya no vuelve a sortear un operando que ya trae muestras.</li>
+        </ul>
+        <p>
+          La lista completa está en el
+          <a href="https://github.com/Alexisrx96/physure/blob/main/CHANGELOG.md" target="_blank" rel="noopener">CHANGELOG.md</a> del repositorio.
+        </p>
+      </div>
+    </div>
+
+    <div class="release">
+      <div class="release-header">
         <h2 id="v023">
           <span class="release-version">v0.2.3</span>
-          <span class="badge badge-green">Última</span>
           <span class="release-date">2026</span>
         </h2>
       </div>

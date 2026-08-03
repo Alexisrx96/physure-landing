@@ -41,7 +41,7 @@ import DocsLayout from "../layouts/DocsLayout.astro";
         <span class="option-title">Minimal</span>
         <span class="badge badge-green">Recommended to start</span>
       </div>
-      <p>Pure-Python, zero runtime dependencies. Works everywhere Python 3.10+ runs.</p>
+      <p>The Rust-compiled wheel with zero runtime dependencies — <code>pip install physure</code> pulls in nothing else. Python 3.11+.</p>
       <div class="tabs">
         <div class="tab-list">
           <button class="tab-btn active" data-tab="pip-min">pip</button>
@@ -173,7 +173,7 @@ import DocsLayout from "../layouts/DocsLayout.astro";
     <li>
       <div>
         <h3>Install prerequisites</h3>
-        <p>You need Rust (via <a href="https://rustup.rs" target="_blank" rel="noopener">rustup</a>), Python 3.10+, and <code>uv</code>.</p>
+        <p>You need Rust (via <a href="https://rustup.rs" target="_blank" rel="noopener">rustup</a>), Python 3.11+, and <code>uv</code>.</p>
         <pre><code># Install Rust
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 
@@ -214,9 +214,9 @@ pip install -e ".[all]"</code></pre>
       <tr><th>Requirement</th><th>Version</th><th>Notes</th></tr>
     </thead>
     <tbody>
-      <tr><td>Python</td><td>≥ 3.10</td><td>Tested on 3.10, 3.11, 3.12, 3.13, 3.14</td></tr>
+      <tr><td>Python</td><td>≥ 3.11</td><td>Tested in CI on 3.11, 3.12, 3.13, 3.14. Not needed at all for the <code>phs</code> binary.</td></tr>
       <tr><td>pip</td><td>any recent</td><td>Or uv, poetry, etc.</td></tr>
-      <tr><td>Rust (optional)</td><td>stable</td><td>Only needed for <code>[native]</code> from source</td></tr>
+      <tr><td>Rust (optional)</td><td>stable</td><td>Only needed to build from source</td></tr>
     </tbody>
   </table>
 

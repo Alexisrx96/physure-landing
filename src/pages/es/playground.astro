@@ -203,19 +203,19 @@ print(velocidad)
 print("\\nVelocidad en km/h:")
 print(velocidad.to("km/hr"))
 `,
-      grammar: `from physure.ext.grammar import GrammarInterpreter
+      grammar: `from physure import Interpreter
 
 # Usando notación física natural con physure (PHS)
-interpreter = GrammarInterpreter()
-interpreter.run("""
+interpreter = Interpreter()
+interpreter.evaluate("""
 g = 9.81 +/- 0.02 m/s^2
 masa = 70 kg
 fuerza = masa * g
 """)
 
 # Consultar las variables calculadas
-print("Fuerza calculada:", interpreter.eval("fuerza = ?"))
-print("Fuerza convertida a kN:", interpreter.eval("fuerza => kN"))
+print("Fuerza calculada:", interpreter.evaluate("fuerza")[-1])
+print("Fuerza convertida a kN:", interpreter.evaluate("fuerza => kN")[-1])
 `
     };
 

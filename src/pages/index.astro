@@ -2,7 +2,7 @@
 import DocsLayout from "../layouts/DocsLayout.astro";
 
 const TITLE = "Overview";
-const DESCRIPTION = "physure — Unit-aware physics computation for Python. Zero runtime dependencies, optional Rust core, multi-backend tensors.";
+const DESCRIPTION = "physure — Unit-aware, dimension-correct physics computing from a shared Rust core, exposed as a DSL (phs), a Python library, a Rust crate, and a JVM package.";
 ---
 
 <DocsLayout title={TITLE} description={DESCRIPTION} activeSection="overview">
@@ -10,7 +10,7 @@ const DESCRIPTION = "physure — Unit-aware physics computation for Python. Zero
   <div class="hero">
     <div class="hero-badge">
       <span class="badge badge-green">Beta</span>
-      <span>v0.2.3 · MIT License · Python 3.11+</span>
+      <span>v0.2.3 · MIT License · no Python required for <code>phs</code></span>
     </div>
     <div class="hero-shields">
       <a href="https://pypi.org/project/physure/" target="_blank" rel="noopener"><img src="https://img.shields.io/pypi/v/physure?color=F59E0B&labelColor=18181A" alt="PyPI" height="20" /></a>
@@ -20,8 +20,9 @@ const DESCRIPTION = "physure — Unit-aware physics computation for Python. Zero
     <img src="/logo-icon.svg" alt="physure logo" width="100" height="100" class="hero-logo" />
     <h1>physure</h1>
     <p class="hero-lead">
-      Unit-aware physics computation for Python. Attach physical units to numbers, 
-      NumPy arrays, PyTorch tensors, and JAX arrays — and let the engine keep you honest.
+      Unit-aware, dimension-correct physics computing from a shared Rust core — the same
+      dimensional analysis and uncertainty engine behind a standalone DSL (<code>phs</code>),
+      a Python library, a Rust crate, and a JVM package.
     </p>
     <div class="hero-install">
       <div class="install-cmd">
@@ -31,6 +32,14 @@ const DESCRIPTION = "physure — Unit-aware physics computation for Python. Zero
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
         </button>
       </div>
+      <div class="install-cmd">
+        <span class="prompt">$</span>
+        <code>curl -fsSL https://physure.irvintorres.com/install.sh | sh</code>
+        <button class="copy-btn-hero" data-copy="curl -fsSL https://physure.irvintorres.com/install.sh | sh" title="Copy">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+        </button>
+      </div>
+      <p class="install-note">The Python library, or the standalone <code>phs</code> binary — neither needs the other.</p>
     </div>
     <div class="hero-links">
       <a href="/quickstart" class="btn-primary">Get Started →</a>
@@ -56,14 +65,15 @@ v = d / t
 d + t            <span class="cm"># ❌ raises: length + time</span></code></pre>
       </div>
       <div class="demo-card">
-        <div class="demo-label">Grammar / REPL</div>
+        <div class="demo-label">PHS — no Python</div>
         <pre><code><span class="cm"># Notation like on paper</span>
 force = 500 N
 area  = 2 m^2
 stress = force / area
 
 stress =&gt; kPa      <span class="cm"># 0.25 kPa</span>
-stress == 250 Pa   <span class="cm"># True</span></code></pre>
+stress: .3e        <span class="cm"># 2.500e2 kPa</span>
+<span class="str">"stress is &#123;stress =&gt; kPa&#125;"</span></code></pre>
       </div>
       <div class="demo-card">
         <div class="demo-label">Uncertainty Propagation</div>
@@ -77,12 +87,12 @@ F = g * m
       </div>
       <div class="demo-card">
         <div class="demo-label">Terminal Calculator</div>
-        <pre><code><span class="prompt">$</span> python -m physure <span class="str">"500 N / 2 m^2 =&gt; kPa"</span>
+        <pre><code><span class="prompt">$</span> phs <span class="str">"500 N / 2 m^2 =&gt; kPa"</span>
 0.25 kPa
 
-<span class="prompt">$</span> python -m physure
-<span class="prompt">mk&gt;</span> g = 9.81 +/- 0.02 m/s^2
-<span class="prompt">mk&gt;</span> g =&gt; ft/s^2
+<span class="prompt">$</span> phs --repl
+<span class="prompt">phs&gt;</span> g = 9.81 +/- 0.02 m/s^2
+<span class="prompt">phs&gt;</span> g =&gt; ft/s^2
 32.185... ft/s^2</code></pre>
       </div>
     </div>
@@ -92,19 +102,44 @@ F = g * m
   <section>
     <h2>What is physure?</h2>
     <p>
-      physure started as "The Over-Engineered Homework Validator" — one developer wanted to 
-      check physics exercises and instead built a <strong>backend-agnostic, JIT-compilable 
-      dimension engine</strong>. It applies enterprise architecture patterns to unit handling, 
-      giving you safety and expressiveness usually reserved for research frameworks.
+      physure is a Rust physics and measurement engine (<code>physure-core</code>) with four ways
+      to use it. Pick the one that matches how you work — none of them require the others.
+      All dimensional-analysis and uncertainty math lives in Rust; every other package is a thin
+      translation layer on top of it, so they cannot disagree about a result.
     </p>
+    <table>
+      <thead><tr><th>Surface</th><th>What it is</th><th>Needs Python?</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><a href="/cli"><strong>PHS</strong></a></td>
+          <td>A standalone DSL and CLI (<code>phs</code>) for writing engineering and lab calculations as physics, not code — validates a formula before it reaches a dev team, and doubles as documentation of the calculation.</td>
+          <td>No</td>
+        </tr>
+        <tr>
+          <td><strong>physure (Python)</strong></td>
+          <td><code>Quantity</code>, NumPy/PyTorch/JAX backends, <code>@physure.jit</code>.</td>
+          <td>Yes — it <em>is</em> the Python package</td>
+        </tr>
+        <tr>
+          <td><strong>physure (Rust)</strong></td>
+          <td>The core crate directly, for Rust projects that want dimensional analysis and uncertainty propagation with no FFI.</td>
+          <td>No</td>
+        </tr>
+        <tr>
+          <td><strong>physure-java</strong></td>
+          <td>JNI bindings for JVM projects, published to Maven Central.</td>
+          <td>No</td>
+        </tr>
+      </tbody>
+    </table>
     <p>
       Unlike Pint (which is excellent and battle-tested), physure focuses specifically on:
     </p>
     <ul>
       <li>JIT-compiled unit safety on <strong>PyTorch and JAX tensors</strong></li>
       <li><strong>Correlated uncertainty propagation</strong> with a full covariance store</li>
-      <li><strong>Zero-dependency base install</strong> — just Python 3.10+</li>
-      <li>A <strong>natural-language grammar</strong> for writing physics like on paper</li>
+      <li><strong>Zero-dependency base install</strong> — <code>pip install physure</code> pulls in nothing else</li>
+      <li>A <strong>standalone DSL</strong> for writing physics like on paper, with no Python in the loop</li>
     </ul>
   </section>
 
@@ -285,12 +320,19 @@ F = g * m
     font-size: 1.1rem; max-width: 600px; margin: 0 auto 1.75rem;
     color: var(--text2);
   }
-  .hero-install { margin-bottom: 1.5rem; }
+  .hero-install {
+    margin-bottom: 1.5rem;
+    display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+  }
   .install-cmd {
     display: inline-flex; align-items: center; gap: 0.75rem;
     background: var(--panel); border: 1px solid var(--border2);
     border-radius: var(--radius-lg); padding: 0.75rem 1.25rem;
     font-family: 'JetBrains Mono', monospace; font-size: 1rem;
+    max-width: 100%; overflow-x: auto;
+  }
+  .install-note {
+    font-size: 0.85rem; color: var(--text3); margin: 0.25rem 0 0;
   }
   .prompt { color: var(--text3); }
   .install-cmd code { color: var(--accent2); }
