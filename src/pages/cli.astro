@@ -72,7 +72,7 @@ phs "9.81 +/- 0.02 m/s^2 => ft/s^2"
   <h2>REPL session</h2>
   <pre><code>$ phs --repl
 ┌──────────────────────────────────────────────────────────────┐
-│ Physure Interactive REPL (PHS v0.2.4)                        │
+│ Physure Interactive REPL (PHS v0.2.3)                        │
 │ Type 'exit', 'quit', or 'help' for instructions.             │
 └──────────────────────────────────────────────────────────────┘
 
@@ -100,6 +100,7 @@ phs> exit</code></pre>
     phs &lt;script.phs&gt; [OPTIONS]
     phs --repl
     phs transpile &lt;script.phs&gt; [--target &lt;rust|python|java&gt;] [--output &lt;file&gt;]
+    phs doc [--save]
     phs register-protocol
     phs new-plugin &lt;name&gt; [--lang &lt;rust|python|both&gt;] [--dir &lt;path&gt;]
 
@@ -108,6 +109,7 @@ FLAGS &amp; OPTIONS:
     -r, --repl               Start interactive PHS REPL environment
     -t, --target &lt;lang&gt;      Transpile target: rust, python, java (default: rust)
     -o, --output &lt;file&gt;      Specify output file path (e.g. out.py, Main.java)
+    --doc, doc [--save]      Generate the full Markdown language &amp; syntax spec
     --tui                    Launch terminal UI dashboard mode
     --web                    Launch local web visualizer server
     --html, --view           Generate and open HTML report</code></pre>
